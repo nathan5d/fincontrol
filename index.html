@@ -364,38 +364,44 @@
             </div>
 
 
-            <table id="tabelaReceitas" class="table">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Data</th>
-                        <th>Valor</th>
-                        <th>Categoria</th>
-                        <th>Status</th>
-                        <th class="d-print-none">Ações</th> <!-- Adicionado -->
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-responsive-sm">
+                <table id="tabelaReceitas" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Data</th>
+                            <th>Valor</th>
+                            <th>Categoria</th>
+                            <th>Status</th>
+                            <th class="d-print-none">Ações</th> <!-- Adicionado -->
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
             <div class="d-flex">
                 <h2>Despesas</h2>
                 <button type="button" class="btn btn-small d-print-none btn-danger ml-3 mb-1" data-toggle="modal"
                     data-target="#modalDespesa">Adicionar Despesa</button>
             </div>
 
-            <table id="tabelaDespesas" class="table">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Data</th>
-                        <th>Valor</th>
-                        <th>Categoria</th>
-                        <th>Status</th>
-                        <th class="d-print-none">Ações</th> <!-- Adicionado -->
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-responsive-sm">
+                <table id="tabelaDespesas" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Data</th>
+                            <th>Valor</th>
+                            <th>Categoria</th>
+                            <th>Status</th>
+                            <th class="d-print-none">Ações</th> <!-- Adicionado -->
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
         </div>
     </div>
 
@@ -475,7 +481,7 @@
                     <td>${receita.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                     <td>${receita.categoria}</td>
                     <td class="${statusClass}"><span>${receita.statusReceita}</span></td>
-                    <td>
+                    <td class="d-flex d-inline">
                         <button class="btn btn-info btn-sm d-print-none" onclick="editarReceita('${receita.nome}')">Editar</button>
                         <button class="btn btn-danger btn-sm d-print-none" onclick="excluirReceita('${receita.nome}')">Excluir</button>
                     </td>
@@ -492,7 +498,7 @@
                     <td>${despesa.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                     <td>${despesa.categoria}</td>
                     <td class="${statusClass}"><span>${despesa.statusDespesa}</span></td>
-                    <td>
+                    <td class="d-flex d-inline">
                         <button class="btn btn-info btn-sm d-print-none" onclick="editarDespesa('${despesa.nome}')">Editar</button>
                         <button class="btn btn-danger btn-sm d-print-none" onclick="excluirDespesa('${despesa.nome}')">Excluir</button>
                     </td>
