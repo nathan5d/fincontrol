@@ -463,19 +463,33 @@
         <!-- Exibição dos dados -->
         <div id="dados" class="mt-4">
 
-            <div class="d-flex mt-5 mb-2">
-                <span class="h3 font-weight-bold">Receitas</span>
-                <button type="button" class="btn btn-small d-print-none btn-info ml-3 mb-1" data-toggle="modal"
+            <div class="row d-flex mt-5 mb-2">
+                <div class="col-md-6 col-sm-12 mb-1 text-sm-center text-md-left">
+                    <span class="h3 font-weight-bold">Receitas</span>
+                </div>
+               
+                <div class="col-md-6 col-sm-12 text-sm-center text-md-right">
+                    <button type="button" class="btn btn-small d-print-none btn-info" data-toggle="modal"
                     data-target="#modalReceita">Adicionar Receita</button>
+                </div>
+                
             </div>
 
 
             <ul id="listaReceitas" class="p-0"></ul>
 
-            <div class="d-flex mt-5 mb-2">
-                <span class="h3 font-weight-bold">Despesas</span>
-                <button type="button" class="btn btn-small d-print-none btn-danger ml-3 mb-1" data-toggle="modal"
+            <div class="row d-flex mt-5 mb-2">
+
+                <div class="col-md-6 col-sm-12 mb-1 text-sm-center text-md-left">
+                    <span class="h3 font-weight-bold text-center m-auto">Despesas</span>
+                </div>
+               
+                <div class="col-md-6 col-sm-12 text-sm-center text-md-right">
+                    <button type="button" class="btn btn-small d-print-none btn-danger" data-toggle="modal"
                     data-target="#modalDespesa">Adicionar Despesa</button>
+                </div>
+               
+               
             </div>
 
             <ul id="listaDespesas" class="p-0"></ul>
