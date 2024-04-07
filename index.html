@@ -5,6 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle Financeiro</title>
+
+    
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <!-- Dentro da seção head -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="FinControl">
+
+    <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-status-bar" content="#ffffff" />
+    <meta name="theme-color" content="#ffffff" />
+
     <!-- Integração do Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
@@ -85,12 +99,29 @@
             padding: 4px 12px;
             /* Cor vermelha para indicar status "Não Concluído" */
         }
+
+
+        .offline-message {
+            border-radius: 0 0 25px 25px;
+            border-bottom: 4px solid var(--secondary-color);
+            background-color: var(--primary-color);
+            color: #e7e7e7;
+            padding: 5px;
+            text-align: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-
+        <div id="offline-message" class="offline-message">
+            Você está visualizando a versão offline. Verifique sua conexão.
+        </div>
         <div class="logo m-auto d-flex justify-content-center align-items-center">
             <img src="./assets/images/Fincontrol.png" alt="" srcset="" width="150px">
         </div>
@@ -331,6 +362,7 @@
             </div>
         </div>
 
+       
         <!-- Dashboard com o total de rendas, despesas e saldo -->
         <div class="row mt-4">
             <div class="col-md-4">
@@ -410,7 +442,7 @@
                 <div class="m-auto">
                     <!-- Botão para exportar/importar os dados -->
 
-                    <button type="button" class="btn btn-info dropdown-toggle"  data-toggle="dropdown"
+                    <button type="button" class="btn btn-info d-print-none dropdown-toggle" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                         Exportar/Importar dados
                     </button>
@@ -850,9 +882,15 @@
             const blob = new Blob([json], { type: "application/json" });
             const url = URL.createObjectURL(blob);
 
+            // Gerar um identificador único (UUID) para o arquivo
+            const uuid = uuidv4();
+            // Criar o nome do arquivo com criptografia
+            const nomeArquivo = `fincontrol_${uuid}_Export.json`;
+
             const a = document.createElement("a");
             a.href = url;
-            a.download = "dados_financeiros.json";
+            a.download = nomeArquivo;
+
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -888,6 +926,15 @@
             leitor.readAsText(arquivo);
         }
 
+        // Função para gerar um UUID (Universally Unique Identifier)
+        function uuidv4() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0,
+                    v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
         // Atualizar a exibição ao carregar a página
         atualizarExibicao();
     </script>
@@ -908,6 +955,27 @@
         });
 
 
+    </script>
+    <script>
+
+        // Verificar status da conexão e exibir mensagem offline ao carregar a página
+        document.addEventListener("DOMContentLoaded", () => {
+            const offlineMessage = document.getElementById("offline-message");
+            offlineMessage.style.display = navigator.onLine ? "nones" : "block";
+
+        });
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado com sucesso:', registration);
+                    })
+                    .catch(error => {
+                        console.error('Falha ao registrar o Service Worker:', error);
+                    });
+            });
+        }
     </script>
 
     <script>
