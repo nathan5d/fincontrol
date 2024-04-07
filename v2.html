@@ -70,7 +70,7 @@
             font-weight: 600;
         }
 
-        .concluido span {
+        .concluido button {
             color: var(--secondary-color);
             background-color: #e7e7e7;
             border-radius: 25px;
@@ -78,7 +78,7 @@
             /* Cor verde para indicar status "Concluído" */
         }
 
-        .nao-concluido span {
+        .nao-concluido button {
             color: #dc3545;
             background-color: #e7e7e7;
             border-radius: 25px;
@@ -293,8 +293,10 @@
                         <div class="row">
                             <div class="col">
                                 <h5 class="card-title text-uppercase text-muted mb-0">Total de Receitas</h5>
-                                <p class="h2 card-text font-weight-bold mb-0" id="totalReceitas">R$ 0,00</p>
-                                <div class="d-flex justify-content-end align-items-center"></div>
+                                <p class="card-text h2 font-weight-bold mb-0" id="totalReceitas">R$ 0,00</p>
+                                <div class="d-flex justify-content-end align-items-center">
+
+                                </div>
                             </div>
                             <div class="col-auto">
                                 <div class="icon icon-shape bg-info text-white rounded-circle shadow">
@@ -365,7 +367,21 @@
             </div>
 
 
-            <ul id="listaReceitas" class="p-0"></ul>
+            <div class="table-responsive-sm">
+                <table id="tabelaReceitas" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Data</th>
+                            <th>Valor</th>
+                            <th>Categoria</th>
+                            <th>Status</th>
+                            <th class="d-print-none">Ações</th> <!-- Adicionado -->
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
 
             <div class="d-flex">
                 <h2>Despesas</h2>
@@ -373,7 +389,21 @@
                     data-target="#modalDespesa">Adicionar Despesa</button>
             </div>
 
-            <ul id="listaDespesas" class="p-0"></ul>
+            <div class="table-responsive-sm">
+                <table id="tabelaDespesas" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Data</th>
+                            <th>Valor</th>
+                            <th>Categoria</th>
+                            <th>Status</th>
+                            <th class="d-print-none">Ações</th> <!-- Adicionado -->
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
 
         </div>
     </div>
@@ -433,77 +463,52 @@
         }
 
         // Função para exibir os dados e atualizar o dashboard
-        // Função para exibir os dados e atualizar o dashboard
         function atualizarExibicao() {
             const receitas = JSON.parse(localStorage.getItem("receitas")) || [];
             const despesas = JSON.parse(localStorage.getItem("despesas")) || [];
 
-            const listaReceitas = document.getElementById("listaReceitas");
-            const listaDespesas = document.getElementById("listaDespesas");
+            const tabelaReceitas = document.getElementById("tabelaReceitas").getElementsByTagName('tbody')[0];
+            const tabelaDespesas = document.getElementById("tabelaDespesas").getElementsByTagName('tbody')[0];
 
-            // Limpar listas
-            listaReceitas.innerHTML = '';
-            listaDespesas.innerHTML = '';
+            // Limpar tabelas
+            tabelaReceitas.innerHTML = '';
+            tabelaDespesas.innerHTML = '';
 
-            // Preencher listas com os itens do localStorage
+            // Preencher tabelas com os itens do localStorage
             receitas.forEach(receita => {
-                const item = document.createElement('li');
-                item.classList.add('list-group-item');
-
-                const statusClass = receita.statusReceita === 'Concluído' ? 'text-success' : 'text-danger';
-
-                item.innerHTML = `
-                    <div class="row" >
-                        <div class="col">
-                            <h5 class="h2 text-muted mb-0">${receita.nome} 
-                                <button class="btn ${statusClass} bg-light " onclick="editarReceita('${receita.nome}')">${receita.statusReceita}</button>
-                            </h5>
-                            <div class="h3 font-weight-bold mb-0">R$ ${formatarValorParaExibicao(receita.valor)}</div>
-                            <div>Categoria: ${receita.categoria}</div>
-                            <div class="text-green concluido">Data: ${receita.data}</div></span>
-                        </div>
-                        <div class="col-auto">
-                            
-                            <div class="m-auto">
-                                <button class="btn btn-info btn-sm" onclick="editarReceita('${receita.nome}')">Editar</button>
-                                <button class="btn btn-danger btn-sm" onclick="excluirReceita('${receita.nome}')">Excluir</button>
-                            </div>
-                            
-                        </div>
-                    </div>
+                const row = tabelaReceitas.insertRow();
+                // Adicione uma classe com base no status da receita
+                const statusClass = receita.statusReceita === 'Concluído' ? 'concluido' : 'nao-concluido';
+                row.innerHTML = `
+                    <td>${receita.nome}</td>
+                    <td>${receita.data}</td>
+                    <td>R$ ${formatarValorParaExibicao(receita.valor)}</td>
+                    <td>${receita.categoria}</td>
+                    <td class="${statusClass}"><button class="btn btn-sm btn-light" onclick="editarReceita('${receita.nome}')">${receita.statusReceita}</button></td>
+                    <td class="d-flex d-inline">
+                        <button class="btn btn-info btn-sm d-print-none" onclick="editarReceita('${receita.nome}')">Editar</button>
+                        <button class="btn btn-danger btn-sm d-print-none" onclick="excluirReceita('${receita.nome}')">Excluir</button>
+                    </td>
                 `;
-
-                listaReceitas.appendChild(item);
             });
 
             despesas.forEach(despesa => {
-                const item = document.createElement('li');
-                item.classList.add('list-group-item');
-
-                const statusClass = despesa.statusDespesa === 'Concluído' ? 'text-success' : 'text-danger';
-
-                item.innerHTML = `
-                    <div class="row" >
-                        <div class="col">
-                            <h5 class="h2 text-muted mb-0">${despesa.nome} 
-                                <button class="btn ${statusClass} bg-light " onclick="editarDespesa('${despesa.nome}')">${despesa.statusDespesa}</button></h5>
-                            <div class="h3 font-weight-bold mb-0">R$ ${formatarValorParaExibicao(despesa.valor)}</div>
-                            <div>Categoria: ${despesa.categoria}</div>
-                            <div class="text-green concluido">Data: ${despesa.data}</div></span>
-                        </div>
-                        <div class="col-auto">
-                            
-                            <div class="m-auto">
-                                <button class="btn btn-info btn-sm" onclick="editarDespesa('${despesa.nome}')">Editar</button>
-                                <button class="btn btn-danger btn-sm" onclick="excluirDespesa('${despesa.nome}')">Excluir</button>
-                            </div>
-                            
-                        </div>
-                    </div>
+                const row = tabelaDespesas.insertRow();
+                // Adicione uma classe com base no status da despesa
+                const statusClass = despesa.statusDespesa === 'Concluído' ? 'concluido' : 'nao-concluido';
+                row.innerHTML = `
+                    <td>${despesa.nome}</td>
+                    <td>${despesa.data}</td>
+                    <td>R$ ${formatarValorParaExibicao(despesa.valor)}</td>
+                    <td>${despesa.categoria}</td>
+                    <td class="${statusClass}"><button class="btn btn-sm btn-light" onclick="editarDespesa('${despesa.nome}')">${despesa.statusDespesa}</button></td>
+                    <td class="d-flex d-inline">
+                        <button class="btn btn-info btn-sm d-print-none" onclick="editarDespesa('${despesa.nome}')">Editar</button>
+                        <button class="btn btn-danger btn-sm d-print-none" onclick="excluirDespesa('${despesa.nome}')">Excluir</button>
+                    </td>
                 `;
-
-                listaDespesas.appendChild(item);
             });
+
 
             // Calcular total de receitas
             const totalReceitas = receitas.reduce((total, receita) => total + receita.valor, 0);
@@ -517,15 +522,18 @@
             const saldo = totalReceitas - totalDespesas;
             document.getElementById("saldo").textContent = `R$ ${formatarValorParaExibicao(saldo)}`;
 
+
             // Exemplo de uso:
             const totalReceitasPagas = calcularSomaValoresReceitas('Concluído');
             const totalReceitasAPagar = calcularSomaValoresReceitas('Não concluído');
             const totalDespesasPagas = calcularSomaValoresDespesas('Concluído');
             const totalDespesasAPagar = calcularSomaValoresDespesas('Não concluído');
 
+
             // Seleciona o primeiro span dentro do elemento com id "legendDespesas"
             document.querySelector('#legendReceitas span:nth-child(2)').textContent = totalReceitasAPagar ? `R$ ${formatarValorParaExibicao(totalReceitasAPagar)}` : `R$ ${formatarValorParaExibicao(totalReceitas)}`;
             document.querySelector('#legendReceitas span:nth-child(3)').textContent = `${totalReceitasAPagar ? 'a receber' : 'recebido'}`;
+
 
             // Calcula a porcentagem da quantidade de despesas pagas em relação ao total de despesas
             const percentualDespesasPagas = (calcularQuantidadeDespesas('Concluído') / (calcularQuantidadeDespesas('Concluído') + calcularQuantidadeDespesas('Não concluído'))) * 100;
@@ -543,6 +551,11 @@
             // Exibe a porcentagem no elemento com id "legendSaldo"
             document.querySelector('#legendSaldo span:nth-child(2)').textContent = `${percentualBalanco > 0 ? percentualBalanco.toFixed(2) : '0'}%`;
             document.querySelector('#legendSaldo span:nth-child(3)').textContent = `de saldo (R$ ${formatarValorParaExibicao(diferencaReceitasDespesas)})`;
+
+
+
+
+
         }
 
         // Função para excluir receita
