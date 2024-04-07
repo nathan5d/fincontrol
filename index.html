@@ -134,9 +134,21 @@
                                 <input type="text" class="form-control  money" id="editValorReceita"
                                     placeholder="Valor">
                             </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="editCategoriaReceita"
-                                    placeholder="Categoria">
+                           
+                            <div class="form-group d-none">
+                                <select class="form-control" id="editCategoriaReceita">
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="Alimentação">Alimentação</option>
+                                    <option value="Transporte">Transporte</option>
+                                    <option value="Moradia">Moradia</option>
+                                    <option value="Educação">Educação</option>
+                                    <option value="Saúde">Saúde</option>
+                                    <option value="Lazer">Lazer</option>
+                                    <option value="Entretenimento">Entretenimento</option>
+                                    <option value="Roupas e acessórios">Roupas e acessórios</option>
+                                    <option value="Presentes e doações">Presentes e doações</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <select class="form-control" id="editStatusReceita">
@@ -178,8 +190,19 @@
                                 <input type="text" class="form-control money" id="editValorDespesa" placeholder="Valor">
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" id="editCategoriaDespesa"
-                                    placeholder="Categoria">
+                                <select class="form-control" id="editCategoriaDespesa">
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="Alimentação">Alimentação</option>
+                                    <option value="Transporte">Transporte</option>
+                                    <option value="Moradia">Moradia</option>
+                                    <option value="Educação">Educação</option>
+                                    <option value="Saúde">Saúde</option>
+                                    <option value="Lazer">Lazer</option>
+                                    <option value="Entretenimento">Entretenimento</option>
+                                    <option value="Roupas e acessórios">Roupas e acessórios</option>
+                                    <option value="Presentes e doações">Presentes e doações</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <select class="form-control" id="editStatusDespesa">
@@ -220,8 +243,20 @@
                             <div class="form-group">
                                 <input type="text" class="form-control money" id="valorReceita" placeholder="Valor">
                             </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="categoriaReceita" placeholder="Categoria">
+                            <div class="form-group d-none">
+                                <select class="form-control" id="categoriaReceita">
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="Alimentação">Alimentação</option>
+                                    <option value="Transporte">Transporte</option>
+                                    <option value="Moradia">Moradia</option>
+                                    <option value="Educação">Educação</option>
+                                    <option value="Saúde">Saúde</option>
+                                    <option value="Lazer">Lazer</option>
+                                    <option value="Entretenimento">Entretenimento</option>
+                                    <option value="Roupas e acessórios">Roupas e acessórios</option>
+                                    <option value="Presentes e doações">Presentes e doações</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
                             </div>
 
                             <div class="form-group">
@@ -265,7 +300,19 @@
                                 <input type="text" class="form-control money" id="valorDespesa" placeholder="Valor">
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" id="categoriaDespesa" placeholder="Categoria">
+                                <select class="form-control" id="categoriaDespesa">
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="Alimentação">Alimentação</option>
+                                    <option value="Transporte">Transporte</option>
+                                    <option value="Moradia">Moradia</option>
+                                    <option value="Educação">Educação</option>
+                                    <option value="Saúde">Saúde</option>
+                                    <option value="Lazer">Lazer</option>
+                                    <option value="Entretenimento">Entretenimento</option>
+                                    <option value="Roupas e acessórios">Roupas e acessórios</option>
+                                    <option value="Presentes e doações">Presentes e doações</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <select class="form-control" id="statusDespesa">
@@ -463,13 +510,13 @@
                                    
                                 </div>
 
-                                <div class="m-auto col-md-3 mb-0">
+                                <!--<div class="m-auto col-md-3 mb-0">
                                    
                                     <div class="text-md-center">
                                         <span class="text-md-center d-md-none ">Categoria:</span>
                                         <button class="btn btn-sm btn-secondary py-0 px-2 " onclick="editarReceita('${receita.nome}')">${receita.categoria?receita.categoria:'Sem categoria'}</button>
                                     </div>
-                                </div>
+                                </div>-->
                             
                                 
                                 <div class="m-auto col-md-3 mb-0">
