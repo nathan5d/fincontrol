@@ -359,16 +359,17 @@
 
         <!-- Exibição dos dados -->
         <div id="dados" class="mt-4">
-            <div class="d-flex">
-                <h2>Receitas</h2> <button type="button" class="btn btn-small d-print-none btn-info ml-3 mb-1"
+            <div class="d-flex mt-5 mb-2">
+                <span class="h3 font-weight-bold">Receitas</span> 
+                <button type="button" class="btn btn-small d-print-none btn-info ml-3 mb-1"
                     data-toggle="modal" data-target="#modalReceita">Adicionar Receita</button>
             </div>
 
-
+           
             <ul id="listaReceitas" class="p-0"></ul>
 
-            <div class="d-flex">
-                <h2>Despesas</h2>
+            <div class="d-flex mt-5 mb-2">
+                <span class="h3 font-weight-bold">Despesas</span>
                 <button type="button" class="btn btn-small d-print-none btn-danger ml-3 mb-1" data-toggle="modal"
                     data-target="#modalDespesa">Adicionar Despesa</button>
             </div>
@@ -455,14 +456,42 @@
                 item.innerHTML = `
                     <div class="row" >
                         <div class="col">
-                            <h5 class="h2 text-muted mb-0">${receita.nome} 
-                                <button class="btn ${statusClass} bg-light " onclick="editarReceita('${receita.nome}')">${receita.statusReceita}</button>
-                            </h5>
-                            <div class="h3 font-weight-bold mb-0">R$ ${formatarValorParaExibicao(receita.valor)}</div>
-                            <div>Categoria: ${receita.categoria}</div>
-                            <div class="text-green concluido">Data: ${receita.data}</div></span>
+                            <div class="row">
+                                <div class="col-md-3 h5 font-weight-bold mb-0">
+                                    <div>${receita.nome}</div>
+                                    <div class="text-success"> R$ ${formatarValorParaExibicao(receita.valor)}</div>
+                                   
+                                </div>
+
+                                <div class="m-auto col-md-3 mb-0">
+                                   
+                                    <div class="text-md-center">
+                                        <span class="text-md-center d-md-none ">Categoria:</span>
+                                        <button class="btn btn-sm btn-secondary py-0 px-2 " onclick="editarReceita('${receita.nome}')">${receita.categoria?receita.categoria:'Sem categoria'}</button>
+                                    </div>
+                                </div>
+                            
+                                
+                                <div class="m-auto col-md-3 mb-0">
+                                    
+                                    <div class="text-md-center">
+                                        <span class="text-md-center d-md-none">Data:</span>
+                                        <span>${receita.data?receita.data:'<i>Indefinido</i>'}</span>
+                                    </div>
+                                    
+                                </div>
+                                <div class="m-auto col-md-3 mb-0 ">
+                                   
+                                    <div class="text-md-center">
+                                        <span class="text-md-center d-md-none">Status:</span>
+                                        <button class="btn ${statusClass} bg-light " onclick="editarReceita('${receita.nome}')">${receita.statusReceita}</button>
+                                    </div>
+                                </div>
+                            </div>
+                               
                         </div>
-                        <div class="col-auto">
+                       
+                        <div class="col-auto d-flex">
                             
                             <div class="m-auto">
                                 <button class="btn btn-info btn-sm" onclick="editarReceita('${receita.nome}')">Editar</button>
@@ -485,17 +514,46 @@
                 item.innerHTML = `
                     <div class="row" >
                         <div class="col">
-                            <h5 class="h2 text-muted mb-0">${despesa.nome} 
-                                <button class="btn ${statusClass} bg-light " onclick="editarDespesa('${despesa.nome}')">${despesa.statusDespesa}</button></h5>
-                            <div class="h3 font-weight-bold mb-0">R$ ${formatarValorParaExibicao(despesa.valor)}</div>
-                            <div>Categoria: ${despesa.categoria}</div>
-                            <div class="text-green concluido">Data: ${despesa.data}</div></span>
+                            <div class="row">
+                                <div class="col-md-3 h5 font-weight-bold mb-0">
+                                    <div>${despesa.nome}</div>
+                                    <div class="text-danger"> R$ ${formatarValorParaExibicao(despesa.valor)}</div>
+                                   
+                                </div>
+
+                                <div class="m-auto col-md-3 mb-0">
+                                   
+                                    <div class="text-md-center">
+                                        <span class="text-md-center d-md-none ">Categoria:</span>
+                                        <button class="btn btn-sm btn-secondary py-0 px-2 " onclick="editarReceita('${despesa.nome}')">${despesa.categoria?despesa.categoria:'Sem categoria'}</button>
+                                    </div>
+                                </div>
+                            
+                                
+                                <div class="m-auto col-md-3 mb-0">
+                                   
+                                    <div class="text-md-center">
+                                        <span class="text-md-center d-md-none">Data:</span>
+                                        <span>${despesa.data?despesa.data:'<i>Indefinido</i>'}</span>
+                                    </div>
+                                   
+                                </div>
+                                <div class="m-auto col-md-3 mb-0 ">
+                                   
+                                    <div class="text-md-center">
+                                        <span class="text-md-center d-md-none">Status:</span>
+                                        <button class="btn ${statusClass} bg-light " onclick="editarReceita('${despesa.nome}')">${despesa.statusReceita}</button>
+                                    </div>
+                                </div>
+                            </div>
+                               
                         </div>
-                        <div class="col-auto">
+                       
+                        <div class="col-auto d-flex">
                             
                             <div class="m-auto">
-                                <button class="btn btn-info btn-sm" onclick="editarDespesa('${despesa.nome}')">Editar</button>
-                                <button class="btn btn-danger btn-sm" onclick="excluirDespesa('${despesa.nome}')">Excluir</button>
+                                <button class="btn btn-info btn-sm" onclick="editarReceita('${despesa.nome}')">Editar</button>
+                                <button class="btn btn-danger btn-sm" onclick="excluirReceita('${despesa.nome}')">Excluir</button>
                             </div>
                             
                         </div>
