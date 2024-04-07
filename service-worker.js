@@ -4,7 +4,7 @@ const CACHE_TIME = 5 * 24 * 60 * 60 * 1000; // 5 dias em milissegundos
 const urlsToCache = [
   "/fincontrol/",
   "/fincontrol/index.html",
-  "/fincontrol/fallback.html",
+  //"/fincontrol/fallback.html",
   "/fincontrol/icon.png"
   // Adicione outros recursos que deseja cachear aqui
 ];
