@@ -134,7 +134,7 @@
                                 <input type="text" class="form-control  money" id="editValorReceita"
                                     placeholder="Valor">
                             </div>
-                           
+
                             <div class="form-group d-none">
                                 <select class="form-control" id="editCategoriaReceita">
                                     <option value="">Selecione uma categoria</option>
@@ -379,6 +379,8 @@
                         </p>
                     </div>
                 </div>
+
+
             </div>
             <div class="col-md-4">
                 <div class="card">
@@ -403,16 +405,38 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-12 d-flex mt-2">
+                <div class="m-auto">
+                    <!-- Botão para exportar/importar os dados -->
+
+                    <button type="button" class="btn btn-info dropdown-toggle"  data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Exportar/Importar dados
+                    </button>
+                    <div class="dropdown-menu">
+                        <!-- Opção para exportar os dados -->
+                        <a class="dropdown-item" href="#" onclick="exportarDados()">Exportar dados</a>
+                        <!-- Opção para importar os dados -->
+                        <label class="dropdown-item" for="inputImportarDados">Importar dados
+                            <input type="file" id="inputImportarDados" accept=".json" onchange="importarDados(event)"
+                                style="display: none;">
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Exibição dos dados -->
         <div id="dados" class="mt-4">
+
             <div class="d-flex mt-5 mb-2">
-                <span class="h3 font-weight-bold">Receitas</span> 
-                <button type="button" class="btn btn-small d-print-none btn-info ml-3 mb-1"
-                    data-toggle="modal" data-target="#modalReceita">Adicionar Receita</button>
+                <span class="h3 font-weight-bold">Receitas</span>
+                <button type="button" class="btn btn-small d-print-none btn-info ml-3 mb-1" data-toggle="modal"
+                    data-target="#modalReceita">Adicionar Receita</button>
             </div>
 
-           
+
             <ul id="listaReceitas" class="p-0"></ul>
 
             <div class="d-flex mt-5 mb-2">
@@ -424,6 +448,8 @@
             <ul id="listaDespesas" class="p-0"></ul>
 
         </div>
+
+
     </div>
 
     <script>
@@ -514,7 +540,7 @@
                                    
                                     <div class="text-md-center">
                                         <span class="text-md-center d-md-none ">Categoria:</span>
-                                        <button class="btn btn-sm btn-secondary py-0 px-2 " onclick="editarReceita('${receita.nome}')">${receita.categoria?receita.categoria:'Sem categoria'}</button>
+                                        <button class="btn btn-sm btn-secondary py-0 px-2 " onclick="editarReceita('${receita.nome}')">${receita.categoria ? receita.categoria : 'Sem categoria'}</button>
                                     </div>
                                 </div>-->
                             
@@ -523,7 +549,7 @@
                                     
                                     <div class="text-md-center">
                                         <span class="text-md-center d-md-none">Data:</span>
-                                        <span>${receita.data?receita.data:'<i>Indefinido</i>'}</span>
+                                        <span>${receita.data ? receita.data : '<i>Indefinido</i>'}</span>
                                     </div>
                                     
                                 </div>
@@ -572,7 +598,7 @@
                                    
                                     <div class="text-md-center">
                                         <span class="text-md-center d-md-none ">Categoria:</span>
-                                        <button class="btn btn-sm py-0 px-2 btn-secondary  " onclick="editarDespesa('${despesa.nome}')">${despesa.categoria?despesa.categoria:'Sem categoria'}</button>
+                                        <button class="btn btn-sm py-0 px-2 btn-secondary  " onclick="editarDespesa('${despesa.nome}')">${despesa.categoria ? despesa.categoria : 'Sem categoria'}</button>
                                     </div>
                                 </div>
                             
@@ -581,7 +607,7 @@
                                    
                                     <div class="text-md-center">
                                         <span class="text-md-center d-md-none">Data:</span>
-                                        <span>${despesa.data?despesa.data:'<i>Indefinido</i>'}</span>
+                                        <span>${despesa.data ? despesa.data : '<i>Indefinido</i>'}</span>
                                     </div>
                                    
                                 </div>
@@ -812,6 +838,56 @@
             return valorFormatado.replace('R$', '').trim();
         }
 
+
+        // Função para exportar os dados como arquivo JSON
+        function exportarDados() {
+            const dados = {
+                receitas: JSON.parse(localStorage.getItem("receitas")) || [],
+                despesas: JSON.parse(localStorage.getItem("despesas")) || []
+            };
+
+            const json = JSON.stringify(dados);
+            const blob = new Blob([json], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "dados_financeiros.json";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Função para importar os dados de um arquivo JSON
+        function importarDados(event) {
+            const arquivo = event.target.files[0];
+            const leitor = new FileReader();
+
+            leitor.onload = function (evento) {
+                const dados = JSON.parse(evento.target.result);
+                const dataAtualizacao = new Date();
+
+                // Formato de data dd/mm/yyyy
+                const dia = String(dataAtualizacao.getDate()).padStart(2, '0');
+                const mes = String(dataAtualizacao.getMonth() + 1).padStart(2, '0'); // +1 porque os meses são indexados a partir de 0
+                const ano = dataAtualizacao.getFullYear();
+                const dataFormatada = `${dia}/${mes}/${ano}`;
+
+                // Atualizar todas as datas para a data formatada de importação
+                dados.receitas.forEach(receita => receita.data = dataFormatada);
+                dados.despesas.forEach(despesa => despesa.data = dataFormatada);
+
+                localStorage.setItem("receitas", JSON.stringify(dados.receitas));
+                localStorage.setItem("despesas", JSON.stringify(dados.despesas));
+
+                // Atualizar a exibição
+                atualizarExibicao();
+            };
+
+            leitor.readAsText(arquivo);
+        }
+
         // Atualizar a exibição ao carregar a página
         atualizarExibicao();
     </script>
@@ -833,6 +909,7 @@
 
 
     </script>
+
     <script>
         feather.replace();
     </script>
