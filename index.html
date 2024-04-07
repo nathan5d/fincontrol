@@ -493,7 +493,7 @@
                        
                         <div class="col-auto d-flex">
                             
-                            <div class="m-auto">
+                            <div class="mt-2 m-sm-auto">
                                 <button class="btn btn-info btn-sm" onclick="editarReceita('${receita.nome}')">Editar</button>
                                 <button class="btn btn-danger btn-sm" onclick="excluirReceita('${receita.nome}')">Excluir</button>
                             </div>
@@ -525,7 +525,7 @@
                                    
                                     <div class="text-md-center">
                                         <span class="text-md-center d-md-none ">Categoria:</span>
-                                        <button class="btn btn-sm btn-secondary py-0 px-2 " onclick="editarReceita('${despesa.nome}')">${despesa.categoria?despesa.categoria:'Sem categoria'}</button>
+                                        <button class="btn btn-sm py-0 px-2 btn-secondary  " onclick="editarDespesa('${despesa.nome}')">${despesa.categoria?despesa.categoria:'Sem categoria'}</button>
                                     </div>
                                 </div>
                             
@@ -542,7 +542,7 @@
                                    
                                     <div class="text-md-center">
                                         <span class="text-md-center d-md-none">Status:</span>
-                                        <button class="btn ${statusClass} bg-light " onclick="editarReceita('${despesa.nome}')">${despesa.statusReceita}</button>
+                                        <button class="btn ${statusClass} bg-light " onclick="editarDespesa('${despesa.nome}')">${despesa.statusReceita}</button>
                                     </div>
                                 </div>
                             </div>
@@ -551,9 +551,9 @@
                        
                         <div class="col-auto d-flex">
                             
-                            <div class="m-auto">
-                                <button class="btn btn-info btn-sm" onclick="editarReceita('${despesa.nome}')">Editar</button>
-                                <button class="btn btn-danger btn-sm" onclick="excluirReceita('${despesa.nome}')">Excluir</button>
+                            <div class="mt-2 m-sm-auto">
+                                <button class="btn btn-info btn-sm" onclick="editarDespesa('${despesa.nome}')">Editar</button>
+                                <button class="btn btn-danger btn-sm" onclick="excluirDespesa('${despesa.nome}')">Excluir</button>
                             </div>
                             
                         </div>
