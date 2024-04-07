@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle Financeiro</title>
 
-    
+
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <!-- Dentro da seção head -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -102,13 +102,14 @@
 
 
         .offline-message {
+            font-size: 0.8em;
             border-radius: 0 0 25px 25px;
             border-bottom: 4px solid var(--secondary-color);
             background-color: var(--primary-color);
             color: #e7e7e7;
             padding: 5px;
             text-align: center;
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -362,7 +363,7 @@
             </div>
         </div>
 
-       
+
         <!-- Dashboard com o total de rendas, despesas e saldo -->
         <div class="row mt-4">
             <div class="col-md-4">
@@ -959,11 +960,36 @@
     <script>
 
         // Verificar status da conexão e exibir mensagem offline ao carregar a página
-        document.addEventListener("DOMContentLoaded", () => {
-            const offlineMessage = document.getElementById("offline-message");
-            offlineMessage.style.display = navigator.onLine ? "nones" : "block";
+        // Função para definir a cor do tema com base no status da conexão
+        function setThemeColorBasedOnConnectionStatus() {
+            const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+            const statusBariOS = document.querySelector('meta[name="apple-mobile-web-app-status-bar"]');
 
+            const isOnline = navigator.onLine;
+            const offlineMessage = document.getElementById("offline-message");
+
+            // Define a cor do tema com base no status da conexão
+            if (isOnline) {
+                themeColorMeta.setAttribute('content', '#FFFFFF'); // Cor do tema quando online
+                statusBariOS.setAttribute('content', '#FFFFFF'); // Cor do tema quando online
+                offlineMessage.style.display = "none"; // Oculta a mensagem offline
+            } else {
+                themeColorMeta.setAttribute('content', '#071e2c'); // Cor do tema quando offline
+                statusBariOS.setAttribute('content', '#071e2c'); // Cor do tema quando offline
+                offlineMessage.style.display = "block"; // Exibe a mensagem offline
+            }
+        }
+
+        // Verifica o status da conexão ao carregar a página
+        document.addEventListener("DOMContentLoaded", () => {
+            // Define a cor do tema com base no status da conexão ao carregar a página
+            setThemeColorBasedOnConnectionStatus();
         });
+
+        // Monitora alterações no status da conexão
+        window.addEventListener('online', setThemeColorBasedOnConnectionStatus);
+        window.addEventListener('offline', setThemeColorBasedOnConnectionStatus);
+
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
