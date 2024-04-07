@@ -15,12 +15,13 @@
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 
     <!-- Inclua o jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="./assets/js/jquery.mask.min.js"></script>
 
     <!-- Inclua o jQuery UI -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
     <style>
         /* Estilo adicional */
         /* Defina as variáveis CSS dentro de :root */
@@ -36,7 +37,7 @@
 
         .btn {
             border-radius: 25px;
-            padding: 0px 15px;
+            padding: 4px 15px;
             margin: 0 4px;
         }
 
@@ -69,7 +70,7 @@
             font-weight: 600;
         }
 
-        .concluido span {
+        .concluido button {
             color: var(--secondary-color);
             background-color: #e7e7e7;
             border-radius: 25px;
@@ -77,7 +78,7 @@
             /* Cor verde para indicar status "Concluído" */
         }
 
-        .nao-concluido span {
+        .nao-concluido button {
             color: #dc3545;
             background-color: #e7e7e7;
             border-radius: 25px;
@@ -130,7 +131,8 @@
                                 <input type="text" class="form-control date" id="editDataReceita" placeholder="Data">
                             </div>
                             <div class="form-group">
-                                <input type="number" class="form-control" id="editValorReceita" placeholder="Valor">
+                                <input type="text" class="form-control  money" id="editValorReceita"
+                                    placeholder="Valor">
                             </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" id="editCategoriaReceita"
@@ -173,7 +175,7 @@
                                 <input type="text" class="form-control date" id="editDataDespesa" placeholder="Data">
                             </div>
                             <div class="form-group">
-                                <input type="number" class="form-control" id="editValorDespesa" placeholder="Valor">
+                                <input type="text" class="form-control money" id="editValorDespesa" placeholder="Valor">
                             </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" id="editCategoriaDespesa"
@@ -216,7 +218,7 @@
                                 <input type="text" class="form-control date" id="dataReceita" placeholder="Data">
                             </div>
                             <div class="form-group">
-                                <input type="number" class="form-control" id="valorReceita" placeholder="Valor">
+                                <input type="text" class="form-control money" id="valorReceita" placeholder="Valor">
                             </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" id="categoriaReceita" placeholder="Categoria">
@@ -260,7 +262,7 @@
                                 <input type="text" class="form-control date" id="dataDespesa" placeholder="Data">
                             </div>
                             <div class="form-group">
-                                <input type="number" class="form-control" id="valorDespesa" placeholder="Valor">
+                                <input type="text" class="form-control money" id="valorDespesa" placeholder="Valor">
                             </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" id="categoriaDespesa" placeholder="Categoria">
@@ -411,9 +413,10 @@
         function adicionarReceita() {
             const nome = document.getElementById("nomeReceita").value;
             const data = document.getElementById("dataReceita").value;
-            const valor = parseFloat(document.getElementById("valorReceita").value);
+            const valor = parseFloat(document.getElementById("valorReceita").value.replace('.', '').replace(',', '.'));
             const categoria = document.getElementById("categoriaReceita").value;
             const statusReceita = document.getElementById("statusReceita").value;
+
 
             // Salvar no localStorage (pode ser adaptado para um servidor)
             const receitas = JSON.parse(localStorage.getItem("receitas")) || [];
@@ -437,7 +440,7 @@
         function adicionarDespesa() {
             const nome = document.getElementById("nomeDespesa").value;
             const data = document.getElementById("dataDespesa").value;
-            const valor = parseFloat(document.getElementById("valorDespesa").value);
+            const valor = parseFloat(document.getElementById("valorDespesa").value.replace('.', '').replace(',', '.'));
             const categoria = document.getElementById("categoriaDespesa").value;
             const statusDespesa = document.getElementById("statusDespesa").value;
 
@@ -479,9 +482,9 @@
                 row.innerHTML = `
                     <td>${receita.nome}</td>
                     <td>${receita.data}</td>
-                    <td>${receita.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                    <td>R$ ${formatarValorParaExibicao(receita.valor)}</td>
                     <td>${receita.categoria}</td>
-                    <td class="${statusClass}"><span>${receita.statusReceita}</span></td>
+                    <td class="${statusClass}"><button class="btn btn-sm btn-light" onclick="editarReceita('${receita.nome}')">${receita.statusReceita}</button></td>
                     <td class="d-flex d-inline">
                         <button class="btn btn-info btn-sm d-print-none" onclick="editarReceita('${receita.nome}')">Editar</button>
                         <button class="btn btn-danger btn-sm d-print-none" onclick="excluirReceita('${receita.nome}')">Excluir</button>
@@ -496,9 +499,9 @@
                 row.innerHTML = `
                     <td>${despesa.nome}</td>
                     <td>${despesa.data}</td>
-                    <td>${despesa.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                    <td>R$ ${formatarValorParaExibicao(despesa.valor)}</td>
                     <td>${despesa.categoria}</td>
-                    <td class="${statusClass}"><span>${despesa.statusDespesa}</span></td>
+                    <td class="${statusClass}"><button class="btn btn-sm btn-light" onclick="editarDespesa('${despesa.nome}')">${despesa.statusDespesa}</button></td>
                     <td class="d-flex d-inline">
                         <button class="btn btn-info btn-sm d-print-none" onclick="editarDespesa('${despesa.nome}')">Editar</button>
                         <button class="btn btn-danger btn-sm d-print-none" onclick="excluirDespesa('${despesa.nome}')">Excluir</button>
@@ -506,17 +509,18 @@
                 `;
             });
 
+
             // Calcular total de receitas
             const totalReceitas = receitas.reduce((total, receita) => total + receita.valor, 0);
-            document.getElementById("totalReceitas").textContent = totalReceitas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById("totalReceitas").textContent = `R$ ${formatarValorParaExibicao(totalReceitas)}`;
 
             // Calcular total de despesas
             const totalDespesas = despesas.reduce((total, despesa) => total + despesa.valor, 0);
-            document.getElementById("totalDespesas").textContent = totalDespesas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById("totalDespesas").textContent = `R$ ${formatarValorParaExibicao(totalDespesas)}`;
 
             // Calcular saldo
             const saldo = totalReceitas - totalDespesas;
-            document.getElementById("saldo").textContent = saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById("saldo").textContent = `R$ ${formatarValorParaExibicao(saldo)}`;
 
 
             // Exemplo de uso:
@@ -527,7 +531,7 @@
 
 
             // Seleciona o primeiro span dentro do elemento com id "legendDespesas"
-            document.querySelector('#legendReceitas span:nth-child(2)').textContent = totalReceitasAPagar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.querySelector('#legendReceitas span:nth-child(2)').textContent = totalReceitasAPagar ? `R$ ${formatarValorParaExibicao(totalReceitasAPagar)}` : `R$ ${formatarValorParaExibicao(totalReceitas)}`;
             document.querySelector('#legendReceitas span:nth-child(3)').textContent = `${totalReceitasAPagar ? 'a receber' : 'recebido'}`;
 
 
@@ -546,7 +550,7 @@
 
             // Exibe a porcentagem no elemento com id "legendSaldo"
             document.querySelector('#legendSaldo span:nth-child(2)').textContent = `${percentualBalanco > 0 ? percentualBalanco.toFixed(2) : '0'}%`;
-            document.querySelector('#legendSaldo span:nth-child(3)').textContent = `de saldo (${diferencaReceitasDespesas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })})`;
+            document.querySelector('#legendSaldo span:nth-child(3)').textContent = `de saldo (R$ ${formatarValorParaExibicao(diferencaReceitasDespesas)})`;
 
 
 
@@ -583,7 +587,7 @@
                 // Preencher campos do formulário de edição com os dados da receita a ser editada
                 document.getElementById("editNomeReceita").value = receita.nome;
                 document.getElementById("editDataReceita").value = receita.data;
-                document.getElementById("editValorReceita").value = receita.valor;
+                document.getElementById("editValorReceita").value = formatarValorParaExibicao(receita.valor);
                 document.getElementById("editCategoriaReceita").value = receita.categoria;
                 document.getElementById("editStatusReceita").value = receita.statusReceita;
 
@@ -605,7 +609,7 @@
                 // Preencher campos do formulário de edição com os dados da despesa a ser editada
                 document.getElementById("editNomeDespesa").value = despesa.nome;
                 document.getElementById("editDataDespesa").value = despesa.data;
-                document.getElementById("editValorDespesa").value = despesa.valor;
+                document.getElementById("editValorDespesa").value = formatarValorParaExibicao(despesa.valor);
                 document.getElementById("editCategoriaDespesa").value = despesa.categoria;
                 document.getElementById("editStatusDespesa").value = despesa.statusDespesa;
 
@@ -623,7 +627,7 @@
             if (itemParaEditar && tipoItemParaEditar === 'receita') {
                 const nome = document.getElementById("editNomeReceita").value;
                 const data = document.getElementById("editDataReceita").value;
-                const valor = parseFloat(document.getElementById("editValorReceita").value);
+                const valor = parseFloat(document.getElementById("editValorReceita").value.replace('.', '').replace(',', '.'));
                 const categoria = document.getElementById("editCategoriaReceita").value;
                 const statusReceita = document.getElementById("editStatusReceita").value;
 
@@ -648,7 +652,7 @@
             if (itemParaEditar && tipoItemParaEditar === 'despesa') {
                 const nome = document.getElementById("editNomeDespesa").value;
                 const data = document.getElementById("editDataDespesa").value;
-                const valor = parseFloat(document.getElementById("editValorDespesa").value);
+                const valor = parseFloat(document.getElementById("editValorDespesa").value.replace('.', '').replace(',', '.'));
                 const categoria = document.getElementById("editCategoriaDespesa").value;
                 const statusDespesa = document.getElementById("editStatusDespesa").value;
 
@@ -703,6 +707,18 @@
             return despesas.filter(despesa => despesa.statusDespesa === status).length;
         }
 
+        function formatarValorParaExibicao(valor) {
+            // Verifica se o valor é um número
+            if (typeof valor !== 'number' || isNaN(valor)) {
+                return ''; // Retorna uma string vazia se o valor não for um número válido
+            }
+
+            // Converte o valor para uma string com duas casas decimais e separador de milhares
+            const valorFormatado = valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            // Remove o símbolo de moeda (R$) e espaços em branco do valor formatado
+            return valorFormatado.replace('R$', '').trim();
+        }
 
         // Atualizar a exibição ao carregar a página
         atualizarExibicao();
@@ -716,7 +732,14 @@
             $(".date").datepicker({
                 dateFormat: 'dd/mm/yy' // Formato da data
             });
+
         });
+
+        $(document).ready(function () {
+            $('.money').mask("#.##0,00", { reverse: true });
+        });
+
+
     </script>
     <script>
         feather.replace();
