@@ -662,7 +662,7 @@
             const percentualDespesasPagas = (calcularQuantidadeDespesas('Concluído') / (calcularQuantidadeDespesas('Concluído') + calcularQuantidadeDespesas('Não concluído'))) * 100;
 
             // Exibe a porcentagem no elemento com id "legendSaldo"
-            document.querySelector('#legendDespesas span:nth-child(2)').textContent = `${!isNaN(percentualDespesasPagas) ? percentualDespesasPagas : 0}%`;
+            document.querySelector('#legendDespesas span:nth-child(2)').textContent = `${!isNaN(percentualDespesasPagas) ? percentualDespesasPagas.toFixed(2) : 0}%`;
             document.querySelector('#legendDespesas span:nth-child(3)').textContent = ` das despesas já pagas`;
 
             // Calcula a diferença entre o total de receitas pagas e o total de despesas pagas
