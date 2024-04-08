@@ -33,9 +33,14 @@
     <script src="./assets/js/jquery.mask.min.js"></script>
     <script src="./vendor/saveAs/dist/saveAs.js"></script>
 
+
     <!-- Inclua o jQuery UI -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+
+    <script src="./vendor/ToastyKit/dist/js/toastykit.js"></script>
+    <link href="./vendor/ToastyKit/dist/css/toastykit.css" rel="stylesheet">
 
     <style>
         /* Estilo adicional */
@@ -148,11 +153,7 @@
 
         }
 
-        .fab-button:hover {
-            opacity: 1;
-            /* Cor de fundo ao passar o mouse */
 
-        }
 
         .fab-button.active {
             transform: rotate(45deg);
@@ -178,7 +179,8 @@
             transform: translateY(0);
         }
 
-        .fab-option,a.fab-option {
+        .fab-option,
+        a.fab-option {
             font-weight: bold;
             color: #071e2c;
             text-decoration: none;
@@ -192,8 +194,9 @@
 
         .fab-option:hover {
             background-color: #f0f0f0;
-            /* Cor de fundo ao passar o mouse */
         }
+
+        /*
 
 
         .fab-container:hover .fab-button {
@@ -205,7 +208,9 @@
             display: flex;
             opacity: 1;
             transform: translateY(0);
-        }
+        }*/
+
+
     </style>
 </head>
 
@@ -218,19 +223,20 @@
         <div class="fab-container">
 
             <div class="fab-options">
-               
-                <a class="fab-option" data-toggle="modal"
-                data-target="#modalReceita">Adicionar Receita</a>
-                <a class="fab-option" data-toggle="modal"
-                data-target="#modalDespesa">Adicionar Despesa</a>
 
+                <a class="fab-option add" data-toggle="modal" data-target="#modalReceita"><i class="fas fa-plus-circle"></i> Adicionar Receita</a>
+                <a class="fab-option add" data-toggle="modal" data-target="#modalDespesa"><i class="fas fa-plus-circle"></i> Adicionar Despesa</a>
+                
                 <!-- Opção para exportar os dados -->
-                <a class="fab-option" href="#" onclick="exportarDados()"> <i class="fa-solid fa-file-export"></i> Exportar dados</a>
+                <a class="fab-option import" href="#" onclick="exportarDados()"><i class="fas fa-file-export"></i> Exportar
+                    dados</a>
+
                 <!-- Opção para importar os dados -->
-                <label class="fab-option" for="inputImportarDados"><i class="fa-solid fa-upload mr-2"></i>Importar dados
+                <label class="fab-option export" for="inputImportarDados"><i class="fas fa-upload"></i> Importar dados
                     <input type="file" id="inputImportarDados" accept=".json" onchange="importarDados(event)"
                         style="display: none;">
                 </label>
+
             </div>
             <div class="fab-button bg-info"><i class="fa-solid fa-plus"></i></div>
         </div>
@@ -551,7 +557,7 @@
                 </div>
             </div>
         </div>
-       
+
 
         <!-- Exibição dos dados -->
         <div id="dados" class="mt-4">
@@ -602,22 +608,39 @@
             const statusReceita = document.getElementById("statusReceita").value;
 
 
-            // Salvar no localStorage (pode ser adaptado para um servidor)
-            const receitas = JSON.parse(localStorage.getItem("receitas")) || [];
-            receitas.push({ nome, data, valor, categoria, statusReceita });
-            localStorage.setItem("receitas", JSON.stringify(receitas));
+            // Verificar se os campos obrigatórios estão preenchidos
+            if (nome) {
+                // Verificar se a data está no formato correto
+                if (/^\d{2}\/\d{2}\/\d{4}$/.test(data)) {
+                    // Verificar se o valor é um número válido
+                    if (!isNaN(valor)) {
+                        // Salvar no localStorage (pode ser adaptado para um servidor)
+                        const receitas = JSON.parse(localStorage.getItem("receitas")) || [];
+                        receitas.push({ nome, data, valor, categoria, statusReceita });
+                        localStorage.setItem("receitas", JSON.stringify(receitas));
 
-            // Limpar os campos do formulário e fechar o modal
-            document.getElementById("nomeReceita").value = "";
-            document.getElementById("dataReceita").value = "";
-            document.getElementById("valorReceita").value = "";
-            document.getElementById("categoriaReceita").value = "";
+                        // Limpar os campos do formulário e fechar o modal
+                        document.getElementById("nomeReceita").value = "";
+                        document.getElementById("dataReceita").value = "";
+                        document.getElementById("valorReceita").value = "";
+                        document.getElementById("categoriaReceita").value = "";
 
-            // Atualizar a exibição
-            atualizarExibicao();
+                        // Atualizar a exibição
+                        atualizarExibicao();
 
-            // Fechar o modal
-            $('#modalReceita').modal('hide');
+                        // Fechar o modal
+                        $('#modalReceita').modal('hide');
+                    } else {
+                        alert("Por favor, insira um valor numérico válido.");
+                    }
+                } else {
+                    alert("Por favor, insira uma data válida no formato dd/mm/yyyy.");
+                }
+            } else {
+                alert("Por favor, preencha todos os campos obrigatórios.");
+            }
+
+
         }
 
         // Função para adicionar despesa
@@ -1004,6 +1027,8 @@
             const nomeArquivo = `fincontrol_${uuid}_Export.json`;
 
             saveAs(blob, nomeArquivo);
+            
+            toast.show('Export',nomeArquivo + ' foi exportado')
         }
 
         // Função para importar os dados de um arquivo JSON
@@ -1033,6 +1058,7 @@
             };
 
             leitor.readAsText(arquivo);
+            toast.show('import', ' Dados importados')
         }
 
         // Função para gerar um UUID (Universally Unique Identifier)
@@ -1124,11 +1150,16 @@
             var button = document.querySelector('.fab-button');
             var options = document.querySelector('.fab-options');
 
-            //button.classList.toggle('active');
-            //options.classList.toggle('active');
+            button.classList.toggle('active');
+            options.classList.toggle('active');
+            // Exemplo de uso
+
         });
 
     </script>
+
+
+
 
     <!-- Integração do jQuery e do Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
