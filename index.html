@@ -232,7 +232,7 @@
                         style="display: none;">
                 </label>
             </div>
-            <div class="fab-button"><i class="fa-solid fa-plus"></i></div>
+            <div class="fab-button bg-info"><i class="fa-solid fa-plus"></i></div>
         </div>
 
         <div class="logo m-auto d-flex justify-content-center align-items-center">
@@ -551,27 +551,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12 d-flex mt-2">
-                <div class="m-auto">
-                    <!-- Botão para exportar/importar os dados -->
-
-                    <button type="button" class="btn btn-info d-print-none dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                        Exportar/Importar dados
-                    </button>
-                    <div class="dropdown-menu">
-                        <!-- Opção para exportar os dados -->
-                        <a class="dropdown-item" href="#" onclick="exportarDados()">Exportar dados</a>
-                        <!-- Opção para importar os dados -->
-                        <label class="dropdown-item" for="inputImportarDados">Importar dados
-                            <input type="file" id="inputImportarDados" accept=".json" onchange="importarDados(event)"
-                                style="display: none;">
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
+       
 
         <!-- Exibição dos dados -->
         <div id="dados" class="mt-4">
@@ -1144,8 +1124,8 @@
             var button = document.querySelector('.fab-button');
             var options = document.querySelector('.fab-options');
 
-            button.classList.toggle('active');
-            options.classList.toggle('active');
+            //button.classList.toggle('active');
+            //options.classList.toggle('active');
         });
 
     </script>
