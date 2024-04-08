@@ -116,6 +116,96 @@
             width: 100%;
             z-index: 9999;
         }
+
+
+        .fab-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9;
+            display: flex;
+            flex-direction: column;
+            /* Inverte a ordem dos itens */
+            align-items: flex-end;
+        }
+
+        .fab-button {
+            opacity: 0.9;
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            text-align: center;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            /* Adicionamos padding para centralizar o ícone no botão */
+            padding: 15px;
+            /* Ajustamos a linha de altura para centralizar o texto verticalmente */
+            line-height: 30px;
+
+
+        }
+
+        .fab-button:hover {
+            opacity: 1;
+            /* Cor de fundo ao passar o mouse */
+
+        }
+
+        .fab-button.active {
+            transform: rotate(45deg);
+            /* Rotação para transformar em "x" */
+            /* Rotação para transformar em "x" */
+        }
+
+        .fab-options {
+            display: none;
+            flex-direction: column;
+            align-items: flex-end;
+            margin-bottom: 10px;
+            /* Adiciona espaço abaixo das opções */
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .fab-options.active {
+            display: flex;
+            /* Exibe as opções ao passar o mouse sobre o contêiner */
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fab-option,a.fab-option {
+            font-weight: bold;
+            color: #071e2c;
+            text-decoration: none;
+            background-color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .fab-option:hover {
+            background-color: #f0f0f0;
+            /* Cor de fundo ao passar o mouse */
+        }
+
+
+        .fab-container:hover .fab-button {
+
+            transform: rotate(45deg);
+        }
+
+        .fab-container:hover .fab-options {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 
@@ -124,6 +214,27 @@
         <div id="offline-message" class="offline-message">
             Você está visualizando a versão offline. Verifique sua conexão.
         </div>
+
+        <div class="fab-container">
+
+            <div class="fab-options">
+               
+                <a class="fab-option" data-toggle="modal"
+                data-target="#modalReceita">Adicionar Receita</a>
+                <a class="fab-option" data-toggle="modal"
+                data-target="#modalDespesa">Adicionar Despesa</a>
+
+                <!-- Opção para exportar os dados -->
+                <a class="fab-option" href="#" onclick="exportarDados()"> <i class="fa-solid fa-file-export"></i> Exportar dados</a>
+                <!-- Opção para importar os dados -->
+                <label class="fab-option" for="inputImportarDados"><i class="fa-solid fa-upload mr-2"></i>Importar dados
+                    <input type="file" id="inputImportarDados" accept=".json" onchange="importarDados(event)"
+                        style="display: none;">
+                </label>
+            </div>
+            <div class="fab-button"><i class="fa-solid fa-plus"></i></div>
+        </div>
+
         <div class="logo m-auto d-flex justify-content-center align-items-center">
             <img src="./assets/images/Fincontrol.png" alt="" srcset="" width="150px">
         </div>
@@ -697,13 +808,13 @@
             const saldo = totalReceitas - totalDespesas;
             const saldoElement = document.getElementById("saldo");
             saldoElement.textContent = `R$ ${formatarValorParaExibicao(saldo)}`;
-           
-            
+
+
             if (saldo < 0) {
-                saldoElement.classList.remove("text-success");   
+                saldoElement.classList.remove("text-success");
                 saldoElement.classList.add("text-danger");
             } else {
-                saldoElement.classList.remove("text-danger");   
+                saldoElement.classList.remove("text-danger");
                 saldoElement.classList.add("text-success");
             }
 
@@ -1023,6 +1134,20 @@
 
     <script>
         feather.replace();
+    </script>
+
+    <script>
+
+
+
+        document.querySelector('.fab-button').addEventListener('click', function () {
+            var button = document.querySelector('.fab-button');
+            var options = document.querySelector('.fab-options');
+
+            button.classList.toggle('active');
+            options.classList.toggle('active');
+        });
+
     </script>
 
     <!-- Integração do jQuery e do Bootstrap JS -->
