@@ -373,10 +373,11 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col">
-                                <span class=" font-weight-bold card-title text-uppercase text-muted mb-0">Total de Receitas</span>
+                                <span class=" font-weight-bold card-title text-uppercase text-muted mb-0">Total de
+                                    Receitas</span>
                                 <p class="h5  card-text font-weight-bold mb-0" id="totalReceitas">R$ 0,00</p>
                             </div>
-                            <div class="col-auto"> 
+                            <div class="col-auto">
                                 <div class="icon icon-shape bg-info text-white rounded-circle shadow">
                                     <i class="fa-regular fa-dollar-sign"></i>
                                 </div>
@@ -396,7 +397,8 @@
 
                         <div class="row">
                             <div class="col">
-                                <span class="font-weight-bold card-title text-uppercase text-muted mb-0">Total de Despesas</span>
+                                <span class="font-weight-bold card-title text-uppercase text-muted mb-0">Total de
+                                    Despesas</span>
                                 <p class="h5 font-weight-bold mb-0" id="totalDespesas">R$ 0,00</p>
                             </div>
                             <div class="col-auto">
@@ -421,7 +423,7 @@
                         <div class="row">
                             <div class="col">
                                 <span class="font-weight-bold card-title text-uppercase text-muted mb-0">Balanço</span>
-                                    <p class="h5 font-weight-bold mb-0" id="saldo">R$ 0,00</p>
+                                <p class="h5 font-weight-bold mb-0" id="saldo">R$ 0,00</p>
                             </div>
                             <div class="col-auto">
                                 <div class="icon icon-shape bg-success text-white rounded-circle shadow">
@@ -611,7 +613,7 @@
                                
                         </div>
                        
-                        <div class="col-auto d-flex">
+                        <div class="col-auto d-flex d-print-none">
                             
                             <div class="mt-2 m-sm-auto">
                                 <button class="btn btn-info btn-sm" onclick="editarReceita('${receita.nome}')">Editar</button>
@@ -658,7 +660,7 @@
                                     </div>
                                    
                                 </div>
-                                <div class="m-auto col-md-3 mb-0 ">
+                                <div class="m-auto col-md-3 mb-0  ">
                                    
                                     <div class="text-md-center">
                                         <span class="text-md-center d-md-none">Status:</span>
@@ -669,9 +671,9 @@
                                
                         </div>
                        
-                        <div class="col-auto d-flex">
+                        <div class="col-auto d-flex d-print-none">
                             
-                            <div class="mt-2 m-sm-auto">
+                            <div class="mt-2 m-sm-auto ">
                                 <button class="btn btn-info btn-sm" onclick="editarDespesa('${despesa.nome}')">Editar</button>
                                 <button class="btn btn-danger btn-sm" onclick="excluirDespesa('${despesa.nome}')">Excluir</button>
                             </div>
@@ -693,7 +695,17 @@
 
             // Calcular saldo
             const saldo = totalReceitas - totalDespesas;
-            document.getElementById("saldo").textContent = `R$ ${formatarValorParaExibicao(saldo)}`;
+            const saldoElement = document.getElementById("saldo");
+            saldoElement.textContent = `R$ ${formatarValorParaExibicao(saldo)}`;
+           
+            
+            if (saldo < 0) {
+                saldoElement.classList.remove("text-success");   
+                saldoElement.classList.add("text-danger");
+            } else {
+                saldoElement.classList.remove("text-danger");   
+                saldoElement.classList.add("text-success");
+            }
 
             // Exemplo de uso:
             const totalReceitasPagas = calcularSomaValoresReceitas('Concluído');
@@ -886,7 +898,7 @@
         }
 
 
-        
+
 
         // Exemplo de uso da biblioteca
         function exportarDados() {
