@@ -3,6 +3,8 @@ const CACHE_TIME = 5 * 24 * 60 * 60 * 1000; // 5 dias em milissegundos
 
 const urlsToCache = [
   "/fincontrol/",
+  "/fincontrol/login.html",
+  "/fincontrol/register.html",
   "/fincontrol/index.html",
   //"/fincontrol/fallback.html",
   "/fincontrol/icon.png"
@@ -35,7 +37,7 @@ self.addEventListener("fetch", (event) => {
           return networkResponse;
         })
         .catch(() => {
-          return caches.match("/fincontrol/fallback.html");
+          return caches.match("/fincontrol/index.html");
         });
     })
   );

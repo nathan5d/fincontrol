@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="./favicon.ico">
+
+    <title>Template de login, usando Bootstrap.</title>
+
+    <!-- Integração do Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Estilos customizados para esse template -->
+    <link href="./assets/css/login.css" rel="stylesheet">
+
+    <script src="./vendor/ToastyKit/dist/js/toastykit.js"></script>
+    <link href="./vendor/ToastyKit/dist/css/toastykit.css" rel="stylesheet">
+
+    <!-- Firebase config -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+
+
+</head>
+
+<body class="text-center">
+    <form class="form-signin" id="loginForm">
+        <img class="mb-4" src="./assets/images/Fincontrol.png" alt="" width="150" height="150">
+        <h1 class="h3 mb-3 font-weight-normal">Faça login</h1>
+        <label for="email" class="sr-only">Endereço de email</label>
+        <input type="email" id="email" class="form-control" placeholder="Seu email" required autofocus>
+        <label for="password" class="sr-only">Senha</label>
+        <input type="password" id="password" class="form-control" placeholder="Senha" required>
+        <label for="token" class="sr-only">Token de Convidado</label>
+        <input type="text" id="token" class="form-control" placeholder="Token de Convidado">
+
+        <div class="checkbox mb-3">
+            <label>
+                <input type="checkbox" id="rememberMe"> Lembrar de mim
+            </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+        <p class="mt-5 mb-3 text-muted">&copy; 2024 Fincontrol</p>
+        <p>Ainda não tem uma conta? <a href="./register.html">Registre-se</a></p>
+    </form>
+
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyC1DegxDNN099jZjsnN2YBWZuE6u_gG16Y",
+            authDomain: "fincontrol-3b9fa.firebaseapp.com",
+            projectId: "fincontrol-3b9fa",
+            storageBucket: "fincontrol-3b9fa.appspot.com",
+            messagingSenderId: "521919064536",
+            appId: "1:521919064536:web:7662b273b48cbcbdebeaad"
+        };
+
+        // Inicialização do Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(app);
+        const auth = firebase.auth(app);
+
+        // Verifica se o usuário já está logado
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // Redireciona o usuário para a página principal
+                // window.location.href = "./index.html";
+            }
+        });
+
+        document.getElementById("loginForm").addEventListener("submit", async function (event) {
+            event.preventDefault(); // Impede o envio padrão do formulário
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const rememberMe = document.getElementById("rememberMe").checked;
+
+            try {
+                const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+
+                // Obter o token da URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const token = urlParams.get('token');
+
+                const uid = userCredential.user.uid;
+                if (token) {
+                    // Procurar o user.uid correspondente na coleção accessTokens
+                    const tokenDoc = await db.collection("accessTokens").doc(token).get();
+
+                    //if (tokenDoc.exists) {
+                    const userUid = tokenDoc.data().uid;
+
+                    // Salvar o user.uid do usuário que compartilhou o acesso no perfil do novo usuário
+                    await db.collection("users").doc(uid).set({
+                        sharedAccessUid: userUid
+                    });
+
+                    console.log("Usuário logado com sucesso e acesso compartilhado salvo.");
+                } else {
+                    console.log("Token inválido. Nenhum acesso compartilhado foi salvo.");
+                }
+
+                // Redireciona para a página principal após o login bem-sucedido
+                window.location.href = "./index.html";
+            } catch (error) {
+                console.log(error)
+                // Exibir mensagem de erro no toast
+                const errorMessage = getErrorMessageFromCode(error.code);
+                toast.show('Erro', errorMessage);
+            }
+        });
+
+        function getErrorMessageFromCode(code) {
+            switch (code) {
+                case 'auth/user-not-found':
+                    return 'Usuário não encontrado.';
+                case 'auth/wrong-password':
+                    return 'Senha incorreta.';
+                case 'auth/invalid-email':
+                    return 'Endereço de e-mail inválido.';
+                // Outros códigos de erro e suas mensagens
+                default:
+                    return 'Ocorreu um erro ao fazer login. Por favor, tente novamente.';
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
