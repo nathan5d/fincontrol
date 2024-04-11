@@ -722,12 +722,26 @@
             if (user) {
                 // Chama a função de atualização se o usuário estiver autenticado
                 user = user
+
                 atualizarExibicao();
             } else {
                 console.error("Usuário não autenticado.");
                 // Aqui você pode lidar com a situação de usuário não autenticado, como redirecionar para a página de login
             }
         });
+
+        async function getAccessUid() {
+            const user = firebase.auth().currentUser;
+            const uid = user.uid;
+
+            // Obter o documento do usuário
+            const userDoc = await db.collection("users").doc(uid).get();
+            const userData = userDoc.data();
+
+            // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
+            return (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
+        }
+
 
         // Função para adicionar receita
         async function adicionarReceita() {
@@ -741,15 +755,7 @@
             if (nome && data && valor && statusReceita) {
                 // Adicionar os dados ao Firestore
 
-                const user = firebase.auth().currentUser;
-                const uid = user.uid;
-
-                // Obter o documento do usuário
-                const userDoc = await db.collection("users").doc(uid).get();
-                const userData = userDoc.data();
-
-                // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
-                const accessUid = (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
+                const accessUid = await getAccessUid();
 
                 // Usar o accessUid para acessar o banco de dados
                 db.collection("users").doc(accessUid).collection("receitas").add({
@@ -793,15 +799,7 @@
             // Verificar se os campos obrigatórios estão preenchidos
             if (nome && data && valor && categoria && statusDespesa) {
                 // Adicionar os dados ao Firestore
-                const user = firebase.auth().currentUser;
-                const uid = user.uid;
-
-                // Obter o documento do usuário
-                const userDoc = await db.collection("users").doc(uid).get();
-                const userData = userDoc.data();
-
-                // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
-                const accessUid = (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
+                const accessUid = await getAccessUid();
 
                 // Usar o accessUid para acessar o banco de dados
                 db.collection("users").doc(accessUid).collection("despesas").add({
@@ -1155,15 +1153,7 @@
                 const statusReceita = document.getElementById("editStatusReceita").value;
 
                 // Atualizar os dados da receita no Firestore
-                const user = firebase.auth().currentUser;
-                const uid = user.uid;
-
-                // Obter o documento do usuário
-                const userDoc = await db.collection("users").doc(uid).get();
-                const userData = userDoc.data();
-
-                // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
-                const accessUid = (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
+                const accessUid = await getAccessUid();
 
                 // Usar o accessUid para acessar o banco de dados
                 db.collection("users").doc(accessUid).collection("receitas").doc(itemParaEditar).update({ nome, data, valor, categoria, status: statusReceita })
@@ -1190,15 +1180,7 @@
                 const statusDespesa = document.getElementById("editStatusDespesa").value;
 
                 // Atualizar os dados da despesa no Firestore
-                const user = firebase.auth().currentUser;
-                const uid = user.uid;
-
-                // Obter o documento do usuário
-                const userDoc = await db.collection("users").doc(uid).get();
-                const userData = userDoc.data();
-
-                // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
-                const accessUid = (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
+                const accessUid = await getAccessUid();
 
                 // Usar o accessUid para acessar o banco de dados
                 db.collection("users").doc(accessUid).collection("despesas").doc(itemParaEditar).update({ nome, data, valor, categoria, status: statusDespesa })
@@ -1349,15 +1331,7 @@
                 dados.despesas.forEach(despesa => despesa.data = dataFormatada);
 
                 // Adicionar os dados ao Firestore
-                const user = firebase.auth().currentUser;
-                const uid = user.uid;
-
-                // Obter o documento do usuário
-                const userDoc = await db.collection("users").doc(uid).get();
-                const userData = userDoc.data();
-
-                // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
-                const accessUid = (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
+                const accessUid = await getAccessUid();
 
                 // Usar o accessUid para acessar o banco de dados
                 const receitasRef = db.collection("users").doc(accessUid).collection("receitas");
