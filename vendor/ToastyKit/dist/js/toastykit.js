@@ -24,7 +24,7 @@ var toast = {
         btnClose.setAttribute('type', 'button');
         btnClose.classList.add('btn-close', 'ms-auto');
         btnClose.setAttribute('aria-label', 'Fechar');
-        btnClose.innerHTML = '<span aria-hidden="true">&times;</span>';
+        btnClose.innerHTML = '<span>&times;</span>';
 
         toastHeader.appendChild(strong);
         toastHeader.appendChild(btnClose);
@@ -45,7 +45,7 @@ var toast = {
         this.nextToastPosition += toast.offsetHeight + 10;
 
          // Remove o Toast após 3 segundos
-         setTimeout(function () {
+        setTimeout(function () {
             toast.classList.remove('show');
             setTimeout(function () {
                 toast.remove();

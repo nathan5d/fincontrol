@@ -58,6 +58,8 @@
 }
 
 .btn-close {
+  width: 20px;
+  height: 20px;
   border: none;
   border-radius: 20px;
 }

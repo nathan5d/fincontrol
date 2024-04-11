@@ -50,6 +50,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         // Configuracao do Firebase
@@ -347,7 +348,7 @@
         <!-- Modal para editar receitas -->
         <div class="modal fade" id="modalEditarReceita" tabindex="-1" role="dialog"
             aria-labelledby="modalEditarReceitaLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalEditarReceitaLabel">Editar Receita</h5>
@@ -403,7 +404,7 @@
         <!-- Modal para editar despesas -->
         <div class="modal fade" id="modalEditarDespesa" tabindex="-1" role="dialog"
             aria-labelledby="modalEditarDespesaLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalEditarDespesaLabel">Editar Despesa</h5>
@@ -457,7 +458,7 @@
         <!-- Modal para adicionar receitas -->
         <div class="modal fade" id="modalReceita" tabindex="-1" role="dialog" aria-labelledby="modalReceitaLabel"
             aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalReceitaLabel">Adicionar Receita</h5>
@@ -513,7 +514,7 @@
         <!-- Modal para adicionar despesas -->
         <div class="modal fade" id="modalDespesa" tabindex="-1" role="dialog" aria-labelledby="modalDespesaLabel"
             aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalDespesaLabel">Adicionar Despesa</h5>
@@ -734,12 +735,31 @@
             const user = firebase.auth().currentUser;
             const uid = user.uid;
 
-            // Obter o documento do usuário
-            const userDoc = await db.collection("users").doc(uid).get();
-            const userData = userDoc.data();
+            // Obter o token da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            if (token) {
+                // Procurar o user.uid correspondente na coleção accessTokens
+                const tokenDoc = await db.collection("accessTokens").doc(token).get();
 
-            // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
-            return (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
+                //if (tokenDoc.exists) {
+                const userUid = tokenDoc.data().uid;
+                console.log(userUid);
+                console.log('usuario:' + uid, 'Shared:' + userUid)
+                if (uid != userUid) {
+                    return userUid;
+                }
+
+
+
+            } else {
+                // Obter o documento do usuário
+                const userDoc = await db.collection("users").doc(uid).get();
+                const userData = userDoc.data();
+
+                // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
+                return (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
+            }
         }
 
 
@@ -838,17 +858,7 @@
             // Exibir a tela de carregamento
             document.getElementById('loadingScreen').style.display = 'flex';
 
-            // Adicionar os dados ao Firestore
-            const user = firebase.auth().currentUser;
-            const uid = user.uid;
-
-            // Obter o documento do usuário
-            const userDoc = await db.collection("users").doc(uid).get();
-            const userData = userDoc.data();
-
-            // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
-            const accessUid = (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
-
+            const accessUid = await getAccessUid();
             try {
                 // Limpar listas
                 listaReceitas.innerHTML = '';
@@ -1022,16 +1032,7 @@
         // Função para editar receita por ID
         async function editarReceita(id) {
 
-            const user = firebase.auth().currentUser;
-            const uid = user.uid;
-
-            // Obter o documento do usuário
-            const userDoc = await db.collection("users").doc(uid).get();
-            const userData = userDoc.data();
-
-            // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
-            const accessUid = (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
-
+            const accessUid = await getAccessUid();
             // Usar o accessUid para acessar o banco de dados
             db.collection("users").doc(accessUid).collection("receitas").doc(id).get()
                 .then((doc) => {
@@ -1061,16 +1062,7 @@
 
         // Função para editar despesa por ID
         async function editarDespesa(id) {
-            const user = firebase.auth().currentUser;
-            const uid = user.uid;
-
-            // Obter o documento do usuário
-            const userDoc = await db.collection("users").doc(uid).get();
-            const userData = userDoc.data();
-
-            // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
-            const accessUid = (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
-
+            const accessUid = await getAccessUid();
             // Usar o accessUid para acessar o banco de dados
             db.collection("users").doc(accessUid).collection("despesas").doc(id).get()
                 .then((doc) => {
@@ -1099,48 +1091,68 @@
         }
         // Função para excluir receita por ID
         async function excluirReceita(id) {
-            const user = firebase.auth().currentUser;
-            const uid = user.uid;
-
-            // Obter o documento do usuário
-            const userDoc = await db.collection("users").doc(uid).get();
-            const userData = userDoc.data();
-
-            // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
-            const accessUid = (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
-
+            const accessUid = await getAccessUid();
             // Usar o accessUid para acessar o banco de dados
-            db.collection("users").doc(accessUid).collection("receitas").doc(id).delete()
-                .then(() => {
-                    console.log("Receita excluída com sucesso!");
-                    atualizarExibicao();
-                })
-                .catch((error) => {
-                    console.error("Erro ao excluir receita:", error);
-                });
+
+            Swal.fire({
+                title: "Deseja remover receita?",
+                text: "Deseja remover receita?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sim, remova!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    db.collection("users").doc(accessUid).collection("receitas").doc(id).delete()
+                        .then(() => {
+                            Swal.fire({
+                                title: "Excluído!",
+                                text: "A ação não pode ser desfeita.",
+                                icon: "success"
+                            });
+                            atualizarExibicao();
+                        })
+                        .catch((error) => {
+                            console.error("Erro ao excluir receita:", error);
+                        });
+
+                }
+            });
+
         }
 
         // Função para excluir despesa por ID
         async function excluirDespesa(id) {
-            const user = firebase.auth().currentUser;
-            const uid = user.uid;
-
-            // Obter o documento do usuário
-            const userDoc = await db.collection("users").doc(uid).get();
-            const userData = userDoc.data();
-
-            // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
-            const accessUid = (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
-
+            const accessUid = await getAccessUid();
             // Usar o accessUid para acessar o banco de dados
-            db.collection("users").doc(accessUid).collection("despesas").doc(id).delete()
-                .then(() => {
-                    console.log("Despesa excluída com sucesso!");
-                    atualizarExibicao();
-                })
-                .catch((error) => {
-                    console.error("Erro ao excluir despesa:", error);
-                });
+
+            Swal.fire({
+                title: "Exclusão",
+                text: "Deseja excluir o item?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sim, exclua!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    db.collection("users").doc(accessUid).collection("despesas").doc(id).delete()
+                        .then(() => {
+                            Swal.fire({
+                                title: "Excluído!",
+                                text: "A ação não pode ser desfeita.",
+                                icon: "success"
+                            });
+                            atualizarExibicao();
+                        })
+                        .catch((error) => {
+                            console.error("Erro ao excluir despesa:", error);
+                        });
+
+                }
+            });
+           
         }
 
         // Função para salvar a edição da receita por ID
@@ -1156,17 +1168,18 @@
                 const accessUid = await getAccessUid();
 
                 // Usar o accessUid para acessar o banco de dados
-                db.collection("users").doc(accessUid).collection("receitas").doc(itemParaEditar).update({ nome, data, valor, categoria, status: statusReceita })
+               
+                    db.collection("users").doc(accessUid).collection("receitas").doc(itemParaEditar).update({ nome, data, valor, categoria, status: statusReceita })
                     .then(() => {
-                        console.log("Receita atualizada com sucesso!");
-                        // Atualizar a exibição
-                        atualizarExibicao();
-                        // Fechar modal de edição
-                        $('#modalEditarReceita').modal('hide');
-                    })
-                    .catch((error) => {
-                        console.error("Erro ao atualizar receita:", error);
-                    });
+                            toast.show('Atualizar', 'Item atualizado com sucesso!')
+                            $('#modalEditarReceita').modal('hide');
+                            atualizarExibicao();
+                        })
+                        .catch((error) => {
+                            console.error("Erro ao atualizar despesa:", error);
+                        });
+
+                
             }
         }
 
@@ -1185,7 +1198,7 @@
                 // Usar o accessUid para acessar o banco de dados
                 db.collection("users").doc(accessUid).collection("despesas").doc(itemParaEditar).update({ nome, data, valor, categoria, status: statusDespesa })
                     .then(() => {
-                        console.log("Despesa atualizada com sucesso!");
+                        toast.show('Atualizar', 'Item atualizado com sucesso!')
                         // Atualizar a exibição
                         atualizarExibicao();
                         // Fechar modal de edição
@@ -1200,16 +1213,7 @@
 
         // Função para calcular a soma dos valores de receitas com base no status
         async function calcularSomaValoresReceitas(status) {
-            const user = firebase.auth().currentUser;
-            const uid = user.uid;
-
-            // Obter o documento do usuário
-            const userDoc = await db.collection("users").doc(uid).get();
-            const userData = userDoc.data();
-
-            // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
-            const accessUid = (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
-
+            const accessUid = await getAccessUid();
 
             try {
                 let total = 0;
@@ -1228,16 +1232,7 @@
 
         // Função para calcular a soma dos valores de despesas com base no status
         async function calcularSomaValoresDespesas(status) {
-            const user = firebase.auth().currentUser;
-            const uid = user.uid;
-
-            // Obter o documento do usuário
-            const userDoc = await db.collection("users").doc(uid).get();
-            const userData = userDoc.data();
-
-            // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
-            const accessUid = (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
-
+            const accessUid = await getAccessUid();
 
             try {
                 let total = 0;
@@ -1256,16 +1251,7 @@
 
         // Função para calcular a quantidade de despesas com base no status
         async function calcularQuantidadeDespesas(status) {
-            const user = firebase.auth().currentUser;
-            const uid = user.uid;
-
-            // Obter o documento do usuário
-            const userDoc = await db.collection("users").doc(uid).get();
-            const userData = userDoc.data();
-
-            // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
-            const accessUid = (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
-
+            const accessUid = await getAccessUid();
             // Usar o accessUid para acessar o banco de dados
             try {
                 let quantidade = 0;
