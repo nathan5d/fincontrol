@@ -3,6 +3,7 @@ var toast = {
 
     nextToastPosition: 10,
     show: function (titulo, mensagem) {
+        var self = this; // Armazena a referência ao this
         var toast = document.createElement('div');
         toast.classList.add('toast');
         toast.setAttribute('role', 'alert');
@@ -43,14 +44,14 @@ var toast = {
         // Ajusta a posição vertical do próximo toast
         this.nextToastPosition += toast.offsetHeight + 10;
 
-        // Remove o Toast após 3 segundos
-        setTimeout(function () {
+         // Remove o Toast após 3 segundos
+         setTimeout(function () {
             toast.classList.remove('show');
             setTimeout(function () {
                 toast.remove();
                 // Verifica se não há mais toasts visíveis e redefine a posição inicial
                 if (document.querySelectorAll('.toast.show').length === 0) {
-                    this.nextToastPosition = 10;
+                    self.nextToastPosition = 10; // Usa self em vez de this
                 }
             }, 750); // Aguarda a transição terminar antes de remover o Toast
         }, 3000);
@@ -62,7 +63,7 @@ var toast = {
                 toast.remove();
                 // Verifica se não há mais toasts visíveis e redefine a posição inicial
                 if (document.querySelectorAll('.toast.show').length === 0) {
-                    this.nextToastPosition = 10;
+                    self.nextToastPosition = 10; // Usa self em vez de this
                 }
             }, 750); // Aguarda a transição terminar antes de remover o Toast
         });

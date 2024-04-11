@@ -8,7 +8,7 @@
     <meta name="author" content="">
     <link rel="icon" href="./favicon.ico">
 
-    <title>Template de login, usando Bootstrap.</title>
+    <title>Login | Fincontrol</title>
 
     <!-- Integração do Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -36,17 +36,18 @@
         <input type="email" id="email" class="form-control" placeholder="Seu email" required autofocus>
         <label for="password" class="sr-only">Senha</label>
         <input type="password" id="password" class="form-control" placeholder="Senha" required>
-        <label for="token" class="sr-only">Token de Convidado</label>
-        <input type="text" id="token" class="form-control" placeholder="Token de Convidado">
 
-        <div class="checkbox mb-3">
+        <div class="checkbox mb-0">
             <label>
                 <input type="checkbox" id="rememberMe"> Lembrar de mim
             </label>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
-        <p class="mt-5 mb-3 text-muted">&copy; 2024 Fincontrol</p>
+        <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Login</button>
+
+
         <p>Ainda não tem uma conta? <a href="./register.html">Registre-se</a></p>
+
+        <p class="mt-5 mb-3 text-muted">&copy; 2024 Fincontrol</p>
     </form>
 
 
@@ -70,9 +71,11 @@
         auth.onAuthStateChanged((user) => {
             if (user) {
                 // Redireciona o usuário para a página principal
-                // window.location.href = "./index.html";
+                window.location.href = "./index.html";
             }
         });
+
+
 
         document.getElementById("loginForm").addEventListener("submit", async function (event) {
             event.preventDefault(); // Impede o envio padrão do formulário
@@ -89,19 +92,26 @@
                 const token = urlParams.get('token');
 
                 const uid = userCredential.user.uid;
+
                 if (token) {
                     // Procurar o user.uid correspondente na coleção accessTokens
                     const tokenDoc = await db.collection("accessTokens").doc(token).get();
 
                     //if (tokenDoc.exists) {
                     const userUid = tokenDoc.data().uid;
+                    console.log('usuario:' + uid, 'Shared:' + userUid)
+                    if (uid != userUid) {
+                        // Salvar o user.uid do usuário que compartilhou o acesso no perfil do novo usuário
+                        await db.collection("users").doc(uid).set({
+                            sharedAccessUid: userUid
+                        });
+                        toast.show('Login',"Usuário logado com sucesso e acesso compartilhado salvo.");
+                    }else{
+                        toast.show('Login',"Usuário logado com sucesso como proprietário.");
+                    }
 
-                    // Salvar o user.uid do usuário que compartilhou o acesso no perfil do novo usuário
-                    await db.collection("users").doc(uid).set({
-                        sharedAccessUid: userUid
-                    });
 
-                    console.log("Usuário logado com sucesso e acesso compartilhado salvo.");
+                   
                 } else {
                     console.log("Token inválido. Nenhum acesso compartilhado foi salvo.");
                 }
@@ -127,6 +137,17 @@
                 // Outros códigos de erro e suas mensagens
                 default:
                     return 'Ocorreu um erro ao fazer login. Por favor, tente novamente.';
+            }
+        }
+
+
+        window.onload = async function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            // Adicionar o token ao link de registro, se disponível
+            const registerLink = document.querySelector('a[href="./register.html"]');
+            if (registerLink && token) {
+                registerLink.href = `register.html?token=${token}`;
             }
         }
 

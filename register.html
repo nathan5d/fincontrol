@@ -38,12 +38,12 @@
         <input type="email" id="email" class="form-control" placeholder="Seu email" required autofocus>
         <label for="password" class="sr-only">Senha</label>
         <input type="password" id="password" class="form-control" placeholder="Senha" required>
-        <label for="token" class="sr-only">Token de Convidado</label>
-        <input type="text" id="token" class="form-control" placeholder="Token de Convidado" readonly
-            aria-readonly="true">
 
 
-        <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">Registrar</button>
+        <button class="btn btn-lg btn-primary btn-block mt-3 mb-3" type="submit">Registrar</button>
+
+
+        <p>Já tem uma conta? Faça <a href="./login.html">Login</a></p>
         <p class="mt-5 mb-3 text-muted">&copy; 2024 Fincontrol</p>
     </form>
 
@@ -141,17 +141,12 @@
 
 
         window.onload = async function () {
-            // Obter o token da URL
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
-            console.log(token);
-
-            const tokenInput = document.getElementById("token");
-
-
-
-            if (token) {
-                tokenInput.value = token;
+            // Adicionar o token ao link de registro, se disponível
+            const registerLink = document.querySelector('a[href="./login.html"]');
+            if (registerLink && token) {
+                registerLink.href = `login.html?token=${token}`;
             }
         }
 

@@ -292,7 +292,7 @@
         <span>Olá, <span id="userInfo"></span>! <a href="#" class="text-info" onclick="logout()">Sair</a></span>
     </div>
 
-   
+
     <div class="container">
         <div id="offline-message" class="offline-message">
             Você está visualizando a versão offline. Verifique sua conexão.
@@ -680,18 +680,18 @@
 
 
 
-       
+
 
     </div>
     <div class="container-fluid bg-info>
-        <div class="row">
-            <div class="col-md-6 offset-md-3 mt-5">
-                <h2>Compartilhar Banco de Dados</h2>
-                <p>Copie o link abaixo e compartilhe com quem deseja ter acesso ao seu banco de dados:</p>
-                <input type="text" class="form-control mb-2" id="shareLink" value="" readonly>
-                <button class="btn btn-primary" onclick="copyShareLink()">Gerar e Copiar Link</button>
-            </div>
+        <div class=" row">
+        <div class="col-md-6 offset-md-3 mt-5">
+            <h2>Compartilhar Banco de Dados</h2>
+            <p>Copie o link abaixo e compartilhe com quem deseja ter acesso ao seu banco de dados:</p>
+            <input type="text" class="form-control mb-2" id="shareLink" value="" readonly>
+            <button class="btn btn-primary" onclick="copyShareLink()">Gerar e Copiar Link</button>
         </div>
+    </div>
     </div>
     <div id="loadingScreen">
         <div class="row">
@@ -864,7 +864,7 @@
                 db.collection("users").doc(user.uid).get().then((doc) => {
                     if (doc.exists) {
                         // Exibir o sharedAccessUid
-                       // console.log('Shared', doc.data().sharedAccessUid);
+                        // console.log('Shared', doc.data().sharedAccessUid);
                     } else {
                         console.log("Nenhum documento correspondente!");
                     }
@@ -1492,16 +1492,21 @@
     <script>
 
 
-        // Atualizar a exibição do nome do usuário ao carregar a página
+        // Verifica se está autenticado e Exibe o nome do usuario
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
 
                 // O usuário está autenticado, exiba o nome
                 document.getElementById("userInfo").textContent = user.displayName ? user.displayName : 'Usuário';
-               
+
             } else {
                 // O usuário não está autenticado, redirecione-o para a tela de login
-                window.location.href = "login.html";
+                // Obter o token da URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const token = urlParams.get('token');
+
+                const redrectLogin = token ? `login.html?token=${token}` : `login.html?token=${token}`
+                window.location.href = redrectLogin;
             }
         });
 
@@ -1556,7 +1561,7 @@
             shareLinkInput.select();
             document.execCommand("copy");
 
-            toast.show('Compartilhar',"Link copiado para a área de transferência!");
+            toast.show('Compartilhar', "Link copiado para a área de transferência!");
         }
 
         // Executar a função de geração do link de compartilhamento ao carregar a página
