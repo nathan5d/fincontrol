@@ -733,7 +733,7 @@
                     </div>
 
                 </div>
-               
+
 
             </div>
         </div>
@@ -925,7 +925,7 @@
 
                 // Adicionar listener para despesas
                 db.collection("users").doc(accessUid).collection("despesas")
-                    .onSnapshot((snapshot) => {
+                    .onSnapshot(async (snapshot) => {
                         snapshot.docChanges().forEach((change) => {
                             const despesa = change.doc.data();
                             const id = change.doc.id;
@@ -947,63 +947,65 @@
                                     //console.log(`A despesa com ID ${id} foi removida.`);
                                 }
                             }
+                            
                         });
+                        // Calcular e exibir os valores de receitas e despesas em seus respectivos cards
+                        const totalReceitasPagas = await calcularSomaValoresReceitas("Pago");
+                            const totalReceitasPendentes = await calcularSomaValoresReceitas("Pendente");
+
+                            const totalReceitas = (totalReceitasPagas + totalReceitasPendentes);
+
+                            const totalDespesasPagas = await calcularSomaValoresDespesas("Pago");
+                            const totalDespesasPendentes = await calcularSomaValoresDespesas("Pendente");
+
+                            const totalDespesas = (totalDespesasPagas + totalDespesasPendentes);
+
+                            const quantidadeDespesasPagas = await calcularQuantidadeDespesas("Pago");
+                            const quantidadeDespesasPendentes = await calcularQuantidadeDespesas("Pendente");
+
+                            // Atualizar os valores nos cards de receitas
+                            document.getElementById("totalReceitas").textContent = `R$ ${formatarValorParaExibicao(totalReceitas)}`;
+
+                            // Atualizar os valores nos cards de despesas
+                            document.getElementById("totalDespesas").innerText = `R$ ${formatarValorParaExibicao(totalDespesasPagas + totalDespesasPendentes)}`;
+
+                            // Calcular saldo
+                            const saldo = (totalReceitas) - (totalDespesasPagas + totalDespesasPendentes);
+                            document.getElementById("saldo").textContent = `R$ ${formatarValorParaExibicao(saldo)}`;
+
+                            // Verificar se o saldo é negativo e aplicar a classe correspondente
+                            if (saldo < 0) {
+                                document.getElementById("saldo").classList.add("saldo-negativo"); // Adiciona a classe "saldo-negativo"
+                            } else {
+                                document.getElementById("saldo").classList.remove("saldo-negativo"); // Remove a classe "saldo-negativo"
+                            }
+
+                            // Seleciona o primeiro span dentro do elemento com id "legendDespesas"
+                            document.querySelector('#legendReceitas span:nth-child(2)').textContent = totalReceitasPendentes ? `R$ ${formatarValorParaExibicao(totalReceitasPendentes)}` : `R$ ${formatarValorParaExibicao(totalReceitas)}`;
+                            document.querySelector('#legendReceitas span:nth-child(3)').textContent = `${totalReceitasPendentes ? 'pendente' : 'recebido'}`;
+
+                            // Atualizar a porcentagem de despesas pagas em relação ao total de despesas no card "legendDespesas"
+                            const percentualDespesasPagas = ((quantidadeDespesasPagas) / (quantidadeDespesasPagas + quantidadeDespesasPendentes)) * 100;
+                            if (totalReceitasPagas > 0) {
+                                document.querySelector('#legendDespesas span:nth-child(2)').textContent = `${percentualDespesasPagas.toFixed(2)}%`;
+                                document.querySelector('#legendDespesas span:nth-child(3)').textContent = ` das despesas já pagas`;
+                            } else {
+                                document.querySelector('#legendDespesas span:nth-child(2)').textContent = `R$ ${formatarValorParaExibicao(0)}`;
+                                document.querySelector('#legendDespesas span:nth-child(3)').textContent = ` receita`;
+                            }
+
+                            // Calcular a diferença entre o total de receitas pagas e o total de despesas pagas
+                            const diferencaReceitasDespesas = totalReceitasPagas - totalDespesasPagas;
+
+                            // Calcular a porcentagem da diferença em relação ao total de receitas pagas
+                            const percentualBalanco = (diferencaReceitasDespesas / totalReceitasPagas) * 100;
+
+                            // Atualizar a porcentagem de saldo no card "legendSaldo"
+                            document.querySelector('#legendSaldo span:nth-child(2)').textContent = `${percentualBalanco > 0 ? percentualBalanco.toFixed(2) : '0'}%`;
+                            document.querySelector('#legendSaldo span:nth-child(3)').textContent = `de saldo (R$ ${formatarValorParaExibicao(diferencaReceitasDespesas)})`;
+
                     });
 
-                // Calcular e exibir os valores de receitas e despesas em seus respectivos cards
-                const totalReceitasPagas = await calcularSomaValoresReceitas("Pago");
-                const totalReceitasPendentes = await calcularSomaValoresReceitas("Pendente");
-
-                const totalReceitas = (totalReceitasPagas + totalReceitasPendentes);
-
-                const totalDespesasPagas = await calcularSomaValoresDespesas("Pago");
-                const totalDespesasPendentes = await calcularSomaValoresDespesas("Pendente");
-
-                const totalDespesas = (totalDespesasPagas + totalDespesasPendentes);
-
-                const quantidadeDespesasPagas = await calcularQuantidadeDespesas("Pago");
-                const quantidadeDespesasPendentes = await calcularQuantidadeDespesas("Pendente");
-
-                // Atualizar os valores nos cards de receitas
-                document.getElementById("totalReceitas").textContent = `R$ ${formatarValorParaExibicao(totalReceitas)}`;
-
-                // Atualizar os valores nos cards de despesas
-                document.getElementById("totalDespesas").innerText = `R$ ${formatarValorParaExibicao(totalDespesasPagas + totalDespesasPendentes)}`;
-
-                // Calcular saldo
-                const saldo = (totalReceitas) - (totalDespesasPagas + totalDespesasPendentes);
-                document.getElementById("saldo").textContent = `R$ ${formatarValorParaExibicao(saldo)}`;
-
-                // Verificar se o saldo é negativo e aplicar a classe correspondente
-                if (saldo < 0) {
-                    document.getElementById("saldo").classList.add("saldo-negativo"); // Adiciona a classe "saldo-negativo"
-                } else {
-                    document.getElementById("saldo").classList.remove("saldo-negativo"); // Remove a classe "saldo-negativo"
-                }
-
-                // Seleciona o primeiro span dentro do elemento com id "legendDespesas"
-                document.querySelector('#legendReceitas span:nth-child(2)').textContent = totalReceitasPendentes ? `R$ ${formatarValorParaExibicao(totalReceitasPendentes)}` : `R$ ${formatarValorParaExibicao(totalReceitas)}`;
-                document.querySelector('#legendReceitas span:nth-child(3)').textContent = `${totalReceitasPendentes ? 'pendente' : 'recebido'}`;
-
-                // Atualizar a porcentagem de despesas pagas em relação ao total de despesas no card "legendDespesas"
-                const percentualDespesasPagas = ((quantidadeDespesasPagas) / (quantidadeDespesasPagas + quantidadeDespesasPendentes)) * 100;
-                if (totalReceitasPagas > 0) {
-                    document.querySelector('#legendDespesas span:nth-child(2)').textContent = `${percentualDespesasPagas.toFixed(2)}%`;
-                    document.querySelector('#legendDespesas span:nth-child(3)').textContent = ` das despesas já pagas`;
-                } else {
-                    document.querySelector('#legendDespesas span:nth-child(2)').textContent = `R$ ${formatarValorParaExibicao(0)}`;
-                    document.querySelector('#legendDespesas span:nth-child(3)').textContent = ` receita`;
-                }
-
-                // Calcular a diferença entre o total de receitas pagas e o total de despesas pagas
-                const diferencaReceitasDespesas = totalReceitasPagas - totalDespesasPagas;
-
-                // Calcular a porcentagem da diferença em relação ao total de receitas pagas
-                const percentualBalanco = (diferencaReceitasDespesas / totalReceitasPagas) * 100;
-
-                // Atualizar a porcentagem de saldo no card "legendSaldo"
-                document.querySelector('#legendSaldo span:nth-child(2)').textContent = `${percentualBalanco > 0 ? percentualBalanco.toFixed(2) : '0'}%`;
-                document.querySelector('#legendSaldo span:nth-child(3)').textContent = `de saldo (R$ ${formatarValorParaExibicao(diferencaReceitasDespesas)})`;
 
                 // Ocultar a tela de carregamento quando os dados terminarem de carregar
 
