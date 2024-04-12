@@ -883,11 +883,7 @@
             // Exibir a tela de carregamento
             document.getElementById('loadingScreen').style.display = 'none';
 
-            // Para exibir o esqueleto de carregamento
-            // Para exibir o esqueleto de carregamento
-            document.querySelectorAll('.skeleton').forEach(element => {
-                element.classList.add('loading');
-            });
+
 
 
             const accessUid = await getAccessUid();
@@ -897,52 +893,75 @@
                 listaDespesas.innerHTML = '';
 
                 // Adicionar listener para receitas
-                const receitasQuery = db.collection("users").doc(accessUid).collection("receitas").get();
+                db.collection("users").doc(accessUid).collection("receitas")
+                    .onSnapshot((snapshot) => {
+                        snapshot.docChanges().forEach((change) => {
+                            const receita = change.doc.data();
+                            const id = change.doc.id;
+
+                            if (change.type === "added") {
+                                const item = criarItemLista(receita, "Receita", id);
+                                listaReceitas.appendChild(item);
+                            } else if (change.type === "modified") {
+                                const itemExistente = listaReceitas.querySelector(`[data-id="${id}"]`);
+                                if (itemExistente) {
+                                    itemExistente.innerHTML = criarItemLista(receita, "Receita", id).innerHTML;
+                                }
+                            } else if (change.type === "removed") {
+                                const itemExistente = listaReceitas.querySelector(`[data-id="${id}"]`);
+                                if (itemExistente) {
+                                    listaReceitas.removeChild(itemExistente);
+                                }
+                            }
+
+                            calcularValores(); // Chamar a função calcularValores() após cada mudança nas receitas
+                        });
+                    });
 
                 // Adicionar listener para despesas
-                const despesasQuery = db.collection("users").doc(accessUid).collection("despesas").get();
+                db.collection("users").doc(accessUid).collection("despesas")
+                    .onSnapshot((snapshot) => {
+                        snapshot.docChanges().forEach((change) => {
+                            const despesa = change.doc.data();
+                            const id = change.doc.id;
 
-                // Esperar que ambas as consultas sejam concluídas
-                const [receitasSnapshot, despesasSnapshot] = await Promise.all([receitasQuery, despesasQuery]);
+                            if (change.type === "added") {
+                                const item = criarItemLista(despesa, "Despesa", id);
+                                listaDespesas.appendChild(item);
+                            } else if (change.type === "modified") {
+                                const itemExistente = listaDespesas.querySelector(`[data-id="${id}"]`);
+                                if (itemExistente) {
+                                    itemExistente.innerHTML = criarItemLista(despesa, "Despesa", id).innerHTML;
+                                }
+                            } else if (change.type === "removed") {
+                                const itemExistente = listaDespesas.querySelector(`[data-id="${id}"]`);
+                                if (itemExistente) {
+                                    listaDespesas.removeChild(itemExistente);
+                                }
+                            }
 
-                receitasSnapshot.forEach(doc => {
-                    try {
-                        const receita = doc.data();
-                        const id = doc.id;
-                        const item = criarItemLista(receita, "Receita", id);
-                        listaReceitas.appendChild(item);
-                        calcularValores();
-                    } catch (error) {
-                        console.error(`Erro ao processar a receita com ID ${doc.id}:`, error);
-                    }
-                });
+                            calcularValores(); // Chamar a função calcularValores() após cada mudança nas despesas
+                        });
+                    });
 
-                despesasSnapshot.forEach(doc => {
-                    try {
-                        const despesa = doc.data();
-                        const id = doc.id;
-                        const item = criarItemLista(despesa, "Despesa", id);
-                        listaDespesas.appendChild(item);
-                        calcularValores();
-                    } catch (error) {
-                        console.error(`Erro ao processar a despesa com ID ${doc.id}:`, error);
-                    }
-                });
 
 
 
                 // Ocultar a tela de carregamento quando os dados terminarem de carregar
 
                 //document.querySelector('.skeleton').classList.remove('loading');
-                // Para ocultar o esqueleto de carregamento quando a operação estiver concluída
-                document.querySelectorAll('.skeleton').forEach(element => {
-                    element.classList.remove('loading');
-                });
+                x
             } catch (error) {
                 console.error("Erro ao atualizar exibição:", error);
             }
         }
         async function calcularValores() {
+            // Para exibir o esqueleto de carregamento
+            // Para exibir o esqueleto de carregamento
+            document.querySelectorAll('.skeleton').forEach(element => {
+                element.classList.add('loading');
+            });
+
             // Calcular e exibir os valores de receitas e despesas em seus respectivos cards
             const totalReceitasPagas = await calcularSomaValoresReceitas("Pago");
             const totalReceitasPendentes = await calcularSomaValoresReceitas("Pendente");
@@ -998,6 +1017,11 @@
             document.querySelector('#legendSaldo span:nth-child(2)').textContent = `${percentualBalanco > 0 ? percentualBalanco.toFixed(2) : '0'}%`;
             document.querySelector('#legendSaldo span:nth-child(3)').textContent = `de saldo (R$ ${formatarValorParaExibicao(diferencaReceitasDespesas)})`;
 
+            // Para exibir o esqueleto de carregamento
+            // Para exibir o esqueleto de carregamento
+            document.querySelectorAll('.skeleton').forEach(element => {
+                element.classList.remove('loading');
+            });
         }
 
         function criarItemLista(item, tipo, id) {
@@ -1014,14 +1038,17 @@
                     <div class="row">
                         <div class="col-md-3 h5 font-weight-bold mb-0">
                             <div>${item.nome}</div>
-                            <div class="${tipo === 'Receita' ? 'text-success' : 'text-danger'}"> R$ ${formatarValorParaExibicao(item.valor)}</div>
+                            <div class="skeleton ${tipo === 'Receita' ? 'text-success' : 'text-danger'}"> R$ ${formatarValorParaExibicao(item.valor)}</div>
                         </div>
-                        <div class="m-auto col-md-3 mb-0">
+                        
+                        <div class="m-auto col-md-3 mb-0" ${tipo === 'Receita' ? 'style="display:none"' : ''}>
                             <div class="text-md-center">
                                 <span class="text-md-center d-md-none">Categoria:</span>
                                 <button class="btn btn-sm py-0 px-2 btn-secondary" onclick="${tipo === 'Receita' ? `editarReceita('${id}')` : `editarDespesa('${id}')`}">${item.categoria ? item.categoria : 'Sem categoria'}</button>
                             </div>
                         </div>
+                        
+                       
                         <div class="m-auto col-md-3 mb-0">
                             <div class="text-md-center">
                                 <span class="text-md-center d-md-none">Data:</span>
