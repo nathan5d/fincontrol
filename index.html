@@ -1015,7 +1015,6 @@
                     listaDespesas.innerHTML = '';
 
                     const [ano, mes, dia] = mesAnoSelecionado.split('-');
-                    console.log(ano, mes, dia)
                     const dataInicio = `${ano}-${mes}-01T00:00:00.000Z`;
                     const ultimoDiaMes = new Date(ano, parseInt(mes), 0).getDate();
                     const dataFim = `${ano}-${mes}-${ultimoDiaMes.toString().padStart(2, '0')}T23:59:59.999Z`;
@@ -1235,7 +1234,6 @@
 
         function criarItemLista(item, tipo, id) {
 
-            console.log('tipo', tipo)
             const listItem = document.createElement('li');
             listItem.classList.add('list-group-item');
             // Adicionando o atributo data-id
