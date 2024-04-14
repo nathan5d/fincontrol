@@ -102,7 +102,7 @@
 
         body {
             color: var(--primary-color);
-            padding: 20px;
+
         }
 
 
@@ -323,12 +323,15 @@
 </head>
 
 <body>
-    <div class="user-info bg-light">
-        <span>Olá, <span id="userInfo"></span>! <a href="#" class="text-info" onclick="logout()">Sair</a></span>
+    <div class="p-0">
+        <div class="user-info bg-light m-2">
+            <span>Olá, <span id="userInfo"></span>! <a href="#" class="text-info" onclick="logout()">Sair</a></span>
+        </div>
     </div>
 
 
-    <div class="container">
+
+    <div class="container px-2">
         <div id="offline-message" class="offline-message">
             Você está visualizando a versão offline. Verifique sua conexão.
         </div>
@@ -729,15 +732,15 @@
 
 
     </div>
-    <div class="container-fluid bg-info>
-        <div class=" row">
-        <div class="col-md-6 offset-md-3 mt-5">
-            <h2>Compartilhar Banco de Dados</h2>
-            <p>Copie o link abaixo e compartilhe com quem deseja ter acesso ao seu banco de dados:</p>
-            <input type="text" class="form-control mb-2" id="shareLink" value="" readonly>
-            <button class="btn btn-primary" onclick="copyShareLink()">Gerar e Copiar Link</button>
+    <div class="container-fluid bg-light ">
+        <div class=" row ">
+            <div class="col-md-6 offset-md-3 mt-5 mb-5">
+                <h2>Compartilhar Banco de Dados</h2>
+                <p>Copie o link abaixo e compartilhe com quem deseja ter acesso ao seu banco de dados:</p>
+                <input type="text" class="form-control mb-2" id="shareLink" value="" readonly>
+                <button class="btn btn-primary" onclick="copyShareLink()">Gerar e Copiar Link</button>
+            </div>
         </div>
-    </div>
     </div>
     <div id="loadingScreen">
         <div class="row">
@@ -842,8 +845,6 @@
                         document.getElementById("valorReceitas").value = "";
                         document.getElementById("categoriaReceitas").value = "";
                         document.getElementById("statusReceitas").value = "";
-                        // Atualizar a exibição
-                        //atualizarExibicao();
                         // Fechar o modal
                         $('#modalReceitas').modal('hide');
                     }
@@ -889,7 +890,7 @@
                         // Atualizar a exibição
                         //atualizarExibicao();
                         // Fechar o modal
-                        $('#modalDespesa').modal('hide');
+                        $('#modalDespesas').modal('hide');
                     }
                 });
             } else {
@@ -970,10 +971,7 @@
                     const dataAtual = new Date();
                     const mesAtual = dataAtual.getMonth() + 1; // Os meses são baseados em zero, então somamos 1
                     const mesAnoAtual = `${dataAtual.getFullYear()}-${mesAtual.toString().padStart(2, '0')}`;
-                    if (!meses.includes(mesAnoAtual)) {
-                        meses.push(mesAnoAtual);
-                    }
-
+                    
                     // Atualizar o select com os meses disponíveis
                     const select = document.getElementById('filtroData');
                     select.innerHTML = '';
@@ -986,8 +984,10 @@
                         select.appendChild(option);
                     });
 
-                    // Definir o mês atual como selecionado
-                    select.value = mesAnoAtual;
+                    // Definir o mês atual como selecionado, ou o valor armazenado em localStorage se existir
+                    const mesSelecionado = localStorage.getItem('mesSelecionado');
+                    select.value = mesSelecionado ? mesSelecionado : mesAnoAtual;
+
 
                     // Disparar o evento de mudança para aplicar o filtro inicialmente
                     filtrarPorMes();
@@ -1008,6 +1008,16 @@
 
             if (mesAnoSelecionado) {
                 const accessUid = await getAccessUid();
+
+
+                // Adiciona o parâmetro do mês selecionado à URL
+                /* const urlParams = new URLSearchParams(window.location.search);
+                 urlParams.set('showDate', mesAnoSelecionado);
+                 window.history.replaceState({}, '', `${location.pathname}?${urlParams}`);
+ */
+
+                localStorage.setItem('mesSelecionado', mesAnoSelecionado); // Salva o mês selecionado em localStorage
+
                 try {
                     listaReceitas.innerHTML = '';
                     listaDespesas.innerHTML = '';
@@ -1346,8 +1356,8 @@
                     text: "Deseja excluir o item?",
                     icon: "warning",
                     showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
+                    confirmButtonColor: "#dc3545",
+                    cancelButtonColor: "#17a2b8",
                     confirmButtonText: "Sim, exclua!"
                 });
 
@@ -1356,7 +1366,8 @@
                     await Swal.fire({
                         title: "Excluído!",
                         text: "A ação não pode ser desfeita.",
-                        icon: "success"
+                        icon: "success",
+
                     });
                     // Atualizar a exibição
                     atualizarExibicao();
