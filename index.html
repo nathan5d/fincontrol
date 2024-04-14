@@ -949,7 +949,7 @@
             return monthsOfYear[monthNum - 1];
         }
 
-        // Popula o select com os meses encontrados
+        // Função para popular o select com os meses encontrados
         async function popularSelectMeses(accessUid) {
             try {
                 const meses = [];
@@ -958,7 +958,6 @@
                 db.ref(`users/${accessUid}/receitas`).on('value', (snapshot) => {
                     snapshot.forEach((childSnapshot) => {
                         const data = childSnapshot.val().data;
-                        console.log(data)
                         const dataObj = new Date(data);
                         const mesAnoFormatado = `${dataObj.getUTCFullYear()}-${(dataObj.getUTCMonth() + 1).toString().padStart(2, '0')}`;
                         if (!meses.includes(mesAnoFormatado)) {
@@ -966,10 +965,22 @@
                         }
                     });
 
+                    // Ordenar os meses encontrados
+                    meses.sort();
+
+                    // Adicionar o mês atual à lista de meses, mesmo que não haja dados para ele
+                    const dataAtual = new Date();
+                    const mesAtual = dataAtual.getMonth() + 1; // Os meses são baseados em zero, então somamos 1
+                    const mesAnoAtual = `${dataAtual.getFullYear()}-${mesAtual.toString().padStart(2, '0')}`;
+                    if (!meses.includes(mesAnoAtual)) {
+                        meses.push(mesAnoAtual);
+                    }
+
                     // Atualizar o select com os meses disponíveis
                     const select = document.getElementById('filtroData');
                     select.innerHTML = '';
-                    meses.sort().forEach((mesAno) => {
+
+                    meses.forEach((mesAno) => {
                         const [ano, mes] = mesAno.split('-');
                         const option = document.createElement('option');
                         option.value = mesAno;
@@ -978,10 +989,6 @@
                     });
 
                     // Definir o mês atual como selecionado
-                    const dataAtual = new Date();
-                    const anoAtual = dataAtual.getFullYear();
-                    const mesAtual = dataAtual.getMonth() + 1; // Os meses são baseados em zero, então somamos 1
-                    const mesAnoAtual = `${anoAtual}-${mesAtual.toString().padStart(2, '0')}`;
                     select.value = mesAnoAtual;
 
                     // Disparar o evento de mudança para aplicar o filtro inicialmente
