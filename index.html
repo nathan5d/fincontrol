@@ -843,8 +843,9 @@
                         document.getElementById("nomeReceitas").value = "";
                         document.getElementById("dataReceitas").value = "";
                         document.getElementById("valorReceitas").value = "";
-                        document.getElementById("categoriaReceitas").value = "";
-                        document.getElementById("statusReceitas").value = "";
+                        //document.getElementById("categoriaReceitas").value = "";
+                        //document.getElementById("statusReceitas").value = "";
+                        atualizarExibicao();
                         // Fechar o modal
                         $('#modalReceitas').modal('hide');
                     }
@@ -885,10 +886,10 @@
                         document.getElementById("nomeDespesas").value = "";
                         document.getElementById("dataDespesas").value = "";
                         document.getElementById("valorDespesas").value = "";
-                        document.getElementById("categoriaDespesas").value = "";
-                        document.getElementById("statusDespesas").value = "";
+                        //document.getElementById("categoriaDespesas").value = "";
+                        //document.getElementById("statusDespesas").value = "";
                         // Atualizar a exibição
-                        //atualizarExibicao();
+                        atualizarExibicao();
                         // Fechar o modal
                         $('#modalDespesas').modal('hide');
                     }
@@ -971,7 +972,7 @@
                     const dataAtual = new Date();
                     const mesAtual = dataAtual.getMonth() + 1; // Os meses são baseados em zero, então somamos 1
                     const mesAnoAtual = `${dataAtual.getFullYear()}-${mesAtual.toString().padStart(2, '0')}`;
-                    
+
                     // Atualizar o select com os meses disponíveis
                     const select = document.getElementById('filtroData');
                     select.innerHTML = '';
