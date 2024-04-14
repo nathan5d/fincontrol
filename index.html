@@ -43,14 +43,18 @@
     <link href="./vendor/ToastyKit/dist/css/toastykit.css" rel="stylesheet">
 
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!--Firebase config-->
+    <!--Firebase config-->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-
-
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <!-- Script do Realtime Database -->
+
+    <!-- Certifique-se de incluir o script do Realtime Database -->
+
 
     <script>
         // Configuracao do Firebase
@@ -64,10 +68,10 @@
         };
 
 
-        // inicialização
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore(app);
-        const auth = firebase.auth(app);
+        // Inicialização do Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database(); // Referência para o Realtime Database
+        const auth = firebase.auth(); // Referência para o módulo de autenticação do Firebase
         /*
                 var email = "amaral.nbr@gmail.com";
                 var password = "240587";
@@ -335,9 +339,9 @@
 
             <div class="fab-options">
 
-                <a class="fab-option add" data-toggle="modal" data-target="#modalReceita"><i
+                <a class="fab-option add" data-toggle="modal" data-target="#modalReceitas"><i
                         class="fas fa-plus-circle"></i> Adicionar Receita</a>
-                <a class="fab-option add" data-toggle="modal" data-target="#modalDespesa"><i
+                <a class="fab-option add" data-toggle="modal" data-target="#modalDespesas"><i
                         class="fas fa-plus-circle"></i> Adicionar Despesa</a>
 
                 <!-- Opção para exportar os dados -->
@@ -376,7 +380,7 @@
 
         <!-- Modais -->
         <!-- Modal para editar receitas -->
-        <div class="modal fade" id="modalEditarReceita" tabindex="-1" role="dialog"
+        <div class="modal fade" id="modalEditarReceitas" tabindex="-1" role="dialog"
             aria-labelledby="modalEditarReceitaLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -389,18 +393,18 @@
                     <div class="modal-body">
                         <form id="editarReceitaForm">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="editNomeReceita" placeholder="Nome">
+                                <input type="text" class="form-control" id="editNomeReceitas" placeholder="Nome">
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control date" id="editDataReceita" placeholder="Data">
+                                <input type="text" class="form-control date" id="editDataReceitas" placeholder="Data">
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control  money" id="editValorReceita"
+                                <input type="text" class="form-control  money" id="editValorReceitas"
                                     placeholder="Valor">
                             </div>
 
                             <div class="form-group d-none">
-                                <select class="form-control" id="editCategoriaReceita">
+                                <select class="form-control" id="editCategoriaReceitas">
                                     <option value="">Selecione uma categoria</option>
                                     <option value="Alimentação">Alimentação</option>
                                     <option value="Transporte">Transporte</option>
@@ -415,7 +419,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <select class="form-control" id="editStatusReceita">
+                                <select class="form-control" id="editStatusReceitas">
                                     <option value="Pendente">Pendente</option>
                                     <option value="Pago">Pago</option>
                                 </select>
@@ -432,7 +436,7 @@
         </div>
 
         <!-- Modal para editar despesas -->
-        <div class="modal fade" id="modalEditarDespesa" tabindex="-1" role="dialog"
+        <div class="modal fade" id="modalEditarDespesas" tabindex="-1" role="dialog"
             aria-labelledby="modalEditarDespesaLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -445,16 +449,17 @@
                     <div class="modal-body">
                         <form id="editarDespesaForm">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="editNomeDespesa" placeholder="Nome">
+                                <input type="text" class="form-control" id="editNomeDespesas" placeholder="Nome">
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control date" id="editDataDespesa" placeholder="Data">
+                                <input type="text" class="form-control date" id="editDataDespesas" placeholder="Data">
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control money" id="editValorDespesa" placeholder="Valor">
+                                <input type="text" class="form-control money" id="editValorDespesas"
+                                    placeholder="Valor">
                             </div>
                             <div class="form-group">
-                                <select class="form-control" id="editCategoriaDespesa">
+                                <select class="form-control" id="editCategoriaDespesas">
                                     <option value="">Selecione uma categoria</option>
                                     <option value="Alimentação">Alimentação</option>
                                     <option value="Transporte">Transporte</option>
@@ -469,7 +474,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <select class="form-control" id="editStatusDespesa">
+                                <select class="form-control" id="editStatusDespesas">
                                     <option value="Pendente">Pendente</option>
                                     <option value="Pago">Pago</option>
                                 </select>
@@ -486,7 +491,7 @@
         </div>
 
         <!-- Modal para adicionar receitas -->
-        <div class="modal fade" id="modalReceita" tabindex="-1" role="dialog" aria-labelledby="modalReceitaLabel"
+        <div class="modal fade" id="modalReceitas" tabindex="-1" role="dialog" aria-labelledby="modalReceitaLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -499,16 +504,16 @@
                     <div class="modal-body">
                         <form id="receitaForm">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="nomeReceita" placeholder="Nome">
+                                <input type="text" class="form-control" id="nomeReceitas" placeholder="Nome">
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control date" id="dataReceita" placeholder="Data">
+                                <input type="text" class="form-control date" id="dataReceitas" placeholder="Data">
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control money" id="valorReceita" placeholder="Valor">
+                                <input type="text" class="form-control money" id="valorReceitas" placeholder="Valor">
                             </div>
                             <div class="form-group d-none">
-                                <select class="form-control" id="categoriaReceita">
+                                <select class="form-control" id="categoriaReceitas">
                                     <option value="">Selecione uma categoria</option>
                                     <option value="Alimentação">Alimentação</option>
                                     <option value="Transporte">Transporte</option>
@@ -525,7 +530,7 @@
 
                             <div class="form-group">
 
-                                <select class="form-control" id="statusReceita">
+                                <select class="form-control" id="statusReceitas">
                                     <option value="Pendente">Pendente</option>
                                     <option value="Pago" selected>Pago</option>
                                 </select>
@@ -542,7 +547,7 @@
         </div>
 
         <!-- Modal para adicionar despesas -->
-        <div class="modal fade" id="modalDespesa" tabindex="-1" role="dialog" aria-labelledby="modalDespesaLabel"
+        <div class="modal fade" id="modalDespesas" tabindex="-1" role="dialog" aria-labelledby="modalDespesaLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -555,16 +560,16 @@
                     <div class="modal-body">
                         <form id="despesaForm">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="nomeDespesa" placeholder="Nome">
+                                <input type="text" class="form-control" id="nomeDespesas" placeholder="Nome">
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control date" id="dataDespesa" placeholder="Data">
+                                <input type="text" class="form-control date" id="dataDespesas" placeholder="Data">
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control money" id="valorDespesa" placeholder="Valor">
+                                <input type="text" class="form-control money" id="valorDespesas" placeholder="Valor">
                             </div>
                             <div class="form-group">
-                                <select class="form-control" id="categoriaDespesa">
+                                <select class="form-control" id="categoriaDespesas">
                                     <option value="">Selecione uma categoria</option>
                                     <option value="Alimentação">Alimentação</option>
                                     <option value="Transporte">Transporte</option>
@@ -579,7 +584,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <select class="form-control" id="statusDespesa">
+                                <select class="form-control" id="statusDespesas">
                                     <option value="Pendente">Pendente</option>
                                     <option value="Pago">Pago</option>
                                 </select>
@@ -616,8 +621,8 @@
                         </div>
                         <p class="mt-3 mb-0 text-muted text-sm skeleton" id="legendReceitas">
                             <span class="text-success"><small><i class="fa-solid fa-circle"></i></small></span>
-                            <span class="text-success mr-0">3.48%</span>
-                            <span class="text-nowrap">Since last month</span>
+                            <span class="text-success mr-0">0.00%</span>
+                            <span class="text-nowrap"></span>
                         </p>
                     </div>
                 </div>
@@ -640,8 +645,8 @@
                         </div>
                         <p class="mt-3 mb-0 text-muted text-sm skeleton" id="legendDespesas">
                             <span class="text-success"><small><i class="fa-solid fa-circle"></i></small></span>
-                            <span class="text-success mr-0 ">3.48%</span>
-                            <span class="text-nowrap ">Since last month</span>
+                            <span class="text-success mr-0 ">0.00%</span>
+                            <span class="text-nowrap "></span>
                         </p>
                     </div>
                 </div>
@@ -664,14 +669,24 @@
                         </div>
                         <p class="mt-3 mb-0 text-muted text-sm skeleton" id="legendSaldo">
                             <span class="text-success"><small><i class="fa-solid fa-circle"></i></small></span>
-                            <span class="text-success mr-0 ">3.48%</span>
-                            <span class="text-nowrap ">Since last month</span>
+                            <span class="text-success mr-0 ">0.00%</span>
+                            <span class="text-nowrap "></span>
                         </p>
                     </div>
                 </div>
             </div>
         </div>
 
+
+        <div class="row  mt-3">
+            <div class="col-auto m-auto">
+                <select id="filtroData" class="form-control">
+                    <!-- Opção padrão para exibir todas as datas -->
+                    <option value="">Todos</option>
+                </select>
+
+            </div>
+        </div>
 
         <!-- Exibição dos dados -->
         <div id="dados" class="mt-4">
@@ -683,7 +698,7 @@
 
                 <div class="col-md-6 col-sm-12 text-center text-md-right">
                     <button type="button" class="btn btn-sm d-print-none btn-info" data-toggle="modal"
-                        data-target="#modalReceita">Adicionar Receita</button>
+                        data-target="#modalReceitas">Adicionar Receita</button>
                 </div>
 
             </div>
@@ -699,7 +714,7 @@
 
                 <div class="col-md-6 col-sm-12 text-center text-md-right">
                     <button type="button" class="btn btn-sm d-print-none btn-danger" data-toggle="modal"
-                        data-target="#modalDespesa">Adicionar Despesa</button>
+                        data-target="#modalDespesas">Adicionar Despesa</button>
                 </div>
 
 
@@ -763,71 +778,78 @@
             // Obter o token da URL
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
+
             if (token) {
-                // Procurar o user.uid correspondente na coleção accessTokens
-                const tokenDoc = await db.collection("accessTokens").doc(token).get();
+                try {
+                    // Procurar o user.uid correspondente na coleção accessTokens
+                    const tokenRef = firebase.database().ref(`accessTokens/${token}`);
+                    const tokenSnapshot = await tokenRef.get();
 
-                //if (tokenDoc.exists) {
-                const userUid = tokenDoc.data().uid;
-                console.log(userUid);
-                console.log('usuario:' + uid, 'Shared:' + userUid)
-                if (uid != userUid) {
-                    return userUid;
+                    if (tokenSnapshot.exists()) {
+                        const userUid = tokenSnapshot.val().uid;
+                        console.log('usuario:', uid, 'Shared:', userUid);
+                        if (uid !== userUid) {
+                            return userUid;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro ao obter token:', error);
                 }
-
-
-
             } else {
-                // Obter o documento do usuário
-                const userDoc = await db.collection("users").doc(uid).get();
-                const userData = userDoc.data();
+                try {
+                    // Obter o documento do usuário
+                    const userRef = firebase.database().ref(`users/${uid}`);
+                    const userSnapshot = await userRef.get();
+                    const userData = userSnapshot.val();
 
-                // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
-                return (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
+                    // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
+                    return (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
+                } catch (error) {
+                    console.error('Erro ao obter usuário:', error);
+                }
             }
         }
 
 
         // Função para adicionar receita
         async function adicionarReceita() {
-            const nome = document.getElementById("nomeReceita").value;
-            const data = document.getElementById("dataReceita").value;
-            const valor = parseFloat(document.getElementById("valorReceita").value.replace('.', '').replace(',', '.'));
-            const categoria = document.getElementById("categoriaReceita").value;
-            const statusReceita = document.getElementById("statusReceita").value;
+            const nome = document.getElementById("nomeReceitas").value;
+            const dataInput = document.getElementById("dataReceitas").value;
+            const [dia, mes, ano] = dataInput.split('/');
+            const data = new Date(`${ano}-${mes}-${dia}T00:00:00.000Z`);
+            const valor = parseFloat(document.getElementById("valorReceitas").value.replace('.', '').replace(',', '.'));
+            const categoria = document.getElementById("categoriaReceitas").value;
+            const statusReceita = document.getElementById("statusReceitas").value;
 
             // Verificar se os campos obrigatórios estão preenchidos
             if (nome && data && valor && statusReceita) {
-                // Adicionar os dados ao Firestore
-
+                // Adicionar os dados ao Realtime Database
                 const accessUid = await getAccessUid();
 
                 // Usar o accessUid para acessar o banco de dados
-                db.collection("users").doc(accessUid).collection("receitas").add({
+                db.ref(`users/${accessUid}/receitas`).push({
                     nome: nome,
-                    data: data,
+                    data: data.toISOString(), // Convertendo para string no formato ISO (yyyy-mm-dd)
                     valor: valor,
                     categoria: categoria,
                     status: statusReceita
-
-                })
-                    .then((docRef) => {
-                        console.log("Receita adicionada com ID: ", docRef.id);
-                        console.log(docRef.id)
-                        // Limpar os campos do formulário e fechar o modal
-                        document.getElementById("nomeReceita").value = "";
-                        document.getElementById("dataReceita").value = "";
-                        document.getElementById("valorReceita").value = "";
-                        document.getElementById("categoriaReceita").value = "";
-                        document.getElementById("statusReceita").value = "";
-                        // Atualizar a exibição
-                        atualizarExibicao();
-                        // Fechar o modal
-                        $('#modalReceita').modal('hide');
-                    })
-                    .catch((error) => {
+                }, (error) => {
+                    if (error) {
                         console.error("Erro ao adicionar receita: ", error);
-                    });
+                    } else {
+                        console.log("Receita adicionada com sucesso!");
+                        // Limpar os campos do formulário e fechar o modal
+                        document.getElementById("nomeReceitas").value = "";
+                        document.getElementById("dataReceitas").value = "";
+                        document.getElementById("valorReceitas").value = "";
+                        document.getElementById("categoriaReceitas").value = "";
+                        document.getElementById("statusReceitas").value = "";
+                        // Atualizar a exibição
+                        //atualizarExibicao();
+                        // Fechar o modal
+                        $('#modalReceitas').modal('hide');
+                    }
+                });
             } else {
                 alert("Por favor, preencha todos os campos obrigatórios.");
             }
@@ -835,196 +857,378 @@
 
         // Função para adicionar despesa
         async function adicionarDespesa() {
-            const nome = document.getElementById("nomeDespesa").value;
-            const data = document.getElementById("dataDespesa").value;
-            const valor = parseFloat(document.getElementById("valorDespesa").value.replace('.', '').replace(',', '.'));
-            const categoria = document.getElementById("categoriaDespesa").value;
-            const statusDespesa = document.getElementById("statusDespesa").value;
+            const nome = document.getElementById("nomeDespesas").value;
+            const dataInput = document.getElementById("dataDespesas").value;
+            const [dia, mes, ano] = dataInput.split('/');
+            const data = new Date(`${ano}-${mes}-${dia}T00:00:00.000Z`);
+            const valor = parseFloat(document.getElementById("valorDespesas").value.replace('.', '').replace(',', '.'));
+            const categoria = document.getElementById("categoriaDespesas").value;
+            const statusDespesa = document.getElementById("statusDespesas").value;
 
             // Verificar se os campos obrigatórios estão preenchidos
             if (nome && data && valor && categoria && statusDespesa) {
-                // Adicionar os dados ao Firestore
+                // Adicionar os dados ao Realtime Database
                 const accessUid = await getAccessUid();
 
                 // Usar o accessUid para acessar o banco de dados
-                db.collection("users").doc(accessUid).collection("despesas").add({
+                db.ref(`users/${accessUid}/despesas`).push({
                     nome: nome,
-                    data: data,
+                    data: data.toISOString(), // Convertendo para string no formato ISO (yyyy-mm-dd)
                     valor: valor,
                     categoria: categoria,
                     status: statusDespesa
-                })
-                    .then((docRef) => {
-                        console.log("Despesa adicionada com ID: ", docRef.id);
+                }, (error) => {
+                    if (error) {
+                        console.error("Erro ao adicionar despesa: ", error);
+                    } else {
+                        console.log("Despesa adicionada com sucesso!");
                         // Limpar os campos do formulário e fechar o modal
-                        document.getElementById("nomeDespesa").value = "";
-                        document.getElementById("dataDespesa").value = "";
-                        document.getElementById("valorDespesa").value = "";
-                        document.getElementById("categoriaDespesa").value = "";
-                        document.getElementById("statusDespesa").value = "";
+                        document.getElementById("nomeDespesas").value = "";
+                        document.getElementById("dataDespesas").value = "";
+                        document.getElementById("valorDespesas").value = "";
+                        document.getElementById("categoriaDespesas").value = "";
+                        document.getElementById("statusDespesas").value = "";
                         // Atualizar a exibição
-                        atualizarExibicao();
+                        //atualizarExibicao();
                         // Fechar o modal
                         $('#modalDespesa').modal('hide');
-                    })
-                    .catch((error) => {
-                        console.error("Erro ao adicionar despesa: ", error);
-                    });
+                    }
+                });
             } else {
                 alert("Por favor, preencha todos os campos obrigatórios.");
             }
         }
 
-        // Função para exibir os dados e atualizar o dashboard
-        // Função para exibir os dados e atualizar o dashboard
+        // Função para formatar uma data no formato "DD/MM/YYYY" para "YYYY-MM-DD"
+        function formatarDataParaTimestamp(data) {
+            return new Date(data);
+        }
 
 
-        async function atualizarExibicao() {
-            // Exibir a tela de carregamento
-            document.getElementById('loadingScreen').style.display = 'none';
+        function dateToString(timestamp) {
+            // Verificar se o timestamp é válido
+            if (!timestamp) {
+                console.error('Timestamp inválido:', timestamp);
+                return 'Data inválida';
+            }
+
+            // Criar um objeto Date a partir da string de timestamp
+            const data = new Date(timestamp);
+
+            // Verificar se o objeto Date é válido
+            if (isNaN(data.getTime())) {
+                console.error('Erro na conversão do timestamp para Date:', timestamp);
+                return 'Data inválida';
+            }
+
+            // Extraia o dia, mês e ano
+            const dia = data.getUTCDate().toString().padStart(2, '0'); // Adicionar zero à esquerda, se necessário
+            const mes = (data.getUTCMonth() + 1).toString().padStart(2, '0'); // O mês é baseado em zero
+            const ano = data.getUTCFullYear();
+
+            // Retorne a data formatada como uma string no formato dd/mm/yyyy
+            return `${dia}/${mes}/${ano}`;
+        }
+
+        //functions utils
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
 
 
+        // Função para converter o nome do mês em número
+        function monthNameToNumber(monthName) {
+            const monthsOfYear = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            const monthNumber = monthsOfYear.findIndex((month) => month === monthName) + 1; // Obtém o número do mês correspondente
+            return monthNumber.toString().padStart(2, '0'); // Retorna o número do mês com zero à esquerda, se necessário
+        }
 
+        // Função para obter o nome do mês a partir do número
+        function monthNumberToName(monthNum) {
+            const monthsOfYear = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            return monthsOfYear[monthNum - 1];
+        }
 
-            const accessUid = await getAccessUid();
+        // Popula o select com os meses encontrados
+        async function popularSelectMeses(accessUid) {
             try {
-                // Limpar listas
+                const meses = [];
+
+                // Usar on() para ouvir mudanças em tempo real nas receitas
+                db.ref(`users/${accessUid}/receitas`).on('value', (snapshot) => {
+                    snapshot.forEach((childSnapshot) => {
+                        const data = childSnapshot.val().data;
+                        console.log(data)
+                        const dataObj = new Date(data);
+                        const mesAnoFormatado = `${dataObj.getUTCFullYear()}-${(dataObj.getUTCMonth() + 1).toString().padStart(2, '0')}`;
+                        if (!meses.includes(mesAnoFormatado)) {
+                            meses.push(mesAnoFormatado);
+                        }
+                    });
+
+                    // Atualizar o select com os meses disponíveis
+                    const select = document.getElementById('filtroData');
+                    select.innerHTML = '';
+                    meses.sort().forEach((mesAno) => {
+                        const [ano, mes] = mesAno.split('-');
+                        const option = document.createElement('option');
+                        option.value = mesAno;
+                        option.textContent = `${monthNumberToName(mes)}/${ano}`;
+                        select.appendChild(option);
+                    });
+
+                    // Definir o mês atual como selecionado
+                    const dataAtual = new Date();
+                    const anoAtual = dataAtual.getFullYear();
+                    const mesAtual = dataAtual.getMonth() + 1; // Os meses são baseados em zero, então somamos 1
+                    const mesAnoAtual = `${anoAtual}-${mesAtual.toString().padStart(2, '0')}`;
+                    select.value = mesAnoAtual;
+
+                    // Disparar o evento de mudança para aplicar o filtro inicialmente
+                    filtrarPorMes();
+                });
+
+                // Adicionar evento de mudança ao select para filtrar por mês
+                document.getElementById('filtroData').addEventListener('change', filtrarPorMes);
+
+            } catch (error) {
+                console.error("Erro ao popular o select de meses:", error);
+            }
+        }
+
+        // Filtrar por mês
+        async function filtrarPorMes() {
+            const select = document.getElementById('filtroData');
+            const mesAnoSelecionado = select.value;
+
+            if (mesAnoSelecionado) {
+                const accessUid = await getAccessUid();
+                try {
+                    listaReceitas.innerHTML = '';
+                    listaDespesas.innerHTML = '';
+
+                    const [ano, mes, dia] = mesAnoSelecionado.split('-');
+                    console.log(ano, mes, dia)
+                    const dataInicio = `${ano}-${mes}-01T00:00:00.000Z`;
+                    const ultimoDiaMes = new Date(ano, parseInt(mes), 0).getDate();
+                    const dataFim = `${ano}-${mes}-${ultimoDiaMes.toString().padStart(2, '0')}T23:59:59.999Z`;
+
+                    await filtrarReceitasPorData(accessUid, dataInicio, dataFim);
+                    await filtrarDespesasPorData(accessUid, dataInicio, dataFim);
+
+                } catch (error) {
+                    console.error("Erro ao filtrar por mês:", error);
+                }
+            } else {
+                listaReceitas.innerHTML = '';
+                listaDespesas.innerHTML = '';
+                //atualizarExibicao();
+            }
+        }
+
+        // Função para filtrar receitas por data e status
+        async function filtrarReceitasPorData(accessUid, dataInicio, dataFim, filtroStatus) {
+            const query = db.ref(`users/${accessUid}/receitas`).orderByChild('data').startAt(dataInicio).endAt(dataFim);
+            query.once('value', (snapshot) => {
+                listaReceitas.innerHTML = ''; // Limpa a lista antes de adicionar novos itens
+                snapshot.forEach((childSnapshot) => {
+                    const receita = childSnapshot.val();
+                    const id = childSnapshot.key;
+                    // Verifica se a receita corresponde ao filtro de status
+                    if (!filtroStatus || receita.status === filtroStatus) {
+                        // Adicionar a receita filtrada à lista de receitas
+                        const item = criarItemLista(receita, "Receitas", id);
+                        listaReceitas.appendChild(item);
+                    }
+                });
+                calcularValores(dataInicio, dataFim); // Passa os parâmetros de data e status para a função calcularValores
+            });
+        }
+
+        // Função para filtrar despesas por data e status
+        async function filtrarDespesasPorData(accessUid, dataInicio, dataFim, filtroStatus) {
+            const query = db.ref(`users/${accessUid}/despesas`).orderByChild('data').startAt(dataInicio).endAt(dataFim);
+            query.once('value', (snapshot) => {
+                listaDespesas.innerHTML = ''; // Limpa a lista antes de adicionar novos itens
+                snapshot.forEach((childSnapshot) => {
+                    const despesa = childSnapshot.val();
+                    const id = childSnapshot.key;
+                    // Verifica se a despesa corresponde ao filtro de status
+                    if (!filtroStatus || despesa.status === filtroStatus) {
+                        // Adicionar a despesa filtrada à lista de despesas
+                        const item = criarItemLista(despesa, "Despesas", id);
+                        listaDespesas.appendChild(item);
+                    }
+                });
+                calcularValores(dataInicio, dataFim);  // Passa os parâmetros de data e status para a função calcularValores
+            });
+        }
+
+
+
+
+        // Função para atualizar a exibição
+        async function atualizarExibicao() {
+
+            document.getElementById('loadingScreen').style.display = 'none';
+            const accessUid = await getAccessUid();
+
+            try {
+                await popularSelectMeses(accessUid);
+
+                const dataAtual = new Date();
+                const ano = dataAtual.getFullYear();
+                const mes = dataAtual.getMonth() + 1; // Os meses são baseados em zero, então somamos 1
+                const primeiroDiaMes = new Date(ano, mes - 1, 1); // Definindo o primeiro dia do mês
+                const ultimoDiaMes = new Date(ano, mes, 0); // Definindo o último dia do mês
+
+                const dataInicio = primeiroDiaMes.toISOString(); // Convertendo para o formato de data ISO
+                const dataFim = new Date(ultimoDiaMes.getTime() + 86400000).toISOString(); // Adicionando 1 dia ao último dia do mês e convertendo para o formato de data ISO
+
                 listaReceitas.innerHTML = '';
                 listaDespesas.innerHTML = '';
 
-                // Adicionar listener para receitas
-                db.collection("users").doc(accessUid).collection("receitas")
-                    .onSnapshot((snapshot) => {
-                        snapshot.docChanges().forEach((change) => {
-                            const receita = change.doc.data();
-                            const id = change.doc.id;
-
-                            if (change.type === "added") {
-                                const item = criarItemLista(receita, "Receita", id);
-                                listaReceitas.appendChild(item);
-                            } else if (change.type === "modified") {
-                                const itemExistente = listaReceitas.querySelector(`[data-id="${id}"]`);
-                                if (itemExistente) {
-                                    itemExistente.innerHTML = criarItemLista(receita, "Receita", id).innerHTML;
-                                }
-                            } else if (change.type === "removed") {
-                                const itemExistente = listaReceitas.querySelector(`[data-id="${id}"]`);
-                                if (itemExistente) {
-                                    listaReceitas.removeChild(itemExistente);
-                                }
-                            }
-
-                            calcularValores(); // Chamar a função calcularValores() após cada mudança nas receitas
-                        });
-                    });
-
-                // Adicionar listener para despesas
-                db.collection("users").doc(accessUid).collection("despesas")
-                    .onSnapshot((snapshot) => {
-                        snapshot.docChanges().forEach((change) => {
-                            const despesa = change.doc.data();
-                            const id = change.doc.id;
-
-                            if (change.type === "added") {
-                                const item = criarItemLista(despesa, "Despesa", id);
-                                listaDespesas.appendChild(item);
-                            } else if (change.type === "modified") {
-                                const itemExistente = listaDespesas.querySelector(`[data-id="${id}"]`);
-                                if (itemExistente) {
-                                    itemExistente.innerHTML = criarItemLista(despesa, "Despesa", id).innerHTML;
-                                }
-                            } else if (change.type === "removed") {
-                                const itemExistente = listaDespesas.querySelector(`[data-id="${id}"]`);
-                                if (itemExistente) {
-                                    listaDespesas.removeChild(itemExistente);
-                                }
-                            }
-
-                            calcularValores(); // Chamar a função calcularValores() após cada mudança nas despesas
-                        });
-                    });
+                // Ouvir mudanças em tempo real nas receitas e despesas
+                db.ref(`users/${accessUid}/receitas`).on('child_added', (snapshot) => {
+                    const receita = snapshot.val();
+                    const id = snapshot.key;
+                    // Adicionar a receita à lista de receitas
+                    const item = criarItemLista(receita, "Receitas", id);
+                    listaReceitas.appendChild(item);
+                    calcularValores(dataInicio, dataFim);
+                });
 
 
 
 
-                // Ocultar a tela de carregamento quando os dados terminarem de carregar
+                db.ref(`users/${accessUid}/despesas`).on('child_added', (snapshot) => {
+                    const despesa = snapshot.val();
+                    const id = snapshot.key;
+                    // Adicionar a despesa à lista de despesas
+                    const item = criarItemLista(despesa, "Despesas", id);
+                    listaDespesas.appendChild(item);
+                    calcularValores(dataInicio, dataFim);
+                });
 
-                //document.querySelector('.skeleton').classList.remove('loading');
-                x
             } catch (error) {
                 console.error("Erro ao atualizar exibição:", error);
             }
         }
-        async function calcularValores() {
-            // Para exibir o esqueleto de carregamento
+
+        // Outras funções permanecem iguais
+
+        async function calcularValores(dataInicio, dataFim) {
             // Para exibir o esqueleto de carregamento
             document.querySelectorAll('.skeleton').forEach(element => {
                 element.classList.add('loading');
             });
 
-            // Calcular e exibir os valores de receitas e despesas em seus respectivos cards
-            const totalReceitasPagas = await calcularSomaValoresReceitas("Pago");
-            const totalReceitasPendentes = await calcularSomaValoresReceitas("Pendente");
+            try {
+                // Calcular e exibir os valores de receitas e despesas em seus respectivos cards
+                const [totalReceitasPagas, totalReceitasPendentes, totalDespesasPagas, totalDespesasPendentes] = await Promise.all([
+                    calcularSomaValoresItens('receitas', 'Pago', dataInicio, dataFim),
+                    calcularSomaValoresItens('receitas', 'Pendente', dataInicio, dataFim),
+                    calcularSomaValoresItens('despesas', 'Pago', dataInicio, dataFim),
+                    calcularSomaValoresItens('despesas', 'Pendente', dataInicio, dataFim)
+                ]);
 
-            const totalReceitas = (totalReceitasPagas + totalReceitasPendentes);
+                const totalReceitas = totalReceitasPagas + totalReceitasPendentes;
+                const totalDespesas = totalDespesasPagas + totalDespesasPendentes;
 
-            const totalDespesasPagas = await calcularSomaValoresDespesas("Pago");
-            const totalDespesasPendentes = await calcularSomaValoresDespesas("Pendente");
+                const saldo = totalReceitas - totalDespesas;
 
-            const totalDespesas = (totalDespesasPagas + totalDespesasPendentes);
+                // Atualizar os valores nos cards de receitas
+                document.getElementById("totalReceitas").textContent = `R$ ${formatarValorParaExibicao(totalReceitas)}`;
 
-            const quantidadeDespesasPagas = await calcularQuantidadeDespesas("Pago");
-            const quantidadeDespesasPendentes = await calcularQuantidadeDespesas("Pendente");
+                // Atualizar os valores nos cards de despesas
+                document.getElementById("totalDespesas").innerText = `R$ ${formatarValorParaExibicao(totalDespesas)}`;
 
-            // Atualizar os valores nos cards de receitas
-            document.getElementById("totalReceitas").textContent = `R$ ${formatarValorParaExibicao(totalReceitas)}`;
+                // Atualizar o saldo
+                document.getElementById("saldo").textContent = `R$ ${formatarValorParaExibicao(saldo)}`;
 
-            // Atualizar os valores nos cards de despesas
-            document.getElementById("totalDespesas").innerText = `R$ ${formatarValorParaExibicao(totalDespesasPagas + totalDespesasPendentes)}`;
+                // Verificar se o saldo é negativo e aplicar a classe correspondente
+                document.getElementById("saldo").classList.toggle("saldo-negativo", saldo < 0);
 
-            // Calcular saldo
-            const saldo = (totalReceitas) - (totalDespesasPagas + totalDespesasPendentes);
-            document.getElementById("saldo").textContent = `R$ ${formatarValorParaExibicao(saldo)}`;
+                // Atualizar as informações nos cards de receitas
+                document.querySelector('#legendReceitas span:nth-child(2)').textContent = `R$ ${formatarValorParaExibicao(totalReceitasPendentes || totalReceitas)}`;
+                document.querySelector('#legendReceitas span:nth-child(3)').textContent = totalReceitasPendentes ? 'pendente' : 'recebido';
 
-            // Verificar se o saldo é negativo e aplicar a classe correspondente
-            if (saldo < 0) {
-                document.getElementById("saldo").classList.add("saldo-negativo"); // Adiciona a classe "saldo-negativo"
-            } else {
-                document.getElementById("saldo").classList.remove("saldo-negativo"); // Remove a classe "saldo-negativo"
+                // Atualizar a porcentagem de despesas pagas em relação ao total de despesas
+                const percentualDespesasPagas = totalDespesas ? ((totalDespesasPagas / totalDespesas) * 100).toFixed(2) : 0;
+                document.querySelector('#legendDespesas span:nth-child(2)').textContent = `${percentualDespesasPagas}%`;
+                document.querySelector('#legendDespesas span:nth-child(3)').textContent = `das despesas já pagas`;
+
+                // Calcular o saldo em relação ao total de receitas pagas
+                const percentualBalanco = totalReceitasPagas ? ((saldo / totalReceitasPagas) * 100).toFixed(2) : 0;
+                document.querySelector('#legendSaldo span:nth-child(2)').textContent = `${percentualBalanco}%`;
+                document.querySelector('#legendSaldo span:nth-child(3)').textContent = `de saldo (R$ ${formatarValorParaExibicao(saldo)})`;
+
+                // Para exibir o esqueleto de carregamento
+                document.querySelectorAll('.skeleton').forEach(element => {
+                    element.classList.remove('loading');
+                });
+            } catch (error) {
+                console.error("Erro ao calcular valores:", error);
+                // Para exibir o esqueleto de carregamento
+                document.querySelectorAll('.skeleton').forEach(element => {
+                    element.classList.remove('loading');
+                });
             }
-
-            // Seleciona o primeiro span dentro do elemento com id "legendDespesas"
-            document.querySelector('#legendReceitas span:nth-child(2)').textContent = totalReceitasPendentes ? `R$ ${formatarValorParaExibicao(totalReceitasPendentes)}` : `R$ ${formatarValorParaExibicao(totalReceitas)}`;
-            document.querySelector('#legendReceitas span:nth-child(3)').textContent = `${totalReceitasPendentes ? 'pendente' : 'recebido'}`;
-
-            // Atualizar a porcentagem de despesas pagas em relação ao total de despesas no card "legendDespesas"
-            const percentualDespesasPagas = ((quantidadeDespesasPagas) / (quantidadeDespesasPagas + quantidadeDespesasPendentes)) * 100;
-            if (totalReceitasPagas > 0) {
-                document.querySelector('#legendDespesas span:nth-child(2)').textContent = `${percentualDespesasPagas.toFixed(2)}%`;
-                document.querySelector('#legendDespesas span:nth-child(3)').textContent = ` das despesas já pagas`;
-            } else {
-                document.querySelector('#legendDespesas span:nth-child(2)').textContent = `R$ ${formatarValorParaExibicao(0)}`;
-                document.querySelector('#legendDespesas span:nth-child(3)').textContent = ` receita`;
-            }
-
-            // Calcular a diferença entre o total de receitas pagas e o total de despesas pagas
-            const diferencaReceitasDespesas = totalReceitasPagas - totalDespesasPagas;
-
-            // Calcular a porcentagem da diferença em relação ao total de receitas pagas
-            const percentualBalanco = (diferencaReceitasDespesas / totalReceitasPagas) * 100;
-
-            // Atualizar a porcentagem de saldo no card "legendSaldo"
-            document.querySelector('#legendSaldo span:nth-child(2)').textContent = `${percentualBalanco > 0 ? percentualBalanco.toFixed(2) : '0'}%`;
-            document.querySelector('#legendSaldo span:nth-child(3)').textContent = `de saldo (R$ ${formatarValorParaExibicao(diferencaReceitasDespesas)})`;
-
-            // Para exibir o esqueleto de carregamento
-            // Para exibir o esqueleto de carregamento
-            document.querySelectorAll('.skeleton').forEach(element => {
-                element.classList.remove('loading');
-            });
         }
 
+        // Função para calcular a soma dos valores de receitas ou despesas com base no status e no filtro de data
+        async function calcularSomaValoresItens(tipo, status, dataInicio, dataFim) {
+            const accessUid = await getAccessUid();
+            const tipoPlural = tipo === 'receitas' ? 'receitas' : 'despesas';
+
+            try {
+                let total = 0;
+                // Usar o accessUid para acessar o banco de dados
+                const itensSnapshot = await db.ref(`users/${accessUid}/${tipoPlural}`).orderByChild("status").equalTo(status).once("value");
+                itensSnapshot.forEach((childSnapshot) => {
+                    const item = childSnapshot.val();
+                    const dataItem = item.data;
+
+                    if (dataItem >= dataInicio && dataItem <= dataFim) {
+                        total += item.valor;
+
+                    }
+                });
+                return total;
+            } catch (error) {
+                console.error(`Erro ao calcular a soma dos valores de ${tipoPlural}:`, error);
+                return 0;
+            }
+        }
+
+        // Função para calcular a quantidade de despesas com base no status e no filtro de data
+        async function calcularQuantidadeItens(tipo, status, dataInicio, dataFim) {
+            const accessUid = await getAccessUid();
+            const tipoPlural = tipo === 'receita' ? 'receitas' : 'despesas';
+
+            try {
+                let quantidade = 0;
+                // Usar o accessUid para acessar o banco de dados
+                const itensSnapshot = await db.ref(`users/${accessUid}/${tipoPlural}`).orderByChild("status").equalTo(status).once("value");
+                itensSnapshot.forEach((childSnapshot) => {
+                    const item = childSnapshot.val();
+                    const dataItem = new Date(item.data);
+                    if (dataItem >= dataInicio && dataItem <= dataFim) {
+                        quantidade++;
+                    }
+                });
+                return quantidade;
+            } catch (error) {
+                console.error(`Erro ao calcular a quantidade de ${tipoPlural}:`, error);
+                return 0;
+            }
+        }
+
+
+
         function criarItemLista(item, tipo, id) {
+
+            console.log('tipo', tipo)
             const listItem = document.createElement('li');
             listItem.classList.add('list-group-item');
             // Adicionando o atributo data-id
@@ -1033,287 +1237,168 @@
             const statusClass = item.status === 'Pago' ? 'text-success' : 'text-danger';
 
             listItem.innerHTML = `
-            <div class="row">
-                <div class="col">
-                    <div class="row">
-                        <div class="col-md-3 h5 font-weight-bold mb-0">
-                            <div>${item.nome}</div>
-                            <div class="skeleton ${tipo === 'Receita' ? 'text-success' : 'text-danger'}"> R$ ${formatarValorParaExibicao(item.valor)}</div>
-                        </div>
-                        
-                        <div class="m-auto col-md-3 mb-0" ${tipo === 'Receita' ? 'style="display:none"' : ''}>
-                            <div class="text-md-center">
-                                <span class="text-md-center d-md-none">Categoria:</span>
-                                <button class="btn btn-sm py-0 px-2 btn-secondary" onclick="${tipo === 'Receita' ? `editarReceita('${id}')` : `editarDespesa('${id}')`}">${item.categoria ? item.categoria : 'Sem categoria'}</button>
+                <div class="row">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-md-3 h5 font-weight-bold mb-0">
+                                <div>${item.nome}</div>
+                                <div class="skeleton ${tipo === 'Receitas' ? 'text-success' : 'text-danger'}"> R$ ${formatarValorParaExibicao(item.valor)}</div>
                             </div>
-                        </div>
-                        
-                       
-                        <div class="m-auto col-md-3 mb-0">
-                            <div class="text-md-center">
-                                <span class="text-md-center d-md-none">Data:</span>
-                                <span>${item.data ? item.data : '<i>Indefinido</i>'}</span>
+                            
+                            <div class="m-auto col-md-3 mb-0" ${tipo === 'Receitas' ? 'style="display:none"' : ''}>
+                                <div class="text-md-center">
+                                    <span class="text-md-center d-md-none">Categoria:</span>
+                                    <button class="btn btn-sm py-0 px-2 btn-secondary" onclick="${tipo === 'Receitas' ? `editarReceita('${id}')` : `editarDespesa('${id}')`}">${item.categoria ? item.categoria : 'Sem categoria'}</button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="m-auto col-md-3 mb-0">
-                            <div class="text-md-center">
-                                <span class="text-md-center d-md-none">Status:</span>
-                                <button class="btn ${statusClass} bg-light" onclick="${tipo === 'Receita' ? `editarReceita('${id}')` : `editarDespesa('${id}')`}">${item.status}</button>
+                            
+                        
+                            <div class="m-auto col-md-3 mb-0">
+                                <div class="text-md-center">
+                                    <span class="text-md-center d-md-none">Data:</span>
+                                    <span>${item.data ? dateToString(item.data) : '<i>Indefinido</i>'}</span>
+                                </div>
+                            </div>
+                            <div class="m-auto col-md-3 mb-0">
+                                <div class="text-md-center">
+                                    <span class="text-md-center d-md-none">Status:</span>
+                                    <button class="btn ${statusClass} bg-light" onclick="${tipo === 'Receitas' ? `editarReceita('${id}')` : `editarDespesa('${id}')`}">${item.status}</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-auto d-flex d-print-none">
-                    <div class="mt-2 m-sm-auto ">
-                        <button class="btn btn-info btn-sm" onclick="${tipo === 'Receita' ? `editarReceita('${id}')` : `editarDespesa('${id}')`}"">Editar</button>
-                            <button class="btn btn-danger btn-sm" onclick="${tipo === 'Receita' ? `excluirReceita('${id}')` : `excluirDespesa('${id}')`}">Excluir</button>
+                    <div class="col-auto d-flex d-print-none">
+                        <div class="mt-2 m-sm-auto ">
+                            <button class="btn btn-info btn-sm" onclick="${tipo === 'Receitas' ? `editarReceita('${id}')` : `editarDespesa('${id}')`}"">Editar</button>
+                                <button class="btn btn-danger btn-sm" onclick="${tipo === 'Receitas' ? `excluirReceita('${id}')` : `excluirDespesa('${id}')`}">Excluir</button>
+                            </div>
+                                    
                         </div>
-                                
                     </div>
                 </div>
-            </div>
-            
+                
 
-    `;
+        `;
 
             return listItem;
         }
 
-
         // Função para editar receita por ID
         async function editarReceita(id) {
-
-            const accessUid = await getAccessUid();
-            // Usar o accessUid para acessar o banco de dados
-            db.collection("users").doc(accessUid).collection("receitas").doc(id).get()
-                .then((doc) => {
-                    if (doc.exists) {
-                        const receita = doc.data();
-                        // Preencher campos do formulário de edição com os dados da receita a ser editada
-                        document.getElementById("editNomeReceita").value = receita.nome;
-                        document.getElementById("editDataReceita").value = receita.data;
-                        document.getElementById("editValorReceita").value = formatarValorParaExibicao(receita.valor);
-                        document.getElementById("editCategoriaReceita").value = receita.categoria;
-                        document.getElementById("editStatusReceita").value = receita.status;
-
-                        // Armazenar temporariamente o ID da receita que será editada
-                        itemParaEditar = id;
-                        tipoItemParaEditar = 'receita';
-
-                        // Abrir modal de edição
-                        $('#modalEditarReceita').modal('show');
-                    } else {
-                        console.error("Documento não encontrado.");
-                    }
-                })
-                .catch((error) => {
-                    console.error("Erro ao buscar receita para edição:", error);
-                });
+            editarItemPorId(id, 'receitas');
         }
 
         // Função para editar despesa por ID
         async function editarDespesa(id) {
-            const accessUid = await getAccessUid();
-            // Usar o accessUid para acessar o banco de dados
-            db.collection("users").doc(accessUid).collection("despesas").doc(id).get()
-                .then((doc) => {
-                    if (doc.exists) {
-                        const despesa = doc.data();
-                        // Preencher campos do formulário de edição com os dados da despesa a ser editada
-                        document.getElementById("editNomeDespesa").value = despesa.nome;
-                        document.getElementById("editDataDespesa").value = despesa.data;
-                        document.getElementById("editValorDespesa").value = formatarValorParaExibicao(despesa.valor);
-                        document.getElementById("editCategoriaDespesa").value = despesa.categoria;
-                        document.getElementById("editStatusDespesa").value = despesa.status;
-
-                        // Armazenar temporariamente o ID da despesa que será editada
-                        itemParaEditar = id;
-                        tipoItemParaEditar = 'despesa';
-
-                        // Abrir modal de edição
-                        $('#modalEditarDespesa').modal('show');
-                    } else {
-                        console.error("Documento não encontrado.");
-                    }
-                })
-                .catch((error) => {
-                    console.error("Erro ao buscar despesa para edição:", error);
-                });
+            editarItemPorId(id, 'despesas');
         }
+
         // Função para excluir receita por ID
         async function excluirReceita(id) {
-            const accessUid = await getAccessUid();
-            // Usar o accessUid para acessar o banco de dados
-
-            Swal.fire({
-                title: "Exclusão",
-                text: "Deseja exlcuir o item?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sim, remova!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    db.collection("users").doc(accessUid).collection("receitas").doc(id).delete()
-                        .then(() => {
-                            Swal.fire({
-                                title: "Excluído!",
-                                text: "A ação não pode ser desfeita.",
-                                icon: "success"
-                            });
-                            atualizarExibicao();
-                        })
-                        .catch((error) => {
-                            console.error("Erro ao excluir receita:", error);
-                        });
-
-                }
-            });
-
+            excluirItemPorId(id, 'receitas');
         }
 
         // Função para excluir despesa por ID
         async function excluirDespesa(id) {
+            excluirItemPorId(id, 'despesas');
+        }
+
+        async function editarItemPorId(id, tipo) {
             const accessUid = await getAccessUid();
-            // Usar o accessUid para acessar o banco de dados
 
-            Swal.fire({
-                title: "Exclusão",
-                text: "Deseja excluir o item?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sim, exclua!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    db.collection("users").doc(accessUid).collection("despesas").doc(id).delete()
-                        .then(() => {
-                            Swal.fire({
-                                title: "Excluído!",
-                                text: "A ação não pode ser desfeita.",
-                                icon: "success"
-                            });
-                            atualizarExibicao();
-                        })
-                        .catch((error) => {
-                            console.error("Erro ao excluir despesa:", error);
-                        });
+            try {
+                const itemRef = firebase.database().ref(`users/${accessUid}/${tipo}/${id}`);
+                const itemSnapshot = await itemRef.once('value');
+                const item = itemSnapshot.val();
 
+                console.log(item)
+
+                if (item) {
+                    // Preencher campos do formulário de edição com os dados do item a ser editado
+                    document.getElementById(`editNome${capitalizeFirstLetter(tipo)}`).value = item.nome;
+                    document.getElementById(`editData${capitalizeFirstLetter(tipo)}`).value = dateToString(item.data);
+                    document.getElementById(`editValor${capitalizeFirstLetter(tipo)}`).value = formatarValorParaExibicao(item.valor);
+                    document.getElementById(`editCategoria${capitalizeFirstLetter(tipo)}`).value = item.categoria;
+                    document.getElementById(`editStatus${capitalizeFirstLetter(tipo)}`).value = item.status;
+
+                    // Armazenar temporariamente o ID do item que será editado
+                    itemParaEditar = id;
+                    tipoItemParaEditar = tipo;
+
+                    // Abrir modal de edição correspondente
+                    $(`#modalEditar${capitalizeFirstLetter(tipo)}`).modal('show');
+                } else {
+                    console.error("Documento não encontrado.");
                 }
-            });
-
+            } catch (error) {
+                console.error(`Erro ao buscar ${tipo} para edição:`, error);
+            }
         }
 
-        // Função para salvar a edição da receita por ID
+        async function excluirItemPorId(id, tipo) {
+            const accessUid = await getAccessUid();
+
+            try {
+                const confirmacao = await Swal.fire({
+                    title: "Exclusão",
+                    text: "Deseja excluir o item?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Sim, exclua!"
+                });
+
+                if (confirmacao.isConfirmed) {
+                    await firebase.database().ref(`users/${accessUid}/${tipo}/${id}`).remove();
+                    await Swal.fire({
+                        title: "Excluído!",
+                        text: "A ação não pode ser desfeita.",
+                        icon: "success"
+                    });
+                    // Atualizar a exibição
+                    atualizarExibicao();
+                }
+            } catch (error) {
+                console.error(`Erro ao excluir ${tipo}:`, error);
+            }
+        }
+
+
+        // Função genérica para salvar a edição de um item por ID
+        async function salvarEdicaoItem(id, tipo) {
+            if (itemParaEditar && tipoItemParaEditar === tipo) {
+                const accessUid = await getAccessUid();
+
+                try {
+                    const nome = document.getElementById(`editNome${capitalizeFirstLetter(tipo)}`).value;
+                    const dataInput = document.getElementById(`editData${capitalizeFirstLetter(tipo)}`).value;
+                    const [dia, mes, ano] = dataInput.split('/');
+                    const data = new Date(`${ano}-${mes}-${dia}T00:00:00.000Z`);
+                    const valor = parseFloat(document.getElementById(`editValor${capitalizeFirstLetter(tipo)}`).value.replace('.', '').replace(',', '.'));
+                    const categoria = document.getElementById(`editCategoria${capitalizeFirstLetter(tipo)}`).value;
+                    const status = document.getElementById(`editStatus${capitalizeFirstLetter(tipo)}`).value;
+
+                    await firebase.database().ref(`users/${accessUid}/${tipo}/${id}`).update({ nome, data, valor, categoria, status });
+                    toast.show('Atualizar', 'Item atualizado com sucesso!')
+                    $(`#modalEditar${capitalizeFirstLetter(tipo)}`).modal('hide');
+                    atualizarExibicao();
+                } catch (error) {
+                    console.error(`Erro ao atualizar ${tipo}:`, error);
+                }
+            }
+        }
+
+        // Função para salvar a edição de uma receita por ID
         async function salvarEdicaoReceita() {
-            if (itemParaEditar && tipoItemParaEditar === 'receita') {
-                const nome = document.getElementById("editNomeReceita").value;
-                const data = document.getElementById("editDataReceita").value;
-                const valor = parseFloat(document.getElementById("editValorReceita").value.replace('.', '').replace(',', '.'));
-                const categoria = document.getElementById("editCategoriaReceita").value;
-                const statusReceita = document.getElementById("editStatusReceita").value;
-
-                // Atualizar os dados da receita no Firestore
-                const accessUid = await getAccessUid();
-
-                // Usar o accessUid para acessar o banco de dados
-
-                db.collection("users").doc(accessUid).collection("receitas").doc(itemParaEditar).update({ nome, data, valor, categoria, status: statusReceita })
-                    .then(() => {
-                        toast.show('Atualizar', 'Item atualizado com sucesso!')
-                        $('#modalEditarReceita').modal('hide');
-                        atualizarExibicao();
-                    })
-                    .catch((error) => {
-                        console.error("Erro ao atualizar despesa:", error);
-                    });
-
-
-            }
+            salvarEdicaoItem(itemParaEditar, 'receitas');
         }
 
-        // Função para salvar a edição da despesa por ID
+        // Função para salvar a edição de uma despesa por ID
         async function salvarEdicaoDespesa() {
-            if (itemParaEditar && tipoItemParaEditar === 'despesa') {
-                const nome = document.getElementById("editNomeDespesa").value;
-                const data = document.getElementById("editDataDespesa").value;
-                const valor = parseFloat(document.getElementById("editValorDespesa").value.replace('.', '').replace(',', '.'));
-                const categoria = document.getElementById("editCategoriaDespesa").value;
-                const statusDespesa = document.getElementById("editStatusDespesa").value;
-
-                // Atualizar os dados da despesa no Firestore
-                const accessUid = await getAccessUid();
-
-                // Usar o accessUid para acessar o banco de dados
-                db.collection("users").doc(accessUid).collection("despesas").doc(itemParaEditar).update({ nome, data, valor, categoria, status: statusDespesa })
-                    .then(() => {
-                        toast.show('Atualizar', 'Item atualizado com sucesso!')
-                        // Atualizar a exibição
-                        atualizarExibicao();
-                        // Fechar modal de edição
-                        $('#modalEditarDespesa').modal('hide');
-                    })
-                    .catch((error) => {
-                        console.error("Erro ao atzualizar despesa:", error);
-                    });
-            }
+            salvarEdicaoItem(itemParaEditar, 'despesas');
         }
 
-
-        // Função para calcular a soma dos valores de receitas com base no status
-        async function calcularSomaValoresReceitas(status) {
-            const accessUid = await getAccessUid();
-
-            try {
-                let total = 0;
-                // Usar o accessUid para acessar o banco de dados
-                const receitasSnapshot = await db.collection("users").doc(accessUid).collection("receitas").where("status", "==", status).get();
-                receitasSnapshot.forEach((doc) => {
-                    const receita = doc.data();
-                    total += receita.valor;
-                });
-                return total;
-            } catch (error) {
-                console.error("Erro ao calcular a soma dos valores de receitas:", error);
-                return 0;
-            }
-        }
-
-        // Função para calcular a soma dos valores de despesas com base no status
-        async function calcularSomaValoresDespesas(status) {
-            const accessUid = await getAccessUid();
-
-            try {
-                let total = 0;
-                // Usar o accessUid para acessar o banco de dados
-                const despesasSnapshot = await db.collection("users").doc(accessUid).collection("despesas").where("status", "==", status).get();
-                despesasSnapshot.forEach((doc) => {
-                    const despesa = doc.data();
-                    total += despesa.valor;
-                });
-                return total;
-            } catch (error) {
-                console.error("Erro ao calcular a soma dos valores de despesas:", error);
-                return 0;
-            }
-        }
-
-        // Função para calcular a quantidade de despesas com base no status
-        async function calcularQuantidadeDespesas(status) {
-            const accessUid = await getAccessUid();
-            // Usar o accessUid para acessar o banco de dados
-            try {
-                let quantidade = 0;
-                const despesasSnapshot = await db.collection("users").doc(accessUid).collection("despesas").where("status", "==", status).get();
-                quantidade = despesasSnapshot.size;
-                return quantidade;
-            } catch (error) {
-                console.error("Erro ao calcular a quantidade de despesas:", error);
-                return 0;
-            }
-        }
 
         // Função para formatar o valor para exibição
         function formatarValorParaExibicao(valor) {
@@ -1331,76 +1416,92 @@
 
 
 
-        // Exemplo de uso da biblioteca
-        function exportarDados() {
-            const dados = {
-                receitas: JSON.parse(localStorage.getItem('receitas')) || [],
-                despesas: JSON.parse(localStorage.getItem('despesas')) || []
-            };
 
-            const json = JSON.stringify(dados);
-            const blob = new Blob([json], { type: 'application/json' });
-            const uuid = uuidv4();
-            const nomeArquivo = `fincontrol_${uuid}_Export.json`;
+        // Função para exportar dados
+        async function exportarDados() {
+            const accessUid = await getAccessUid();
 
-            saveAs(blob, nomeArquivo);
+            try {
+                const dados = {
+                    receitas: [],
+                    despesas: []
+                };
 
-            toast.show('Export', nomeArquivo + ' foi exportado')
+                // Consultar o banco de dados para obter as receitas do usuário
+                db.ref(`users/${accessUid}/receitas`).once('value', (snapshot) => {
+                    snapshot.forEach((childSnapshot) => {
+                        dados.receitas.push(childSnapshot.val());
+                    });
+                });
+
+                // Consultar o banco de dados para obter as despesas do usuário
+                db.ref(`users/${accessUid}/despesas`).once('value', (snapshot) => {
+                    snapshot.forEach((childSnapshot) => {
+                        dados.despesas.push(childSnapshot.val());
+                    });
+                });
+
+                const json = JSON.stringify(dados);
+                const blob = new Blob([json], { type: 'application/json' });
+                const uuid = uuidv4();
+                const nomeArquivo = `fincontrol_${uuid}_Export.json`;
+
+                saveAs(blob, nomeArquivo);
+
+                toast.show('Export', `${nomeArquivo} foi exportado`);
+            } catch (error) {
+                console.error('Erro ao exportar dados:', error);
+            }
         }
 
-        // Função para importar os dados de um arquivo JSON
-        function importarDados(event) {
+        // Função para importar dados
+        async function importarDados(event) {
+            const accessUid = await getAccessUid();
             const arquivo = event.target.files[0];
             const leitor = new FileReader();
 
             leitor.onload = async function (evento) {
                 const dados = JSON.parse(evento.target.result);
-                const dataAtualizacao = new Date();
 
-                // Formato de data dd/mm/yyyy
-                const dia = String(dataAtualizacao.getDate()).padStart(2, '0');
-                const mes = String(dataAtualizacao.getMonth() + 1).padStart(2, '0'); // +1 porque os meses são indexados a partir de 0
-                const ano = dataAtualizacao.getFullYear();
-                const dataFormatada = `${dia}/${mes}/${ano}`;
-
-                // Atualizar todas as datas para a data formatada de importação
-                dados.receitas.forEach(receita => receita.data = dataFormatada);
-                dados.despesas.forEach(despesa => despesa.data = dataFormatada);
-
-                // Adicionar os dados ao Firestore
-                const accessUid = await getAccessUid();
-
-                // Usar o accessUid para acessar o banco de dados
-                const receitasRef = db.collection("users").doc(accessUid).collection("receitas");
-                const despesasRef = db.collection("users").doc(accessUid).collection("despesas");
-
-                dados.receitas.forEach(receita => {
-                    receitasRef.add(receita)
-                        .then((docRef) => {
-                            console.log("Receita importada com ID: ", docRef.id);
-                        })
-                        .catch((error) => {
-                            console.error("Erro ao importar receita: ", error);
+                try {
+                    // Adicionar as receitas ao banco de dados
+                    if (dados.receitas && dados.receitas.length > 0) {
+                        dados.receitas.forEach(receita => {
+                            db.ref(`users/${accessUid}/receitas`).push(receita)
+                                .then(() => {
+                                    console.log('Receita importada com sucesso');
+                                })
+                                .catch(error => {
+                                    console.error('Erro ao importar receita:', error);
+                                });
                         });
-                });
+                    }
 
-                dados.despesas.forEach(despesa => {
-                    despesasRef.add(despesa)
-                        .then((docRef) => {
-                            console.log("Despesa importada com ID: ", docRef.id);
-                        })
-                        .catch((error) => {
-                            console.error("Erro ao importar despesa: ", error);
+                    // Adicionar as despesas ao banco de dados
+                    if (dados.despesas && dados.despesas.length > 0) {
+                        dados.despesas.forEach(despesa => {
+                            db.ref(`users/${accessUid}/despesas`).push(despesa)
+                                .then(() => {
+                                    console.log('Despesa importada com sucesso');
+                                })
+                                .catch(error => {
+                                    console.error('Erro ao importar despesa:', error);
+                                });
                         });
-                });
+                    }
 
-                // Atualizar a exibição
-                atualizarExibicao();
+                    // Atualizar a exibição
+                    atualizarExibicao();
+                    toast.show('Import', 'Dados importados com sucesso');
+                } catch (error) {
+                    console.error('Erro ao importar dados:', error);
+                }
             };
 
             leitor.readAsText(arquivo);
-            toast.show('import', ' Dados importados')
         }
+
+
 
         // Função para gerar um UUID (Universally Unique Identifier)
         function uuidv4() {
@@ -1410,6 +1511,7 @@
                 return v.toString(16);
             });
         }
+
 
 
 
@@ -1538,20 +1640,14 @@
         // Função para gerar o link de compartilhamento com o token
         async function generateShareLink() {
             try {
-
                 const user = firebase.auth().currentUser;
-
-
-                // Cria um novo token de convidado no Firestore
-                const tokenRef = await db.collection("accessTokens").add({
-                    uid: user.uid
-                });
+                const tokenRef = await db.ref("accessTokens").push({ uid: user.uid });
 
                 // URL base da sua aplicação (index.html)
                 const baseUrl = window.location.href.split('?')[0]; // Remove parâmetros de consulta, se houver
 
                 // Link de compartilhamento com o token como parâmetro de consulta
-                const shareLink = `${baseUrl}?token=${tokenRef.id}`;
+                const shareLink = `${baseUrl}?token=${tokenRef.key}`;
 
                 return shareLink;
             } catch (error) {
@@ -1561,25 +1657,19 @@
             }
         }
 
-
         // Função para copiar o link de compartilhamento
         async function copyShareLink() {
             const shareLink = await generateShareLink();
             const shareLinkInput = document.getElementById("shareLink");
             shareLinkInput.value = shareLink;
-
-            //const shareLinkInput = document.getElementById("shareLink");
             shareLinkInput.select();
             document.execCommand("copy");
-
             toast.show('Compartilhar', "Link copiado para a área de transferência!");
         }
 
         // Executar a função de geração do link de compartilhamento ao carregar a página
         window.onload = async function () {
-            //const shareLink = await generateShareLink();
-            //const shareLinkInput = document.getElementById("shareLink");
-            //shareLinkInput.value = shareLink;
+            // Não é necessário chamar a função de geração de link aqui, pois ela será chamada ao clicar no botão de copiar
         };
     </script>
 
