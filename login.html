@@ -19,10 +19,14 @@
     <script src="./vendor/ToastyKit/dist/js/toastykit.js"></script>
     <link href="./vendor/ToastyKit/dist/css/toastykit.css" rel="stylesheet">
 
-    <!-- Firebase config -->
+    <!--Firebase config-->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <!-- Script do Realtime Database -->
+
+    <!-- Certifique-se de incluir o script do Realtime Database -->
 
 
 
@@ -52,7 +56,7 @@
 
 
     <script>
-        // Configuração do Firebase
+        // Configuracao do Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyC1DegxDNN099jZjsnN2YBWZuE6u_gG16Y",
             authDomain: "fincontrol-3b9fa.firebaseapp.com",
@@ -62,16 +66,17 @@
             appId: "1:521919064536:web:7662b273b48cbcbdebeaad"
         };
 
+
         // Inicialização do Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore(app);
-        const auth = firebase.auth(app);
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database(); // Referência para o Realtime Database
+        const auth = firebase.auth(); // Referência para o módulo de autenticação do Firebase
 
         // Verifica se o usuário já está logado
         auth.onAuthStateChanged((user) => {
             if (user) {
                 // Redireciona o usuário para a página principal
-                window.location.href = "./index.html";
+                //swindow.location.href = "./index.html";
             }
         });
 
@@ -95,29 +100,34 @@
 
                 if (token) {
                     // Procurar o user.uid correspondente na coleção accessTokens
-                    const tokenDoc = await db.collection("accessTokens").doc(token).get();
+                    const tokenDoc = await db.ref("accessTokens").child(token).once('value');
 
-                    //if (tokenDoc.exists) {
-                    const userUid = tokenDoc.data().uid;
-                    console.log('usuario:' + uid, 'Shared:' + userUid)
-                    if (uid != userUid) {
-                        // Salvar o user.uid do usuário que compartilhou o acesso no perfil do novo usuário
-                        await db.collection("users").doc(uid).set({
-                            sharedAccessUid: userUid
-                        });
-                        toast.show('Login',"Usuário logado com sucesso e acesso compartilhado salvo.");
-                    }else{
-                        toast.show('Login',"Usuário logado com sucesso como proprietário.");
+                    if (tokenDoc.exists()) {
+                        const userUid = tokenDoc.val().uid;
+
+                        if (uid !== userUid) {
+                            try {
+                                // Salvar o user.uid do usuário que compartilhou o acesso no perfil do novo usuário
+                                await db.ref(`users/${uid}/sharedAccess`).set(userUid);
+                                console.log("sharedAccess adicionado com sucesso!");
+                                // Redireciona para a página principal após o login bem-sucedido
+
+                                toast.show('Login', "Usuário logado com sucesso e acesso compartilhado salvo.");
+                            } catch (error) {
+                                console.error("Erro ao adicionar sharedAccess: ", error);
+                                toast.show('Erro', "Erro ao adicionar sharedAccess");
+                            }
+                        } else {
+                            toast.show('Login', "Usuário logado com sucesso como proprietário.");
+                        }
+                    } else {
+                        console.log("Token inválido. Nenhum acesso compartilhado foi salvo.");
                     }
 
-
-                   
-                } else {
-                    console.log("Token inválido. Nenhum acesso compartilhado foi salvo.");
                 }
-
-                // Redireciona para a página principal após o login bem-sucedido
                 window.location.href = "./index.html";
+
+
             } catch (error) {
                 console.log(error)
                 // Exibir mensagem de erro no toast

@@ -787,7 +787,6 @@
 
                     if (tokenSnapshot.exists()) {
                         const userUid = tokenSnapshot.val().uid;
-                        console.log('usuario:', uid, 'Shared:', userUid);
                         if (uid !== userUid) {
                             return userUid;
                         }
@@ -802,14 +801,13 @@
                     const userSnapshot = await userRef.get();
                     const userData = userSnapshot.val();
 
-                    // Se o sharedAccessUid existir, usá-lo. Caso contrário, usar o uid do usuário.
-                    return (userData && userData.sharedAccessUid) ? userData.sharedAccessUid : uid;
+                    // Se userData existir e userData.sharedAccess também existir, use userData.sharedAccess. Caso contrário, use uid.
+                    return userData && userData.sharedAccess ? userData.sharedAccess : uid;
                 } catch (error) {
                     console.error('Erro ao obter usuário:', error);
                 }
             }
         }
-
 
         // Função para adicionar receita
         async function adicionarReceita() {
