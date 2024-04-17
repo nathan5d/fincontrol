@@ -102,6 +102,7 @@
 
         body {
             color: var(--primary-color);
+            background-color: #f8f9fa;
 
         }
 
@@ -245,7 +246,7 @@
             margin-bottom: 10px;
             border-radius: 5px;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .fab-option:hover {
@@ -318,6 +319,24 @@
             position: absolute;
             left: 0;
             top: 0;
+        }
+
+        .card {
+            border: 1px solid #f8f3f3;
+            border-radius: 10px!important;
+        }
+
+
+        .list-group-item {
+           
+            margin-bottom: 8px;
+            border: 1px solid #f8f3f3;
+            border-radius: 10px !important;
+            
+        }
+        .user-info{
+            color: #f8f3f3;
+            background-color: var(--primary-color)!important;
         }
     </style>
 </head>
@@ -607,7 +626,7 @@
         <!-- Dashboard com o total de rendas, despesas e saldo -->
         <div class="row mt-4">
             <div class="col-md-4">
-                <div class="card  card-stats  mb-4 mb-xl-0">
+                <div class="card shadow-sm card-stats  mb-4 mb-xl-0">
 
                     <div class="card-body">
                         <div class="row">
@@ -617,7 +636,7 @@
                                 <p class="h5  card-text font-weight-bold mb-0 skeleton" id="totalReceitas">R$ 0,00</p>
                             </div>
                             <div class="col-auto">
-                                <div class="icon icon-shape bg-info text-white rounded-circle shadow">
+                                <div class="icon icon-shape bg-info text-white rounded-circle shadow-sm">
                                     <i class="fa-regular fa-dollar-sign"></i>
                                 </div>
                             </div>
@@ -631,7 +650,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card card-stats  mb-4 mb-xl-0">
+                <div class="card shadow-sm card-stats  mb-4 mb-xl-0">
                     <div class="card-body">
 
                         <div class="row">
@@ -641,7 +660,7 @@
                                 <p class="h5 font-weight-bold mb-0 skeleton" id="totalDespesas">R$ 0,00</p>
                             </div>
                             <div class="col-auto">
-                                <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+                                <div class="icon icon-shape bg-danger text-white rounded-circle shadow-sm">
                                     <i class="fa-solid fa-arrow-turn-down"></i>
                                 </div>
                             </div>
@@ -657,7 +676,7 @@
 
             </div>
             <div class="col-md-4">
-                <div class="card">
+                <div class="card shadow-sm card-stats  mb-4 mb-xl-0">
                     <div class="card-body">
                         <div class="row">
                             <div class="col">
@@ -665,7 +684,7 @@
                                 <p class="h5 font-weight-bold mb-0 skeleton" id="saldo">R$ 0,00</p>
                             </div>
                             <div class="col-auto">
-                                <div class="icon icon-shape bg-success text-white rounded-circle shadow">
+                                <div class="icon icon-shape bg-success text-white rounded-circle shadow-sm">
                                     <i class="fa-solid fa-hand-holding-dollar"></i>
                                 </div>
                             </div>
@@ -694,7 +713,7 @@
         <!-- Exibição dos dados -->
         <div id="dados" class="mt-4">
 
-            <div class="row d-flex mt-5 mb-2">
+            <div class="row d-flex mt-5 mb-2 ">
                 <div class="col-md-6 col-sm-12 mb-1 text-center text-md-left">
                     <span class="h5 font-weight-bold">Receitas</span>
                 </div>
@@ -767,7 +786,7 @@
                 // Chama a função de atualização se o usuário estiver autenticado
                 user = user
 
-                atualizarExibicao();
+                initApp();
             } else {
                 console.error("Usuário não autenticado.");
                 // Aqui você pode lidar com a situação de usuário não autenticado, como redirecionar para a página de login
@@ -812,6 +831,57 @@
             }
         }
 
+
+        // Função para atualizar a exibição
+        async function initApp() {
+
+            console.log('initApp');
+            document.getElementById('loadingScreen').style.display = 'none';
+            const accessUid = await getAccessUid();
+
+            try {
+                await popularSelectMeses(accessUid);
+
+                const dataAtual = new Date();
+                const ano = dataAtual.getFullYear();
+                const mes = dataAtual.getMonth() + 1; // Os meses são baseados em zero, então somamos 1
+                const primeiroDiaMes = new Date(ano, mes - 1, 1); // Definindo o primeiro dia do mês
+                const ultimoDiaMes = new Date(ano, mes, 0); // Definindo o último dia do mês
+
+                const dataInicio = primeiroDiaMes.toISOString(); // Convertendo para o formato de data ISO
+                const dataFim = new Date(ultimoDiaMes.getTime() + 86400000).toISOString(); // Adicionando 1 dia ao último dia do mês e convertendo para o formato de data ISO
+
+                listaReceitas.innerHTML = '';
+                listaDespesas.innerHTML = '';
+
+                // Ouvir mudanças em tempo real nas receitas e despesas
+                db.ref(`users/${accessUid}/receitas`).on('child_added', (snapshot) => {
+                    const receita = snapshot.val();
+                    const id = snapshot.key;
+                    // Adicionar a receita à lista de receitas
+                    const item = criarItemLista(receita, "Receitas", id);
+                    listaReceitas.appendChild(item);
+                    calcularValores(dataInicio, dataFim);
+                });
+
+
+
+
+                db.ref(`users/${accessUid}/despesas`).on('child_added', (snapshot) => {
+                    const despesa = snapshot.val();
+                    const id = snapshot.key;
+                    // Adicionar a despesa à lista de despesas
+                    const item = criarItemLista(despesa, "Despesas", id);
+                    listaDespesas.appendChild(item);
+                    calcularValores(dataInicio, dataFim);
+                });
+
+            } catch (error) {
+                console.error("Erro ao atualizar exibição:", error);
+            }
+        }
+
+
         // Função para adicionar receita
         async function adicionarReceita() {
             const nome = document.getElementById("nomeReceitas").value;
@@ -845,7 +915,7 @@
                         document.getElementById("valorReceitas").value = "";
                         //document.getElementById("categoriaReceitas").value = "";
                         //document.getElementById("statusReceitas").value = "";
-                        atualizarExibicao();
+                        initApp();
                         // Fechar o modal
                         $('#modalReceitas').modal('hide');
                     }
@@ -889,7 +959,7 @@
                         //document.getElementById("categoriaDespesas").value = "";
                         //document.getElementById("statusDespesas").value = "";
                         // Atualizar a exibição
-                        atualizarExibicao();
+                        initApp();
                         // Fechar o modal
                         $('#modalDespesas').modal('hide');
                     }
@@ -1037,7 +1107,7 @@
             } else {
                 listaReceitas.innerHTML = '';
                 listaDespesas.innerHTML = '';
-                //atualizarExibicao();
+                //initApp();
             }
         }
 
@@ -1081,54 +1151,6 @@
 
 
 
-
-        // Função para atualizar a exibição
-        async function atualizarExibicao() {
-
-            document.getElementById('loadingScreen').style.display = 'none';
-            const accessUid = await getAccessUid();
-
-            try {
-                await popularSelectMeses(accessUid);
-
-                const dataAtual = new Date();
-                const ano = dataAtual.getFullYear();
-                const mes = dataAtual.getMonth() + 1; // Os meses são baseados em zero, então somamos 1
-                const primeiroDiaMes = new Date(ano, mes - 1, 1); // Definindo o primeiro dia do mês
-                const ultimoDiaMes = new Date(ano, mes, 0); // Definindo o último dia do mês
-
-                const dataInicio = primeiroDiaMes.toISOString(); // Convertendo para o formato de data ISO
-                const dataFim = new Date(ultimoDiaMes.getTime() + 86400000).toISOString(); // Adicionando 1 dia ao último dia do mês e convertendo para o formato de data ISO
-
-                listaReceitas.innerHTML = '';
-                listaDespesas.innerHTML = '';
-
-                // Ouvir mudanças em tempo real nas receitas e despesas
-                db.ref(`users/${accessUid}/receitas`).on('child_added', (snapshot) => {
-                    const receita = snapshot.val();
-                    const id = snapshot.key;
-                    // Adicionar a receita à lista de receitas
-                    const item = criarItemLista(receita, "Receitas", id);
-                    listaReceitas.appendChild(item);
-                    calcularValores(dataInicio, dataFim);
-                });
-
-
-
-
-                db.ref(`users/${accessUid}/despesas`).on('child_added', (snapshot) => {
-                    const despesa = snapshot.val();
-                    const id = snapshot.key;
-                    // Adicionar a despesa à lista de despesas
-                    const item = criarItemLista(despesa, "Despesas", id);
-                    listaDespesas.appendChild(item);
-                    calcularValores(dataInicio, dataFim);
-                });
-
-            } catch (error) {
-                console.error("Erro ao atualizar exibição:", error);
-            }
-        }
 
         // Outras funções permanecem iguais
 
@@ -1244,14 +1266,14 @@
         function criarItemLista(item, tipo, id) {
 
             const listItem = document.createElement('li');
-            listItem.classList.add('list-group-item');
+            listItem.classList.add('list-group-item', 'shadow-sm', 'border-none');
             // Adicionando o atributo data-id
             listItem.setAttribute('data-id', id);
 
             const statusClass = item.status === 'Pago' ? 'text-success' : 'text-danger';
 
             listItem.innerHTML = `
-                <div class="row">
+                <div class="row ">
                     <div class="col-12 col-md">
                         <div class="row">
                             <div class="col-md-3 col-sm-12 h5 font-weight-bold mb-0">
@@ -1371,7 +1393,7 @@
 
                     });
                     // Atualizar a exibição
-                    atualizarExibicao();
+                    initApp();
                 }
             } catch (error) {
                 console.error(`Erro ao excluir ${tipo}:`, error);
@@ -1396,7 +1418,38 @@
                     await firebase.database().ref(`users/${accessUid}/${tipo}/${id}`).update({ nome, data, valor, categoria, status });
                     toast.show('Atualizar', 'Item atualizado com sucesso!')
                     $(`#modalEditar${capitalizeFirstLetter(tipo)}`).modal('hide');
-                    atualizarExibicao();
+                    //initApp();
+
+
+
+
+
+                    try {
+
+
+                        const dataAtual = new Date();
+                        const ano = dataAtual.getFullYear();
+                        const mes = dataAtual.getMonth() + 1; // Os meses são baseados em zero, então somamos 1
+                        const primeiroDiaMes = new Date(ano, mes - 1, 1); // Definindo o primeiro dia do mês
+                        const ultimoDiaMes = new Date(ano, mes, 0); // Definindo o último dia do mês
+
+                        const dataInicio = primeiroDiaMes.toISOString(); // Convertendo para o formato de data ISO
+                        const dataFim = new Date(ultimoDiaMes.getTime() + 86400000).toISOString(); // Adicionando 1 dia ao último dia do mês e convertendo para o formato de data ISO
+
+
+
+                        calcularValores(dataInicio, dataFim);
+
+
+
+
+
+                        calcularValores(dataInicio, dataFim);
+
+
+                    } catch (error) {
+                        console.error("Erro ao atualizar exibição:", error);
+                    }
                 } catch (error) {
                     console.error(`Erro ao atualizar ${tipo}:`, error);
                 }
@@ -1505,7 +1558,7 @@
                     }
 
                     // Atualizar a exibição
-                    atualizarExibicao();
+                    initApp();
                     toast.show('Import', 'Dados importados com sucesso');
                 } catch (error) {
                     console.error('Erro ao importar dados:', error);
