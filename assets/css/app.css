@@ -250,16 +250,16 @@ a.fab-option {
 .dados.container>span {}
 
 /* Estilo para a linha vertical ao lado de cada div */
-.dados-wraper>div {
+.dados-wraper .receitas,.dados-wraper .despesas {
     position: relative;
 }
 
-.dados-wraper>div::before {
+.dados-wraper .receitas::before,.dados-wraper .despesas::before {
     content: "";
     position: absolute;
-    top: 44px;
+    top: 40px;
     bottom: 0;
-    left: -1px;
+    left: 50%;
     width: 4px;
     /* Largura da linha vertical */
     border-radius: 2px;
@@ -268,44 +268,20 @@ a.fab-option {
     transform: translateX(-50%);
     display: none;
 }
+.dados-wraper .receitas::before{
+    background-color: #17a2b8;
+}
 
-.dados-wraper>div.receitas li {
+.dados-wraper .despesas::before {
+    background-color: #dc3545;
+}
+
+.dados-wraper .receitas li {
     border-left: 2px solid var(--secondary-color);
     /* Cor da linha vertical */
 }
 
-.dados-wraper>div.despesas li {
+.dados-wraper .despesas li {
     border-left: 2px solid #dc3545;
     /* Cor da linha vertical */
-}
-
-/* Estilo para os pontos/elipses/bolinhas */
-.timeline-dot {
-    position: absolute;
-    top: 13px;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 10px;
-    /* Tamanho do ponto */
-    height: 10px;
-    /* Tamanho do ponto */
-    background-color: #000;
-    /* Cor do ponto */
-    border-radius: 50%;
-    /* Forma do ponto (circular) */
-    display: none;
-}
-
-.receitas .timeline-dot {
-    background-color: var(--secondary-color);
-}
-
-.despesas .timeline-dot {
-    background-color: #dc3545;
-}
-
-/* Estilo para estender a linha vertical ao lado do conteúdo */
-.timeline-content {
-    padding-left: 20px;
-    /* Espaçamento entre a linha vertical e o conteúdo */
 }
