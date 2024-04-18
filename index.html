@@ -24,17 +24,21 @@
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
     <script src="https://kit.fontawesome.com/eb087764b4.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="./assets/css/app.css">
+
     <!-- choose one -->
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 
-    <!-- Inclua o jQuery -->
+
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="./assets/js/jquery.mask.min.js"></script>
     <script src="./vendor/saveAs/dist/saveAs.js"></script>
 
 
-    <!-- Inclua o jQuery UI -->
+    <!-- jQuery UI -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
@@ -45,7 +49,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!--Firebase config-->
     <!--Firebase config-->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
@@ -92,253 +95,7 @@
 
 
 
-    <style>
-        /* Estilo adicional */
-        /* Defina as variáveis CSS dentro de :root */
-        :root {
-            --primary-color: #071e2c;
-            --secondary-color: #fb9a70 !important;
-        }
-
-        body {
-            color: var(--primary-color);
-            background-color: #f8f9fa;
-
-        }
-
-
-
-        .btn {
-            border-radius: 25px;
-            padding: 4px 15px;
-            margin: 0 4px;
-        }
-
-        .bg-success {
-            background-color: var(--secondary-color) !important;
-        }
-
-        .text-success {
-            color: var(--secondary-color) !important;
-        }
-
-
-        .icon-shape {
-            display: inline-flex;
-            padding: 12px;
-            text-align: center;
-            border-radius: 50%;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .icon {
-            width: 3rem;
-            height: 3rem;
-        }
-
-        .pago span,
-        .pendente span {
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .pago span {
-            color: var(--secondary-color);
-            background-color: #e7e7e7;
-            border-radius: 25px;
-            padding: 4px 12px;
-            /* Cor verde para indicar status "Pago" */
-        }
-
-        .pendente span {
-            color: #dc3545;
-            background-color: #e7e7e7;
-            border-radius: 25px;
-            padding: 4px 12px;
-            /* Cor vermelha para indicar status "Pendente" */
-        }
-
-        .saldo-negativo {
-            color: #dc3545;
-        }
-
-
-        .offline-message {
-            font-size: 0.8em;
-            border-radius: 0 0 25px 25px;
-            border-bottom: 4px solid var(--secondary-color);
-            background-color: var(--primary-color);
-            color: #e7e7e7;
-            padding: 5px;
-            text-align: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 9999;
-        }
-
-
-        .fab-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9;
-            display: flex;
-            flex-direction: column;
-            /* Inverte a ordem dos itens */
-            align-items: flex-end;
-        }
-
-        .fab-button {
-            opacity: 0.9;
-            width: 60px;
-            height: 60px;
-            background-color: var(--primary-color);
-            border-radius: 50%;
-            text-align: center;
-            font-size: 30px;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            /* Adicionamos padding para centralizar o ícone no botão */
-            padding: 15px;
-            /* Ajustamos a linha de altura para centralizar o texto verticalmente */
-            line-height: 30px;
-
-
-        }
-
-
-
-        .fab-button.active {
-            transform: rotate(45deg);
-            /* Rotação para transformar em "x" */
-            /* Rotação para transformar em "x" */
-        }
-
-        .fab-options {
-            display: none;
-            flex-direction: column;
-            align-items: flex-end;
-            margin-bottom: 10px;
-            /* Adiciona espaço abaixo das opções */
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        .fab-options.active {
-            display: flex;
-            /* Exibe as opções ao passar o mouse sobre o contêiner */
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .fab-option,
-        a.fab-option {
-            font-weight: bold;
-            color: #071e2c;
-            text-decoration: none;
-            background-color: white;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .fab-option:hover {
-            background-color: #f0f0f0;
-        }
-
-        /*
-
-
-        .fab-container:hover .fab-button {
-
-            transform: rotate(45deg);
-        }
-
-        .fab-container:hover .fab-options {
-            display: flex;
-            opacity: 1;
-            transform: translateY(0);
-        }*/
-
-        #loadingScreen {
-            display: flex;
-            top: 0;
-            left: 0;
-            position: fixed;
-            z-index: 999;
-            width: 100%;
-            height: 100%;
-            background: #f8f9fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .user-info {
-            display: flex;
-            justify-content: right;
-            padding: 20px 30px;
-            border-radius: 8px;
-            color: var(--primary-color);
-        }
-
-        .user-info a {}
-
-        .skeleton {
-            position: relative;
-            overflow: hidden;
-            /* Garante que o gradiente não vaze */
-        }
-
-        /* Animação de carregamento */
-        @keyframes loadingAnimation {
-            0% {
-                background-position: -200px 0;
-            }
-
-            100% {
-                background-position: calc(100% + 200px) 0;
-            }
-        }
-
-        .skeleton.loading::after {
-            content: "";
-            background: linear-gradient(90deg, rgba(240, 240, 240, 1), rgba(250, 250, 250, 1), rgba(240, 240, 240, 1));
-            border-radius: 5px;
-            display: inline-block;
-            width: 100%;
-            height: 100%;
-            animation: loadingAnimation 3s infinite linear;
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-
-        .card {
-            border: 1px solid #f8f3f3;
-            border-radius: 10px!important;
-        }
-
-
-        .list-group-item {
-           
-            margin-bottom: 8px;
-            border: 1px solid #f8f3f3;
-            border-radius: 10px !important;
-            
-        }
-        .user-info{
-            color: #f8f3f3;
-            background-color: var(--primary-color)!important;
-        }
-    </style>
+   
 </head>
 
 <body>
@@ -711,39 +468,33 @@
         </div>
 
         <!-- Exibição dos dados -->
-        <div id="dados" class="mt-4">
-
-            <div class="row d-flex mt-5 mb-2 ">
-                <div class="col-md-6 col-sm-12 mb-1 text-center text-md-left">
-                    <span class="h5 font-weight-bold">Receitas</span>
+        <div id="dados" class="dados-wraper mt-4 timeline">
+            <div class="receitas">
+                <div class="row d-flex mt-5 mb-2">
+                    <div class="timeline-dot"></div>
+                    <div class="col-md-6 col-sm-12 mb-1 text-center text-md-left timeline-content">
+                        <span class="h5 font-weight-bold">Receitas</span>
+                    </div>
+                    <div class="col-md-6 col-sm-12 text-center text-md-right">
+                        <button type="button" class="btn btn-sm d-print-none btn-info" data-toggle="modal"
+                            data-target="#modalReceitas">Adicionar Receita</button>
+                    </div>
                 </div>
-
-                <div class="col-md-6 col-sm-12 text-center text-md-right">
-                    <button type="button" class="btn btn-sm d-print-none btn-info" data-toggle="modal"
-                        data-target="#modalReceitas">Adicionar Receita</button>
-                </div>
-
+                <ul id="listaReceitas" class="p-0"></ul>
             </div>
-
-
-            <ul id="listaReceitas" class="p-0"></ul>
-
-            <div class="row d-flex mt-5 mb-2">
-
-                <div class="col-md-6 col-sm-12 mb-1 text-center text-md-left">
-                    <span class="h5 font-weight-bold">Despesas</span>
+            <div class="despesas">
+                <div class="row d-flex mt-5 mb-2">
+                    <div class="timeline-dot"></div>
+                    <div class="col-md-6 col-sm-12 mb-1 text-center text-md-left timeline-content">
+                        <span class="h5 font-weight-bold">Despesas</span>
+                    </div>
+                    <div class="col-md-6 col-sm-12 text-center text-md-right">
+                        <button type="button" class="btn btn-sm d-print-none btn-danger" data-toggle="modal"
+                            data-target="#modalDespesas">Adicionar Despesa</button>
+                    </div>
                 </div>
-
-                <div class="col-md-6 col-sm-12 text-center text-md-right">
-                    <button type="button" class="btn btn-sm d-print-none btn-danger" data-toggle="modal"
-                        data-target="#modalDespesas">Adicionar Despesa</button>
-                </div>
-
-
+                <ul id="listaDespesas" class="p-0 "></ul>
             </div>
-
-            <ul id="listaDespesas" class="p-0 "></ul>
-
         </div>
 
 
