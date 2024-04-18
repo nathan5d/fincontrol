@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Financeiro</title>
+
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <!-- Dentro da seção head -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="FinControl">
+
+    <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-status-bar" content="#ffffff" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- Integração do Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/eb087764b4.js" crossorigin="anonymous"></script>
+    <!-- choose one -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
+    <!-- Inclua o jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="./assets/js/jquery.mask.min.js"></script>
+    <script src="./vendor/saveAs/dist/saveAs.js"></script>
+
+
+    <!-- Inclua o jQuery UI -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+
+    <script src="./vendor/ToastyKit/dist/js/toastykit.js"></script>
+    <link href="./vendor/ToastyKit/dist/css/toastykit.css" rel="stylesheet">
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!--Firebase config-->
+    <!--Firebase config-->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <!-- Script do Realtime Database -->
+
+    <!-- Certifique-se de incluir o script do Realtime Database -->
+
+
+    <script>
+        // Configuracao do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyC1DegxDNN099jZjsnN2YBWZuE6u_gG16Y",
+            authDomain: "fincontrol-3b9fa.firebaseapp.com",
+            projectId: "fincontrol-3b9fa",
+            storageBucket: "fincontrol-3b9fa.appspot.com",
+            messagingSenderId: "521919064536",
+            appId: "1:521919064536:web:7662b273b48cbcbdebeaad"
+        };
+
+
+        // Inicialização do Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database(); // Referência para o Realtime Database
+        const auth = firebase.auth(); // Referência para o módulo de autenticação do Firebase
+        /*
+                var email = "amaral.nbr@gmail.com";
+                var password = "240587";
+        
+                firebase.auth().signInWithEmailAndPassword(email, password)
+                    .then((userCredential) => {
+                        // Login bem-sucedido
+                        var user = userCredential.user;
+                        console.log("Usuário logado:", user.uid);
+        
+        
+                    })
+                    .catch((error) => {
+                        // Tratar erros de login
+                        console.error("Erro ao fazer login:", error);
+                    });*/
+    </script>
+
+
+
+    <style>
+        /* Estilo adicional */
+        /* Defina as variáveis CSS dentro de :root */
+        :root {
+            --primary-color: #071e2c;
+            --secondary-color: #fb9a70 !important;
+        }
+
+        body {
+            color: var(--primary-color);
+
+        }
+
+
+
+        .btn {
+            border-radius: 25px;
+            padding: 4px 15px;
+            margin: 0 4px;
+        }
+
+        .bg-success {
+            background-color: var(--secondary-color) !important;
+        }
+
+        .text-success {
+            color: var(--secondary-color) !important;
+        }
+
+
+        .icon-shape {
+            display: inline-flex;
+            padding: 12px;
+            text-align: center;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .pago span,
+        .pendente span {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .pago span {
+            color: var(--secondary-color);
+            background-color: #e7e7e7;
+            border-radius: 25px;
+            padding: 4px 12px;
+            /* Cor verde para indicar status "Pago" */
+        }
+
+        .pendente span {
+            color: #dc3545;
+            background-color: #e7e7e7;
+            border-radius: 25px;
+            padding: 4px 12px;
+            /* Cor vermelha para indicar status "Pendente" */
+        }
+
+        .saldo-negativo {
+            color: #dc3545;
+        }
+
+
+        .offline-message {
+            font-size: 0.8em;
+            border-radius: 0 0 25px 25px;
+            border-bottom: 4px solid var(--secondary-color);
+            background-color: var(--primary-color);
+            color: #e7e7e7;
+            padding: 5px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+        }
+
+
+        .fab-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9;
+            display: flex;
+            flex-direction: column;
+            /* Inverte a ordem dos itens */
+            align-items: flex-end;
+        }
+
+        .fab-button {
+            opacity: 0.9;
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            text-align: center;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            /* Adicionamos padding para centralizar o ícone no botão */
+            padding: 15px;
+            /* Ajustamos a linha de altura para centralizar o texto verticalmente */
+            line-height: 30px;
+
+
+        }
+
+
+
+        .fab-button.active {
+            transform: rotate(45deg);
+            /* Rotação para transformar em "x" */
+            /* Rotação para transformar em "x" */
+        }
+
+        .fab-options {
+            display: none;
+            flex-direction: column;
+            align-items: flex-end;
+            margin-bottom: 10px;
+            /* Adiciona espaço abaixo das opções */
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .fab-options.active {
+            display: flex;
+            /* Exibe as opções ao passar o mouse sobre o contêiner */
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fab-option,
+        a.fab-option {
+            font-weight: bold;
+            color: #071e2c;
+            text-decoration: none;
+            background-color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .fab-option:hover {
+            background-color: #f0f0f0;
+        }
+
+        /*
+
+
+        .fab-container:hover .fab-button {
+
+            transform: rotate(45deg);
+        }
+
+        .fab-container:hover .fab-options {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }*/
+
+        #loadingScreen {
+            display: flex;
+            top: 0;
+            left: 0;
+            position: fixed;
+            z-index: 999;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: right;
+            padding: 20px 30px;
+            border-radius: 8px;
+            color: var(--primary-color);
+        }
+
+        .user-info a {}
+
+        .skeleton {
+            position: relative;
+            overflow: hidden;
+            /* Garante que o gradiente não vaze */
+        }
+
+        /* Animação de carregamento */
+        @keyframes loadingAnimation {
+            0% {
+                background-position: -200px 0;
+            }
+
+            100% {
+                background-position: calc(100% + 200px) 0;
+            }
+        }
+
+        .skeleton.loading::after {
+            content: "";
+            background: linear-gradient(90deg, rgba(240, 240, 240, 1), rgba(250, 250, 250, 1), rgba(240, 240, 240, 1));
+            border-radius: 5px;
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            animation: loadingAnimation 3s infinite linear;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="p-0">
+        <div class="user-info bg-light m-4">
+            <span>Olá, <span id="userInfo"></span>! <a href="#" class="text-info" onclick="logout()">Sair</a></span>
+        </div>
+    </div>
+
+
+
+    <div class="container px-4">
+        <div id="offline-message" class="offline-message">
+            Você está visualizando a versão offline. Verifique sua conexão.
+        </div>
+
+
+
+        <div class="fab-container">
+
+            <div class="fab-options">
+
+                <a class="fab-option add" data-toggle="modal" data-target="#modalReceitas"><i
+                        class="fas fa-plus-circle"></i> Adicionar Receita</a>
+                <a class="fab-option add" data-toggle="modal" data-target="#modalDespesas"><i
+                        class="fas fa-plus-circle"></i> Adicionar Despesa</a>
+
+                <!-- Opção para exportar os dados -->
+                <a class="fab-option import" href="#" onclick="exportarDados()"><i class="fas fa-file-export"></i>
+                    Exportar
+                    dados</a>
+
+                <!-- Opção para importar os dados -->
+                <label class="fab-option export" for="inputImportarDados"><i class="fas fa-upload"></i> Importar dados
+                    <input type="file" id="inputImportarDados" accept=".json" onchange="importarDados(event)"
+                        style="display: none;">
+                </label>
+
+            </div>
+            <div class="fab-button bg-info"><i class="fa-solid fa-plus"></i></div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="m-auto">
+                        <img src="./assets/images/Fincontrol.png" alt="" srcset="" width="150px">
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+        <div class="logo m-auto d-flex justify-content-center align-items-center">
+
+
+        </div>
+        <h1 class="mt-4 h4 font-weight-bold text-center title">Controle Financeiro</h1>
+
+
+        <!-- Modais -->
+        <!-- Modal para editar receitas -->
+        <div class="modal fade" id="modalEditarReceitas" tabindex="-1" role="dialog"
+            aria-labelledby="modalEditarReceitaLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalEditarReceitaLabel">Editar Receita</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editarReceitaForm">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="editNomeReceitas" placeholder="Nome">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control date" id="editDataReceitas" placeholder="Data">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control  money" id="editValorReceitas"
+                                    placeholder="Valor">
+                            </div>
+
+                            <div class="form-group d-none">
+                                <select class="form-control" id="editCategoriaReceitas">
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="Alimentação">Alimentação</option>
+                                    <option value="Transporte">Transporte</option>
+                                    <option value="Moradia">Moradia</option>
+                                    <option value="Educação">Educação</option>
+                                    <option value="Saúde">Saúde</option>
+                                    <option value="Lazer">Lazer</option>
+                                    <option value="Entretenimento">Entretenimento</option>
+                                    <option value="Roupas e acessórios">Roupas e acessórios</option>
+                                    <option value="Presentes e doações">Presentes e doações</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" id="editStatusReceitas">
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Pago">Pago</option>
+                                </select>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" onclick="salvarEdicaoReceita()">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para editar despesas -->
+        <div class="modal fade" id="modalEditarDespesas" tabindex="-1" role="dialog"
+            aria-labelledby="modalEditarDespesaLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalEditarDespesaLabel">Editar Despesa</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editarDespesaForm">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="editNomeDespesas" placeholder="Nome">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control date" id="editDataDespesas" placeholder="Data">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control money" id="editValorDespesas"
+                                    placeholder="Valor">
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" id="editCategoriaDespesas">
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="Alimentação">Alimentação</option>
+                                    <option value="Transporte">Transporte</option>
+                                    <option value="Moradia">Moradia</option>
+                                    <option value="Educação">Educação</option>
+                                    <option value="Saúde">Saúde</option>
+                                    <option value="Lazer">Lazer</option>
+                                    <option value="Entretenimento">Entretenimento</option>
+                                    <option value="Roupas e acessórios">Roupas e acessórios</option>
+                                    <option value="Presentes e doações">Presentes e doações</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" id="editStatusDespesas">
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Pago">Pago</option>
+                                </select>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" onclick="salvarEdicaoDespesa()">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para adicionar receitas -->
+        <div class="modal fade" id="modalReceitas" tabindex="-1" role="dialog" aria-labelledby="modalReceitaLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalReceitaLabel">Adicionar Receita</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="receitaForm">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="nomeReceitas" placeholder="Nome">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control date" id="dataReceitas" placeholder="Data">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control money" id="valorReceitas" placeholder="Valor">
+                            </div>
+                            <div class="form-group d-none">
+                                <select class="form-control" id="categoriaReceitas">
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="Alimentação">Alimentação</option>
+                                    <option value="Transporte">Transporte</option>
+                                    <option value="Moradia">Moradia</option>
+                                    <option value="Educação">Educação</option>
+                                    <option value="Saúde">Saúde</option>
+                                    <option value="Lazer">Lazer</option>
+                                    <option value="Entretenimento">Entretenimento</option>
+                                    <option value="Roupas e acessórios">Roupas e acessórios</option>
+                                    <option value="Presentes e doações">Presentes e doações</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+
+                                <select class="form-control" id="statusReceitas">
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Pago" selected>Pago</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" onclick="adicionarReceita()">Adicionar
+                            Receita</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para adicionar despesas -->
+        <div class="modal fade" id="modalDespesas" tabindex="-1" role="dialog" aria-labelledby="modalDespesaLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalDespesaLabel">Adicionar Despesa</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="despesaForm">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="nomeDespesas" placeholder="Nome">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control date" id="dataDespesas" placeholder="Data">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control money" id="valorDespesas" placeholder="Valor">
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" id="categoriaDespesas">
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="Alimentação">Alimentação</option>
+                                    <option value="Transporte">Transporte</option>
+                                    <option value="Moradia">Moradia</option>
+                                    <option value="Educação">Educação</option>
+                                    <option value="Saúde">Saúde</option>
+                                    <option value="Lazer">Lazer</option>
+                                    <option value="Entretenimento">Entretenimento</option>
+                                    <option value="Roupas e acessórios">Roupas e acessórios</option>
+                                    <option value="Presentes e doações">Presentes e doações</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" id="statusDespesas">
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Pago">Pago</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" onclick="adicionarDespesa()">Adicionar
+                            Despesa</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Dashboard com o total de rendas, despesas e saldo -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card  card-stats  mb-4 mb-xl-0">
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <span class=" font-weight-bold card-title text-uppercase text-muted mb-0">Total de
+                                    Receitas</span>
+                                <p class="h5  card-text font-weight-bold mb-0 skeleton" id="totalReceitas">R$ 0,00</p>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-info text-white rounded-circle shadow">
+                                    <i class="fa-regular fa-dollar-sign"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-muted text-sm skeleton" id="legendReceitas">
+                            <span class="text-success"><small><i class="fa-solid fa-circle"></i></small></span>
+                            <span class="text-success mr-0">0.00%</span>
+                            <span class="text-nowrap"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-stats  mb-4 mb-xl-0">
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col">
+                                <span class="font-weight-bold card-title text-uppercase text-muted mb-0">Total de
+                                    Despesas</span>
+                                <p class="h5 font-weight-bold mb-0 skeleton" id="totalDespesas">R$ 0,00</p>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+                                    <i class="fa-solid fa-arrow-turn-down"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-muted text-sm skeleton" id="legendDespesas">
+                            <span class="text-success"><small><i class="fa-solid fa-circle"></i></small></span>
+                            <span class="text-success mr-0 ">0.00%</span>
+                            <span class="text-nowrap "></span>
+                        </p>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <span class="font-weight-bold card-title text-uppercase text-muted mb-0">Balanço</span>
+                                <p class="h5 font-weight-bold mb-0 skeleton" id="saldo">R$ 0,00</p>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-success text-white rounded-circle shadow">
+                                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0 text-muted text-sm skeleton" id="legendSaldo">
+                            <span class="text-success"><small><i class="fa-solid fa-circle"></i></small></span>
+                            <span class="text-success mr-0 ">0.00%</span>
+                            <span class="text-nowrap "></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row  mt-3">
+            <div class="col-auto m-auto">
+                <select id="filtroData" class="form-control">
+                    <!-- Opção padrão para exibir todas as datas -->
+                    <option value="">Todos</option>
+                </select>
+
+            </div>
+        </div>
+
+        <!-- Exibição dos dados -->
+        <div id="dados" class="mt-4">
+
+            <div class="row d-flex mt-5 mb-2">
+                <div class="col-md-6 col-sm-12 mb-1 text-center text-md-left">
+                    <span class="h5 font-weight-bold">Receitas</span>
+                </div>
+
+                <div class="col-md-6 col-sm-12 text-center text-md-right">
+                    <button type="button" class="btn btn-sm d-print-none btn-info" data-toggle="modal"
+                        data-target="#modalReceitas">Adicionar Receita</button>
+                </div>
+
+            </div>
+
+
+            <ul id="listaReceitas" class="p-0"></ul>
+
+            <div class="row d-flex mt-5 mb-2">
+
+                <div class="col-md-6 col-sm-12 mb-1 text-center text-md-left">
+                    <span class="h5 font-weight-bold">Despesas</span>
+                </div>
+
+                <div class="col-md-6 col-sm-12 text-center text-md-right">
+                    <button type="button" class="btn btn-sm d-print-none btn-danger" data-toggle="modal"
+                        data-target="#modalDespesas">Adicionar Despesa</button>
+                </div>
+
+
+            </div>
+
+            <ul id="listaDespesas" class="p-0 "></ul>
+
+        </div>
+
+
+
+
+
+    </div>
+    <div class="container-fuid px-4 bg-light ">
+        <div class="row ">
+            <div class="col-md-6 offset-md-3 mt-5 mb-5">
+                <h2>Compartilhar Banco de Dados</h2>
+                <p>Copie o link abaixo e compartilhe com quem deseja ter acesso ao seu banco de dados:</p>
+                <input type="text" class="form-control mb-2" id="shareLink" value="" readonly>
+                <button class="btn btn-primary" onclick="copyShareLink()">Gerar e Copiar Link</button>
+            </div>
+        </div>
+    </div>
+    <div id="loadingScreen">
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="m-auto">
+                        <img src="./assets/images/Fincontrol.png" alt="" srcset="" width="150px">
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+    <script>
+
+
+        //let user
+        // Verifica se o usuário já está logado
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // Chama a função de atualização se o usuário estiver autenticado
+                user = user
+
+                atualizarExibicao();
+            } else {
+                console.error("Usuário não autenticado.");
+                // Aqui você pode lidar com a situação de usuário não autenticado, como redirecionar para a página de login
+            }
+        });
+
+        async function getAccessUid() {
+            const user = firebase.auth().currentUser;
+            const uid = user.uid;
+
+            // Obter o token da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (token) {
+                try {
+                    // Procurar o user.uid correspondente na coleção accessTokens
+                    const tokenRef = firebase.database().ref(`accessTokens/${token}`);
+                    const tokenSnapshot = await tokenRef.get();
+
+                    if (tokenSnapshot.exists()) {
+                        const userUid = tokenSnapshot.val().uid;
+                        if (uid !== userUid) {
+                            return userUid;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro ao obter token:', error);
+                }
+            } else {
+                try {
+                    // Obter o documento do usuário
+                    const userRef = firebase.database().ref(`users/${uid}`);
+                    const userSnapshot = await userRef.get();
+                    const userData = userSnapshot.val();
+
+                    // Se userData existir e userData.sharedAccess também existir, use userData.sharedAccess. Caso contrário, use uid.
+                    return userData && userData.sharedAccess ? userData.sharedAccess : uid;
+                } catch (error) {
+                    console.error('Erro ao obter usuário:', error);
+                }
+            }
+        }
+
+        // Função para adicionar receita
+        async function adicionarReceita() {
+            const nome = document.getElementById("nomeReceitas").value;
+            const dataInput = document.getElementById("dataReceitas").value;
+            const [dia, mes, ano] = dataInput.split('/');
+            const data = new Date(`${ano}-${mes}-${dia}T00:00:00.000Z`);
+            const valor = parseFloat(document.getElementById("valorReceitas").value.replace('.', '').replace(',', '.'));
+            const categoria = document.getElementById("categoriaReceitas").value;
+            const statusReceita = document.getElementById("statusReceitas").value;
+
+            // Verificar se os campos obrigatórios estão preenchidos
+            if (nome && data && valor && statusReceita) {
+                // Adicionar os dados ao Realtime Database
+                const accessUid = await getAccessUid();
+
+                // Usar o accessUid para acessar o banco de dados
+                db.ref(`users/${accessUid}/receitas`).push({
+                    nome: nome,
+                    data: data.toISOString(), // Convertendo para string no formato ISO (yyyy-mm-dd)
+                    valor: valor,
+                    categoria: categoria,
+                    status: statusReceita
+                }, (error) => {
+                    if (error) {
+                        console.error("Erro ao adicionar receita: ", error);
+                    } else {
+                        console.log("Receita adicionada com sucesso!");
+                        // Limpar os campos do formulário e fechar o modal
+                        document.getElementById("nomeReceitas").value = "";
+                        document.getElementById("dataReceitas").value = "";
+                        document.getElementById("valorReceitas").value = "";
+                        //document.getElementById("categoriaReceitas").value = "";
+                        //document.getElementById("statusReceitas").value = "";
+                        atualizarExibicao();
+                        // Fechar o modal
+                        $('#modalReceitas').modal('hide');
+                    }
+                });
+            } else {
+                alert("Por favor, preencha todos os campos obrigatórios.");
+            }
+        }
+
+        // Função para adicionar despesa
+        async function adicionarDespesa() {
+            const nome = document.getElementById("nomeDespesas").value;
+            const dataInput = document.getElementById("dataDespesas").value;
+            const [dia, mes, ano] = dataInput.split('/');
+            const data = new Date(`${ano}-${mes}-${dia}T00:00:00.000Z`);
+            const valor = parseFloat(document.getElementById("valorDespesas").value.replace('.', '').replace(',', '.'));
+            const categoria = document.getElementById("categoriaDespesas").value;
+            const statusDespesa = document.getElementById("statusDespesas").value;
+
+            // Verificar se os campos obrigatórios estão preenchidos
+            if (nome && data && valor && categoria && statusDespesa) {
+                // Adicionar os dados ao Realtime Database
+                const accessUid = await getAccessUid();
+
+                // Usar o accessUid para acessar o banco de dados
+                db.ref(`users/${accessUid}/despesas`).push({
+                    nome: nome,
+                    data: data.toISOString(), // Convertendo para string no formato ISO (yyyy-mm-dd)
+                    valor: valor,
+                    categoria: categoria,
+                    status: statusDespesa
+                }, (error) => {
+                    if (error) {
+                        console.error("Erro ao adicionar despesa: ", error);
+                    } else {
+                        console.log("Despesa adicionada com sucesso!");
+                        // Limpar os campos do formulário e fechar o modal
+                        document.getElementById("nomeDespesas").value = "";
+                        document.getElementById("dataDespesas").value = "";
+                        document.getElementById("valorDespesas").value = "";
+                        //document.getElementById("categoriaDespesas").value = "";
+                        //document.getElementById("statusDespesas").value = "";
+                        // Atualizar a exibição
+                        atualizarExibicao();
+                        // Fechar o modal
+                        $('#modalDespesas').modal('hide');
+                    }
+                });
+            } else {
+                alert("Por favor, preencha todos os campos obrigatórios.");
+            }
+        }
+
+        // Função para formatar uma data no formato "DD/MM/YYYY" para "YYYY-MM-DD"
+        function formatarDataParaTimestamp(data) {
+            return new Date(data);
+        }
+
+
+        function dateToString(timestamp) {
+            // Verificar se o timestamp é válido
+            if (!timestamp) {
+                console.error('Timestamp inválido:', timestamp);
+                return 'Data inválida';
+            }
+
+            // Criar um objeto Date a partir da string de timestamp
+            const data = new Date(timestamp);
+
+            // Verificar se o objeto Date é válido
+            if (isNaN(data.getTime())) {
+                console.error('Erro na conversão do timestamp para Date:', timestamp);
+                return 'Data inválida';
+            }
+
+            // Extraia o dia, mês e ano
+            const dia = data.getUTCDate().toString().padStart(2, '0'); // Adicionar zero à esquerda, se necessário
+            const mes = (data.getUTCMonth() + 1).toString().padStart(2, '0'); // O mês é baseado em zero
+            const ano = data.getUTCFullYear();
+
+            // Retorne a data formatada como uma string no formato dd/mm/yyyy
+            return `${dia}/${mes}/${ano}`;
+        }
+
+        //functions utils
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+
+        // Função para converter o nome do mês em número
+        function monthNameToNumber(monthName) {
+            const monthsOfYear = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            const monthNumber = monthsOfYear.findIndex((month) => month === monthName) + 1; // Obtém o número do mês correspondente
+            return monthNumber.toString().padStart(2, '0'); // Retorna o número do mês com zero à esquerda, se necessário
+        }
+
+        // Função para obter o nome do mês a partir do número
+        function monthNumberToName(monthNum) {
+            const monthsOfYear = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            return monthsOfYear[monthNum - 1];
+        }
+
+        // Função para popular o select com os meses encontrados
+        async function popularSelectMeses(accessUid) {
+            try {
+                const meses = [];
+
+                // Usar on() para ouvir mudanças em tempo real nas receitas
+                db.ref(`users/${accessUid}/receitas`).on('value', (snapshot) => {
+                    snapshot.forEach((childSnapshot) => {
+                        const data = childSnapshot.val().data;
+                        const dataObj = new Date(data);
+                        const mesAnoFormatado = `${dataObj.getUTCFullYear()}-${(dataObj.getUTCMonth() + 1).toString().padStart(2, '0')}`;
+                        if (!meses.includes(mesAnoFormatado)) {
+                            meses.push(mesAnoFormatado);
+                        }
+                    });
+
+                    // Ordenar os meses encontrados
+                    meses.sort();
+
+                    // Adicionar o mês atual à lista de meses, mesmo que não haja dados para ele
+                    const dataAtual = new Date();
+                    const mesAtual = dataAtual.getMonth() + 1; // Os meses são baseados em zero, então somamos 1
+                    const mesAnoAtual = `${dataAtual.getFullYear()}-${mesAtual.toString().padStart(2, '0')}`;
+
+                    // Atualizar o select com os meses disponíveis
+                    const select = document.getElementById('filtroData');
+                    select.innerHTML = '';
+
+                    meses.forEach((mesAno) => {
+                        const [ano, mes] = mesAno.split('-');
+                        const option = document.createElement('option');
+                        option.value = mesAno;
+                        option.textContent = `${monthNumberToName(mes)}/${ano}`;
+                        select.appendChild(option);
+                    });
+
+                    // Definir o mês atual como selecionado, ou o valor armazenado em localStorage se existir
+                    const mesSelecionado = localStorage.getItem('mesSelecionado');
+                    select.value = mesSelecionado ? mesSelecionado : mesAnoAtual;
+
+
+                    // Disparar o evento de mudança para aplicar o filtro inicialmente
+                    filtrarPorMes();
+                });
+
+                // Adicionar evento de mudança ao select para filtrar por mês
+                document.getElementById('filtroData').addEventListener('change', filtrarPorMes);
+
+            } catch (error) {
+                console.error("Erro ao popular o select de meses:", error);
+            }
+        }
+
+        // Filtrar por mês
+        async function filtrarPorMes() {
+            const select = document.getElementById('filtroData');
+            const mesAnoSelecionado = select.value;
+
+            if (mesAnoSelecionado) {
+                const accessUid = await getAccessUid();
+
+
+                // Adiciona o parâmetro do mês selecionado à URL
+                /* const urlParams = new URLSearchParams(window.location.search);
+                 urlParams.set('showDate', mesAnoSelecionado);
+                 window.history.replaceState({}, '', `${location.pathname}?${urlParams}`);
+ */
+
+                localStorage.setItem('mesSelecionado', mesAnoSelecionado); // Salva o mês selecionado em localStorage
+
+                try {
+                    listaReceitas.innerHTML = '';
+                    listaDespesas.innerHTML = '';
+
+                    const [ano, mes, dia] = mesAnoSelecionado.split('-');
+                    const dataInicio = `${ano}-${mes}-01T00:00:00.000Z`;
+                    const ultimoDiaMes = new Date(ano, parseInt(mes), 0).getDate();
+                    const dataFim = `${ano}-${mes}-${ultimoDiaMes.toString().padStart(2, '0')}T23:59:59.999Z`;
+
+                    await filtrarReceitasPorData(accessUid, dataInicio, dataFim);
+                    await filtrarDespesasPorData(accessUid, dataInicio, dataFim);
+
+                } catch (error) {
+                    console.error("Erro ao filtrar por mês:", error);
+                }
+            } else {
+                listaReceitas.innerHTML = '';
+                listaDespesas.innerHTML = '';
+                //atualizarExibicao();
+            }
+        }
+
+        // Função para filtrar receitas por data e status
+        async function filtrarReceitasPorData(accessUid, dataInicio, dataFim, filtroStatus) {
+            const query = db.ref(`users/${accessUid}/receitas`).orderByChild('data').startAt(dataInicio).endAt(dataFim);
+            query.once('value', (snapshot) => {
+                listaReceitas.innerHTML = ''; // Limpa a lista antes de adicionar novos itens
+                snapshot.forEach((childSnapshot) => {
+                    const receita = childSnapshot.val();
+                    const id = childSnapshot.key;
+                    // Verifica se a receita corresponde ao filtro de status
+                    if (!filtroStatus || receita.status === filtroStatus) {
+                        // Adicionar a receita filtrada à lista de receitas
+                        const item = criarItemLista(receita, "Receitas", id);
+                        listaReceitas.appendChild(item);
+                    }
+                });
+                calcularValores(dataInicio, dataFim); // Passa os parâmetros de data e status para a função calcularValores
+            });
+        }
+
+        // Função para filtrar despesas por data e status
+        async function filtrarDespesasPorData(accessUid, dataInicio, dataFim, filtroStatus) {
+            const query = db.ref(`users/${accessUid}/despesas`).orderByChild('data').startAt(dataInicio).endAt(dataFim);
+            query.once('value', (snapshot) => {
+                listaDespesas.innerHTML = ''; // Limpa a lista antes de adicionar novos itens
+                snapshot.forEach((childSnapshot) => {
+                    const despesa = childSnapshot.val();
+                    const id = childSnapshot.key;
+                    // Verifica se a despesa corresponde ao filtro de status
+                    if (!filtroStatus || despesa.status === filtroStatus) {
+                        // Adicionar a despesa filtrada à lista de despesas
+                        const item = criarItemLista(despesa, "Despesas", id);
+                        listaDespesas.appendChild(item);
+                    }
+                });
+                calcularValores(dataInicio, dataFim);  // Passa os parâmetros de data e status para a função calcularValores
+            });
+        }
+
+
+
+
+        // Função para atualizar a exibição
+        async function atualizarExibicao() {
+
+            document.getElementById('loadingScreen').style.display = 'none';
+            const accessUid = await getAccessUid();
+
+            try {
+                await popularSelectMeses(accessUid);
+
+                const dataAtual = new Date();
+                const ano = dataAtual.getFullYear();
+                const mes = dataAtual.getMonth() + 1; // Os meses são baseados em zero, então somamos 1
+                const primeiroDiaMes = new Date(ano, mes - 1, 1); // Definindo o primeiro dia do mês
+                const ultimoDiaMes = new Date(ano, mes, 0); // Definindo o último dia do mês
+
+                const dataInicio = primeiroDiaMes.toISOString(); // Convertendo para o formato de data ISO
+                const dataFim = new Date(ultimoDiaMes.getTime() + 86400000).toISOString(); // Adicionando 1 dia ao último dia do mês e convertendo para o formato de data ISO
+
+                listaReceitas.innerHTML = '';
+                listaDespesas.innerHTML = '';
+
+                // Ouvir mudanças em tempo real nas receitas e despesas
+                db.ref(`users/${accessUid}/receitas`).on('child_added', (snapshot) => {
+                    const receita = snapshot.val();
+                    const id = snapshot.key;
+                    // Adicionar a receita à lista de receitas
+                    const item = criarItemLista(receita, "Receitas", id);
+                    listaReceitas.appendChild(item);
+                    calcularValores(dataInicio, dataFim);
+                });
+
+
+
+
+                db.ref(`users/${accessUid}/despesas`).on('child_added', (snapshot) => {
+                    const despesa = snapshot.val();
+                    const id = snapshot.key;
+                    // Adicionar a despesa à lista de despesas
+                    const item = criarItemLista(despesa, "Despesas", id);
+                    listaDespesas.appendChild(item);
+                    calcularValores(dataInicio, dataFim);
+                });
+
+            } catch (error) {
+                console.error("Erro ao atualizar exibição:", error);
+            }
+        }
+
+        // Outras funções permanecem iguais
+
+        async function calcularValores(dataInicio, dataFim) {
+            // Para exibir o esqueleto de carregamento
+            document.querySelectorAll('.skeleton').forEach(element => {
+                element.classList.add('loading');
+            });
+
+            try {
+                // Calcular e exibir os valores de receitas e despesas em seus respectivos cards
+                const [totalReceitasPagas, totalReceitasPendentes, totalDespesasPagas, totalDespesasPendentes] = await Promise.all([
+                    calcularSomaValoresItens('receitas', 'Pago', dataInicio, dataFim),
+                    calcularSomaValoresItens('receitas', 'Pendente', dataInicio, dataFim),
+                    calcularSomaValoresItens('despesas', 'Pago', dataInicio, dataFim),
+                    calcularSomaValoresItens('despesas', 'Pendente', dataInicio, dataFim)
+                ]);
+
+                const totalReceitas = totalReceitasPagas + totalReceitasPendentes;
+                const totalDespesas = totalDespesasPagas + totalDespesasPendentes;
+
+                const saldo = totalReceitas - totalDespesas;
+
+                // Atualizar os valores nos cards de receitas
+                document.getElementById("totalReceitas").textContent = `R$ ${formatarValorParaExibicao(totalReceitas)}`;
+
+                // Atualizar os valores nos cards de despesas
+                document.getElementById("totalDespesas").innerText = `R$ ${formatarValorParaExibicao(totalDespesas)}`;
+
+                // Atualizar o saldo
+                document.getElementById("saldo").textContent = `R$ ${formatarValorParaExibicao(saldo)}`;
+
+                // Verificar se o saldo é negativo e aplicar a classe correspondente
+                document.getElementById("saldo").classList.toggle("saldo-negativo", saldo < 0);
+
+                // Atualizar as informações nos cards de receitas
+                document.querySelector('#legendReceitas span:nth-child(2)').textContent = `R$ ${formatarValorParaExibicao(totalReceitasPendentes || totalReceitas)}`;
+                document.querySelector('#legendReceitas span:nth-child(3)').textContent = totalReceitasPendentes ? 'pendente' : 'recebido';
+
+                // Atualizar a porcentagem de despesas pagas em relação ao total de despesas
+                const percentualDespesasPagas = totalDespesas ? ((totalDespesasPagas / totalDespesas) * 100).toFixed(2) : 0;
+                document.querySelector('#legendDespesas span:nth-child(2)').textContent = `${percentualDespesasPagas}%`;
+                document.querySelector('#legendDespesas span:nth-child(3)').textContent = `das despesas já pagas`;
+
+                // Calcular o saldo em relação ao total de receitas pagas
+                const percentualBalanco = totalReceitasPagas ? ((saldo / totalReceitasPagas) * 100).toFixed(2) : 0;
+                document.querySelector('#legendSaldo span:nth-child(2)').textContent = `${percentualBalanco}%`;
+                document.querySelector('#legendSaldo span:nth-child(3)').textContent = `de saldo (R$ ${formatarValorParaExibicao(saldo)})`;
+
+                // Para exibir o esqueleto de carregamento
+                document.querySelectorAll('.skeleton').forEach(element => {
+                    element.classList.remove('loading');
+                });
+            } catch (error) {
+                console.error("Erro ao calcular valores:", error);
+                // Para exibir o esqueleto de carregamento
+                document.querySelectorAll('.skeleton').forEach(element => {
+                    element.classList.remove('loading');
+                });
+            }
+        }
+
+        // Função para calcular a soma dos valores de receitas ou despesas com base no status e no filtro de data
+        async function calcularSomaValoresItens(tipo, status, dataInicio, dataFim) {
+            const accessUid = await getAccessUid();
+            const tipoPlural = tipo === 'receitas' ? 'receitas' : 'despesas';
+
+            try {
+                let total = 0;
+                // Usar o accessUid para acessar o banco de dados
+                const itensSnapshot = await db.ref(`users/${accessUid}/${tipoPlural}`).orderByChild("status").equalTo(status).once("value");
+                itensSnapshot.forEach((childSnapshot) => {
+                    const item = childSnapshot.val();
+                    const dataItem = item.data;
+
+                    if (dataItem >= dataInicio && dataItem <= dataFim) {
+                        total += item.valor;
+
+                    }
+                });
+                return total;
+            } catch (error) {
+                console.error(`Erro ao calcular a soma dos valores de ${tipoPlural}:`, error);
+                return 0;
+            }
+        }
+
+        // Função para calcular a quantidade de despesas com base no status e no filtro de data
+        async function calcularQuantidadeItens(tipo, status, dataInicio, dataFim) {
+            const accessUid = await getAccessUid();
+            const tipoPlural = tipo === 'receita' ? 'receitas' : 'despesas';
+
+            try {
+                let quantidade = 0;
+                // Usar o accessUid para acessar o banco de dados
+                const itensSnapshot = await db.ref(`users/${accessUid}/${tipoPlural}`).orderByChild("status").equalTo(status).once("value");
+                itensSnapshot.forEach((childSnapshot) => {
+                    const item = childSnapshot.val();
+                    const dataItem = new Date(item.data);
+                    if (dataItem >= dataInicio && dataItem <= dataFim) {
+                        quantidade++;
+                    }
+                });
+                return quantidade;
+            } catch (error) {
+                console.error(`Erro ao calcular a quantidade de ${tipoPlural}:`, error);
+                return 0;
+            }
+        }
+
+
+
+        function criarItemLista(item, tipo, id) {
+
+            const listItem = document.createElement('li');
+            listItem.classList.add('list-group-item');
+            // Adicionando o atributo data-id
+            listItem.setAttribute('data-id', id);
+
+            const statusClass = item.status === 'Pago' ? 'text-success' : 'text-danger';
+
+            listItem.innerHTML = `
+                <div class="row">
+                    <div class="col-12 col-md">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-12 h5 font-weight-bold mb-0">
+                                <div>${item.nome}</div>
+                                <div class="skeleton ${tipo === 'Receitas' ? 'text-success' : 'text-danger'}"> R$ ${formatarValorParaExibicao(item.valor)}</div>
+                            </div>
+                            
+                            <div class="m-auto col-md-3 mb-0" ${tipo === 'Receitas' ? 'style="display:none"' : ''}>
+                                <div class="text-md-center">
+                                    <span class="text-md-center d-md-none">Categoria:</span>
+                                    <button class="btn btn-sm py-0 px-2 btn-secondary" onclick="${tipo === 'Receitas' ? `editarReceita('${id}')` : `editarDespesa('${id}')`}">${item.categoria ? item.categoria : 'Sem categoria'}</button>
+                                </div>
+                            </div>
+                            
+                        
+                            <div class="m-auto col-md-3 mb-0">
+                                <div class="text-md-center">
+                                    <span class="text-md-center d-md-none">Data:</span>
+                                    <span>${item.data ? dateToString(item.data) : '<i>Indefinido</i>'}</span>
+                                </div>
+                            </div>
+                            <div class="m-auto col-md-3 mb-0">
+                                <div class="text-md-center">
+                                    <span class="text-md-center d-md-none">Status:</span>
+                                    <button class="btn ${statusClass} bg-light" onclick="${tipo === 'Receitas' ? `editarReceita('${id}')` : `editarDespesa('${id}')`}">${item.status}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto d-flex d-print-none">
+                        <div class="mt-2 m-sm-auto ">
+                            <button class="btn btn-info btn-sm" onclick="${tipo === 'Receitas' ? `editarReceita('${id}')` : `editarDespesa('${id}')`}"">Editar</button>
+                                <button class="btn btn-danger btn-sm" onclick="${tipo === 'Receitas' ? `excluirReceita('${id}')` : `excluirDespesa('${id}')`}">Excluir</button>
+                            </div>
+                                    
+                        </div>
+                    </div>
+                </div>
+                
+
+        `;
+
+            return listItem;
+        }
+
+        // Função para editar receita por ID
+        async function editarReceita(id) {
+            editarItemPorId(id, 'receitas');
+        }
+
+        // Função para editar despesa por ID
+        async function editarDespesa(id) {
+            editarItemPorId(id, 'despesas');
+        }
+
+        // Função para excluir receita por ID
+        async function excluirReceita(id) {
+            excluirItemPorId(id, 'receitas');
+        }
+
+        // Função para excluir despesa por ID
+        async function excluirDespesa(id) {
+            excluirItemPorId(id, 'despesas');
+        }
+
+        async function editarItemPorId(id, tipo) {
+            const accessUid = await getAccessUid();
+
+            try {
+                const itemRef = firebase.database().ref(`users/${accessUid}/${tipo}/${id}`);
+                const itemSnapshot = await itemRef.once('value');
+                const item = itemSnapshot.val();
+
+
+                if (item) {
+                    // Preencher campos do formulário de edição com os dados do item a ser editado
+                    document.getElementById(`editNome${capitalizeFirstLetter(tipo)}`).value = item.nome;
+                    document.getElementById(`editData${capitalizeFirstLetter(tipo)}`).value = dateToString(item.data);
+                    document.getElementById(`editValor${capitalizeFirstLetter(tipo)}`).value = formatarValorParaExibicao(item.valor);
+                    document.getElementById(`editCategoria${capitalizeFirstLetter(tipo)}`).value = item.categoria;
+                    document.getElementById(`editStatus${capitalizeFirstLetter(tipo)}`).value = item.status;
+
+                    // Armazenar temporariamente o ID do item que será editado
+                    itemParaEditar = id;
+                    tipoItemParaEditar = tipo;
+
+                    // Abrir modal de edição correspondente
+                    $(`#modalEditar${capitalizeFirstLetter(tipo)}`).modal('show');
+                } else {
+                    console.error("Documento não encontrado.");
+                }
+            } catch (error) {
+                console.error(`Erro ao buscar ${tipo} para edição:`, error);
+            }
+        }
+
+        async function excluirItemPorId(id, tipo) {
+            const accessUid = await getAccessUid();
+
+            try {
+                const confirmacao = await Swal.fire({
+                    title: "Exclusão",
+                    text: "Deseja excluir o item?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#dc3545",
+                    cancelButtonColor: "#17a2b8",
+                    confirmButtonText: "Sim, exclua!"
+                });
+
+                if (confirmacao.isConfirmed) {
+                    await firebase.database().ref(`users/${accessUid}/${tipo}/${id}`).remove();
+                    await Swal.fire({
+                        title: "Excluído!",
+                        text: "A ação não pode ser desfeita.",
+                        icon: "success",
+
+                    });
+                    // Atualizar a exibição
+                    atualizarExibicao();
+                }
+            } catch (error) {
+                console.error(`Erro ao excluir ${tipo}:`, error);
+            }
+        }
+
+
+        // Função genérica para salvar a edição de um item por ID
+        async function salvarEdicaoItem(id, tipo) {
+            if (itemParaEditar && tipoItemParaEditar === tipo) {
+                const accessUid = await getAccessUid();
+
+                try {
+                    const nome = document.getElementById(`editNome${capitalizeFirstLetter(tipo)}`).value;
+                    const dataInput = document.getElementById(`editData${capitalizeFirstLetter(tipo)}`).value;
+                    const [dia, mes, ano] = dataInput.split('/');
+                    const data = new Date(`${ano}-${mes}-${dia}T00:00:00.000Z`);
+                    const valor = parseFloat(document.getElementById(`editValor${capitalizeFirstLetter(tipo)}`).value.replace('.', '').replace(',', '.'));
+                    const categoria = document.getElementById(`editCategoria${capitalizeFirstLetter(tipo)}`).value;
+                    const status = document.getElementById(`editStatus${capitalizeFirstLetter(tipo)}`).value;
+
+                    await firebase.database().ref(`users/${accessUid}/${tipo}/${id}`).update({ nome, data, valor, categoria, status });
+                    toast.show('Atualizar', 'Item atualizado com sucesso!')
+                    $(`#modalEditar${capitalizeFirstLetter(tipo)}`).modal('hide');
+                    atualizarExibicao();
+                } catch (error) {
+                    console.error(`Erro ao atualizar ${tipo}:`, error);
+                }
+            }
+        }
+
+        // Função para salvar a edição de uma receita por ID
+        async function salvarEdicaoReceita() {
+            salvarEdicaoItem(itemParaEditar, 'receitas');
+        }
+
+        // Função para salvar a edição de uma despesa por ID
+        async function salvarEdicaoDespesa() {
+            salvarEdicaoItem(itemParaEditar, 'despesas');
+        }
+
+
+        // Função para formatar o valor para exibição
+        function formatarValorParaExibicao(valor) {
+            // Verifica se o valor é um número
+            if (typeof valor !== 'number' || isNaN(valor)) {
+                return ''; // Retorna uma string vazia se o valor não for um número válido
+            }
+
+            // Converte o valor para uma string com duas casas decimais e separador de milhares
+            const valorFormatado = valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            // Remove o símbolo de moeda (R$) e espaços em branco do valor formatado
+            return valorFormatado.replace('R$', '').trim();
+        }
+
+
+
+
+        // Função para exportar dados
+        async function exportarDados() {
+            const accessUid = await getAccessUid();
+
+            try {
+                const dados = {
+                    receitas: [],
+                    despesas: []
+                };
+
+                // Consultar o banco de dados para obter as receitas do usuário
+                db.ref(`users/${accessUid}/receitas`).once('value', (snapshot) => {
+                    snapshot.forEach((childSnapshot) => {
+                        dados.receitas.push(childSnapshot.val());
+                    });
+                });
+
+                // Consultar o banco de dados para obter as despesas do usuário
+                db.ref(`users/${accessUid}/despesas`).once('value', (snapshot) => {
+                    snapshot.forEach((childSnapshot) => {
+                        dados.despesas.push(childSnapshot.val());
+                    });
+                });
+
+                const json = JSON.stringify(dados);
+                const blob = new Blob([json], { type: 'application/json' });
+                const uuid = uuidv4();
+                const nomeArquivo = `fincontrol_${uuid}_Export.json`;
+
+                saveAs(blob, nomeArquivo);
+
+                toast.show('Export', `${nomeArquivo} foi exportado`);
+            } catch (error) {
+                console.error('Erro ao exportar dados:', error);
+            }
+        }
+
+        // Função para importar dados
+        async function importarDados(event) {
+            const accessUid = await getAccessUid();
+            const arquivo = event.target.files[0];
+            const leitor = new FileReader();
+
+            leitor.onload = async function (evento) {
+                const dados = JSON.parse(evento.target.result);
+
+                try {
+                    // Adicionar as receitas ao banco de dados
+                    if (dados.receitas && dados.receitas.length > 0) {
+                        dados.receitas.forEach(receita => {
+                            db.ref(`users/${accessUid}/receitas`).push(receita)
+                                .then(() => {
+                                    console.log('Receita importada com sucesso');
+                                })
+                                .catch(error => {
+                                    console.error('Erro ao importar receita:', error);
+                                });
+                        });
+                    }
+
+                    // Adicionar as despesas ao banco de dados
+                    if (dados.despesas && dados.despesas.length > 0) {
+                        dados.despesas.forEach(despesa => {
+                            db.ref(`users/${accessUid}/despesas`).push(despesa)
+                                .then(() => {
+                                    console.log('Despesa importada com sucesso');
+                                })
+                                .catch(error => {
+                                    console.error('Erro ao importar despesa:', error);
+                                });
+                        });
+                    }
+
+                    // Atualizar a exibição
+                    atualizarExibicao();
+                    toast.show('Import', 'Dados importados com sucesso');
+                } catch (error) {
+                    console.error('Erro ao importar dados:', error);
+                }
+            };
+
+            leitor.readAsText(arquivo);
+        }
+
+
+
+        // Função para gerar um UUID (Universally Unique Identifier)
+        function uuidv4() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0,
+                    v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+
+
+
+
+    </script>
+
+    <script>
+        $(function () {
+
+            $('.date').mask('00/00/0000');
+            // Seletor do campo de data
+            $(".date").datepicker({
+                dateFormat: 'dd/mm/yy' // Formato da data
+            });
+
+        });
+
+        $(document).ready(function () {
+            $('.money').mask("#.##0,00", { reverse: true });
+        });
+
+
+    </script>
+    <script>
+
+        // Verificar status da conexão e exibir mensagem offline ao carregar a página
+        // Função para definir a cor do tema com base no status da conexão
+        function setThemeColorBasedOnConnectionStatus() {
+            const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+            const statusBariOS = document.querySelector('meta[name="apple-mobile-web-app-status-bar"]');
+
+            const isOnline = navigator.onLine;
+            const offlineMessage = document.getElementById("offline-message");
+
+            // Define a cor do tema com base no status da conexão
+            if (isOnline) {
+                themeColorMeta.setAttribute('content', '#FFFFFF'); // Cor do tema quando online
+                statusBariOS.setAttribute('content', '#FFFFFF'); // Cor do tema quando online
+                offlineMessage.style.display = "none"; // Oculta a mensagem offline
+            } else {
+                themeColorMeta.setAttribute('content', '#071e2c'); // Cor do tema quando offline
+                statusBariOS.setAttribute('content', '#071e2c'); // Cor do tema quando offline
+                offlineMessage.style.display = "block"; // Exibe a mensagem offline
+            }
+        }
+
+        // Verifica o status da conexão ao carregar a página
+        document.addEventListener("DOMContentLoaded", () => {
+            // Define a cor do tema com base no status da conexão ao carregar a página
+            setThemeColorBasedOnConnectionStatus();
+        });
+
+        // Monitora alterações no status da conexão
+        window.addEventListener('online', setThemeColorBasedOnConnectionStatus);
+        window.addEventListener('offline', setThemeColorBasedOnConnectionStatus);
+
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(registration => {
+                        //console.log('Service Worker registrado com sucesso:', registration);
+                    })
+                    .catch(error => {
+                        console.error('Falha ao registrar o Service Worker:', error);
+                    });
+            });
+        }
+    </script>
+
+    <script>
+        feather.replace();
+    </script>
+
+    <script>
+
+
+
+        document.querySelector('.fab-button').addEventListener('click', function () {
+            var button = document.querySelector('.fab-button');
+            var options = document.querySelector('.fab-options');
+
+            button.classList.toggle('active');
+            options.classList.toggle('active');
+            // Exemplo de uso
+
+        });
+
+    </script>
+
+    <script>
+
+
+        // Verifica se está autenticado e Exibe o nome do usuario
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+
+                // O usuário está autenticado, exiba o nome
+                document.getElementById("userInfo").textContent = user.displayName ? user.displayName : 'Usuário';
+
+            } else {
+                // O usuário não está autenticado, redirecione-o para a tela de login
+                // Obter o token da URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const token = urlParams.get('token');
+
+                const redrectLogin = token ? `login.html?token=${token}` : `login.html?token=${token}`
+                window.location.href = redrectLogin;
+            }
+        });
+
+        // Função para fazer logout
+        function logout() {
+            firebase.auth().signOut().then(function () {
+                // Logout bem-sucedido, redirecione para a tela de login
+                window.location.href = "login.html";
+            }).catch(function (error) {
+                // Trate erros de logout, se necessário
+                console.error("Erro ao fazer logout:", error);
+            });
+        }
+
+    </script>
+
+    <script>
+        // Função para gerar o link de compartilhamento com o token
+        async function generateShareLink() {
+            try {
+                const user = firebase.auth().currentUser;
+                const tokenRef = await db.ref("accessTokens").push({ uid: user.uid });
+
+                // URL base da sua aplicação (index.html)
+                const baseUrl = window.location.href.split('?')[0]; // Remove parâmetros de consulta, se houver
+
+                // Link de compartilhamento com o token como parâmetro de consulta
+                const shareLink = `${baseUrl}?token=${tokenRef.key}`;
+
+                return shareLink;
+            } catch (error) {
+                console.error("Erro ao gerar link de compartilhamento:", error);
+                alert("Erro ao gerar link de compartilhamento.");
+                return null;
+            }
+        }
+
+        // Função para copiar o link de compartilhamento
+        async function copyShareLink() {
+            const shareLink = await generateShareLink();
+            const shareLinkInput = document.getElementById("shareLink");
+            shareLinkInput.value = shareLink;
+            shareLinkInput.select();
+            document.execCommand("copy");
+            toast.show('Compartilhar', "Link copiado para a área de transferência!");
+        }
+
+        // Executar a função de geração do link de compartilhamento ao carregar a página
+        window.onload = async function () {
+            // Não é necessário chamar a função de geração de link aqui, pois ela será chamada ao clicar no botão de copiar
+        };
+    </script>
+
+
+    <!-- Integração do jQuery e do Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
