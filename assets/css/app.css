@@ -194,15 +194,13 @@ a.fab-option {
     justify-content: right;
     padding: 2.9rem 1.5rem 1.5rem 1.5rem;
     border-radius: 0 0 30px 30px;
-    color: var(--secondary-color);
+    font-weight: 700;
+    color: var(--primary-color);
+    background-color: #FFFFFF!important;
     
     box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
 }
 
-.user-info {
-    color: var(--primary-color);
-    background-color: #FFFFFF!important;
-}
 
 .user-info a {}
 
