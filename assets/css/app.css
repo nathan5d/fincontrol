@@ -68,12 +68,13 @@ body {
 
 
 .offline-message {
+    text-align: center;
     font-size: 0.8em;
     border-radius: 0 0 25px 25px;
     border-bottom: 4px solid var(--secondary-color);
-    background-color: var(--primary-color);
+    background-color: #dc3545;
     color: #e7e7e7;
-    padding: 5px;
+    padding: 5px 10px;
     text-align: center;
     position: fixed;
     top: 0;
@@ -177,7 +178,7 @@ a.fab-option {
 #loadingScreen {
     display: flex;
     top: 0;
-    left: 0;
+    left: 0; 
     position: fixed;
     z-index: 999;
     width: 100%;
@@ -191,9 +192,9 @@ a.fab-option {
 .user-info {
     display: flex;
     justify-content: right;
-    padding: 20px 30px;
-    border-radius: 8px;
-    color: var(--primary-color);
+    padding: 2.9rem 1.5rem 2.9rem 1.5rem;
+    border-radius: 0 0 25px 25px;
+    color: var(--secondary-color);
 }
 
 .user-info a {}

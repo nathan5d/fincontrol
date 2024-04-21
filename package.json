@@ -1,5 +1,24 @@
 {
+  "name": "fincontrol",
+  "version": "1.0.0",
+  "main": "service-worker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "browser-sync start --server --files 'assets/css/*.css, assets/js/*.js, *.html'"
+  },
   "devDependencies": {
-    "firebase": "^10.10.0"
-  }
+    "firebase": "^10.10.0",
+    "live-server": "^1.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nathan5d/fincontrol.git"
+  },
+  "author": "Nathan Amaral",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nathan5d/fincontrol/issues"
+  },
+  "homepage": "https://github.com/nathan5d/fincontrol#readme",
+  "description": ""
 }
