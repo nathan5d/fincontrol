@@ -192,9 +192,14 @@ a.fab-option {
 .user-info {
     display: flex;
     justify-content: right;
-    padding: 2.9rem 1.5rem 2.9rem 1.5rem;
-    border-radius: 0 0 25px 25px;
+    padding: 2.9rem 1.5rem 1.5rem 1.5rem;
+    border-radius: 0 0 30px 30px;
     color: var(--secondary-color);
+}
+
+.user-info {
+    color: #f8f3f3;
+    background-color: var(--primary-color) !important;
 }
 
 .user-info a {}
@@ -243,10 +248,6 @@ a.fab-option {
 
 }
 
-.user-info {
-    color: #f8f3f3;
-    background-color: var(--primary-color) !important;
-}
 
 .dados.container>span {}
 
