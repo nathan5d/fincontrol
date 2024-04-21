@@ -4,7 +4,7 @@
     "description": "Controle financeiro pessoal",
     "start_url": "/fincontrol/",
     "display": "standalone",
-    "background_color": "#ffffff",
+    "background_color": "#071e2c",
     "theme_color": "#007bff",
     "icons": [
       {
