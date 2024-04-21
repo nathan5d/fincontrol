@@ -285,13 +285,16 @@ a.fab-option {
 .dados-wraper .despesas::before {
     background-color: #dc3545;
 }
+.dados-wraper li {
+    border: none;
+    border-bottom-style: solid;
+    border-bottom-width: 4px;
 
+}
 .dados-wraper .receitas li {
-    border-left: 2px solid var(--secondary-color);
-    /* Cor da linha vertical */
+    border-color:  var(--secondary-color);
 }
 
 .dados-wraper .despesas li {
-    border-left: 2px solid #dc3545;
-    /* Cor da linha vertical */
+    border-color:  #dc3545;
 }
