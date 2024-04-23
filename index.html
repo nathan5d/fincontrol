@@ -150,7 +150,7 @@
 
             </div>
         </div>
-       
+
         <h1 class="mt-4 h4 font-weight-bold text-center title">Controle Financeiro</h1>
 
 
@@ -462,34 +462,31 @@
         </div>
 
 
-      
 
-        <!-- Exibição dos dados -->
-        <div id="dados" class="dados-wraper mt-4 timeline">
-            <div class="receitas">
-                <div class="row d-flex mt-5 mb-2">
-                    <div class="col-md-6 col-sm-12 mb-1 timeline-content">
-                        <span class="h4 font-weight-bold">Receitas</span>
-                    </div>
 
-                </div>
-                <ul id="listaReceitas" class="p-0"></ul>
+
+
+
+
+
+
+    </div>
+    <!-- Exibição dos dados -->
+    <div id="dados" class="dados-wraper mt-4">
+        <div class="receitas">
+            <div class="col-md-6 col-sm-12 mb-1 title">
+                <span class="h4 font-weight-bold">Receitas</span>
             </div>
-            <div class="despesas">
-                <div class="row d-flex mt-5 mb-2">
-                    <div class="col-md-6 col-sm-12 mb-1 timeline-content">
-                        <span class="h4 font-weight-bold">Despesas</span>
-                    </div>
 
-                </div>
-                <ul id="listaDespesas" class="p-0 "></ul>
-            </div>
+            <ul id="listaReceitas" class="p-0"></ul>
         </div>
+        <div class="despesas">
+            <div class="col-md-6 col-sm-12 mb-1 title">
+                <span class="h4 font-weight-bold">Despesas</span>
+            </div>
 
-
-
-
-
+            <ul id="listaDespesas" class="p-0 "></ul>
+        </div>
     </div>
     <div class="container-fuid px-4 bg-light ">
         <div class="row ">
@@ -1006,7 +1003,7 @@
         function criarItemLista(item, tipo, id) {
 
             const listItem = document.createElement('li');
-            listItem.classList.add('list-group-item', 'shadow-sm', 'border-none');
+            listItem.classList.add('list-group-item');
             // Adicionando o atributo data-id
             listItem.setAttribute('data-id', id);
 
