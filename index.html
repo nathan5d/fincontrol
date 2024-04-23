@@ -22,6 +22,7 @@
     <!-- Integração do Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
+
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
     <script src="https://kit.fontawesome.com/eb087764b4.js" crossorigin="anonymous"></script>
 
@@ -385,6 +386,26 @@
             </div>
         </div>
 
+        <!-- Modal Copy -->
+        <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="shareModalLabel">Link de Compartilhamento</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" id="shareLinkModal" class="form-control" readonly>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
         <div class="row  mt-3">
             <div class="col-12 col-md-auto m-auto">
                 <select id="filtroData" class="form-control font-weight-bold">
@@ -470,15 +491,6 @@
             </div>
         </div>
 
-
-
-
-
-
-
-
-
-
     </div>
     <!-- Exibição dos dados -->
     <div class="container">
@@ -501,11 +513,10 @@
     </div>
     <div class="container-fuid px-4 bg-light ">
         <div class="row ">
-            <div class="col-md-6 offset-md-3 mt-5 mb-5">
-                <h2>Compartilhar Banco de Dados</h2>
-                <p>Copie o link abaixo e compartilhe com quem deseja ter acesso ao seu banco de dados:</p>
-                <input type="text" class="form-control mb-2" id="shareLink" value="" readonly>
-                <button class="btn btn-primary" onclick="copyShareLink()">Gerar e Copiar Link</button>
+            <div class="col-12 mt-5 mb-5 text-center">
+                <h2>Compartilhar</h2>
+                <p>Crie um link de acesso a sua base de dados para compartilhar com quem desejar.</p>
+               <button class="btn btn-info m-auto" onclick="copyShareLink()">Gerar link de compartilhamento</button>
             </div>
         </div>
     </div>
@@ -1471,15 +1482,31 @@
             }
         }
 
-        // Função para copiar o link de compartilhamento
-        async function copyShareLink() {
-            const shareLink = await generateShareLink();
-            const shareLinkInput = document.getElementById("shareLink");
-            shareLinkInput.value = shareLink;
-            shareLinkInput.select();
-            document.execCommand("copy");
-            toast.show('Compartilhar', "Link copiado para a área de transferência!");
-        }
+
+        // Função para copiar o link de compartilhamento e exibir o modal
+async function copyShareLink() {
+    const shareLink = await generateShareLink();
+    const shareLinkInput = document.getElementById("shareLinkModal");
+    shareLinkInput.value = shareLink;
+
+    try {
+        document.execCommand("copy");
+        toast.show('Compartilhar', "Link gerado com sucesso!");
+    } catch (err) {
+        console.error("Erro ao copiar para a área de transferência:", err);
+    }
+
+    // Exibe o modal
+    $('#shareModal').modal('show');
+
+    // Seleciona o texto no campo de entrada quando o modal for totalmente exibido
+    $('#shareModal').on('shown.bs.modal', function () {
+        shareLinkInput.select();
+    });
+}
+
+
+
 
         // Executar a função de geração do link de compartilhamento ao carregar a página
         window.onload = async function () {

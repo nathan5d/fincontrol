@@ -275,13 +275,13 @@ a.fab-option {
     border-width:  0px 0px 2px 0px;
     border-color: #f8f3f3!important;
     background-color: #ffffff;
-    padding:  .71rem 1.25rem;
+    padding:  1.25rem;
 
 }
 .dados-wraper .receitas,.dados-wraper .despesas {
     position: relative;
     margin-bottom: 2.25rem;
-    box-shadow: 0px 0rem 1rem 3px rgba(0, 0, 0, .075);
+    
     border-radius: 10px;
 }
 .dados-wraper .receitas{
@@ -316,8 +316,16 @@ a.fab-option {
     border-bottom-width: 4px;*/
 
 }
-.dados-wraper .receitas li {
-    border-color:  var(--secondary-color);
+.dados-wraper .receitas li:first-child,.dados-wraper .despesas li:first-child {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    
+   
+}
+.dados-wraper .receitas li:last-child, .dados-wraper .despesas li:last-child {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding-bottom: 2rem;
    
 }
 
