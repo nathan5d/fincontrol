@@ -179,15 +179,15 @@ a.fab-option {
 }*/
 
 .form-control{
-    border-color: #f8f9fa;
+    border-color: #e7e7e7;
     font-weight: 700;
     /*box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075);*/
-    box-shadow: -4px 5px 0px 2px rgb(0 0 0 / .13);
+    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
     transition: all 0.3s ease-in-out, transform 0.3s ease;
 }
 .form-control:focus{
     border-color: #f8f3f3;
-    box-shadow: 0px 1px 0px 0px rgb(0 0 0 / .13);
+    box-shadow: 0 .125rem .1rem rgba(0, 0, 0, 0.24) !important;
 }
 #loadingScreen {
     display: flex;
@@ -205,7 +205,7 @@ a.fab-option {
 
 .user-info {
     display: flex;
-    justify-content: right;
+    justify-content: space-between;
     padding: 2.9rem 1.5rem 1.5rem 1.5rem;
     border-radius: 0 0 30px 30px;
     font-weight: 700;
@@ -264,19 +264,18 @@ a.fab-option {
 }
 
 .dados-wraper .title{
-    padding:  .71rem 30px;
+    padding:  .71rem 1.25rem;
 }
 
 .list-group-item {
 
     margin-bottom: 4px;
     
-    border-style: 4px 50px solid #f8f3f3;
     border-style: solid;
     border-width:  0px 0px 2px 0px;
     border-color: #f8f3f3!important;
     background-color: #ffffff;
-    padding:  .71rem 30px;
+    padding:  .71rem 1.25rem;
 
 }
 .dados-wraper .receitas,.dados-wraper .despesas {
