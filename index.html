@@ -108,7 +108,8 @@
             </div>
 
             <div class="share-icon">
-                <a href="#" class="text-info" onclick="copyShareLink()"><i class="fa-solid fa-share-from-square"></i></a>
+                <a href="#" class="text-info" onclick="copyShareLink()"><i
+                        class="fa-solid fa-share-from-square"></i></a>
             </div>
 
         </div>
@@ -515,7 +516,7 @@
             <div class="col-12 mt-5 mb-5 text-center">
                 <h2>Compartilhar</h2>
                 <p>Crie um link de acesso a sua base de dados para compartilhar com quem desejar.</p>
-               <button class="btn btn-info m-auto" onclick="copyShareLink()">Gerar link de compartilhamento</button>
+                <button class="btn btn-info m-auto" onclick="copyShareLink()">Gerar link de compartilhamento</button>
             </div>
         </div>
     </div>
@@ -553,6 +554,13 @@
 
         async function getAccessUid() {
             const user = firebase.auth().currentUser;
+
+            // Verificar se o usuário está autenticado
+            if (!user) {
+                console.error('Erro: Usuário não autenticado');
+                return;
+            }
+
             const uid = user.uid;
 
             // Obter o token da URL
@@ -588,14 +596,19 @@
                 }
             }
         }
-
-
+        // Função para atualizar a exibição
         // Função para atualizar a exibição
         async function initApp() {
 
             console.log('initApp');
             document.getElementById('loadingScreen').style.display = 'none';
             const accessUid = await getAccessUid();
+
+            // Verificar se accessUid foi obtido corretamente
+            if (!accessUid) {
+                console.error('Erro: Não foi possível obter accessUid');
+                return;
+            }
 
             try {
                 await popularSelectMeses(accessUid);
@@ -622,9 +635,6 @@
                     calcularValores(dataInicio, dataFim);
                 });
 
-
-
-
                 db.ref(`users/${accessUid}/despesas`).on('child_added', (snapshot) => {
                     const despesa = snapshot.val();
                     const id = snapshot.key;
@@ -638,7 +648,6 @@
                 console.error("Erro ao atualizar exibição:", error);
             }
         }
-
 
         // Função para adicionar receita
         async function adicionarReceita() {
@@ -909,62 +918,73 @@
 
 
 
+        async function getItensSnapshot(tipo, dataInicio, dataFim) {
+            const accessUid = await getAccessUid();
+            return db.ref(`users/${accessUid}/${tipo}`).orderByChild("data").startAt(dataInicio).endAt(dataFim).once("value");
+        }
 
+        function calcularTotais(snapshot) {
+            let totalPagas = 0;
+            let totalPendentes = 0;
+
+            snapshot.forEach((childSnapshot) => {
+                const item = childSnapshot.val();
+                if (item.status === 'Pago') {
+                    totalPagas += item.valor;
+                } else if (item.status === 'Pendente') {
+                    totalPendentes += item.valor;
+                }
+            });
+
+            return [totalPagas, totalPendentes];
+        }
+        function formatarValorParaExibicao(valor) {
+            if (typeof valor !== 'number' || isNaN(valor)) {
+                return '';
+            }
+            const valorFormatado = valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return valorFormatado.replace('R$', '').trim();
+        }
         // Outras funções permanecem iguais
-
         async function calcularValores(dataInicio, dataFim) {
-            // Para exibir o esqueleto de carregamento
             document.querySelectorAll('.skeleton').forEach(element => {
                 element.classList.add('loading');
             });
 
             try {
-                // Calcular e exibir os valores de receitas e despesas em seus respectivos cards
-                const [totalReceitasPagas, totalReceitasPendentes, totalDespesasPagas, totalDespesasPendentes] = await Promise.all([
-                    calcularSomaValoresItens('receitas', 'Pago', dataInicio, dataFim),
-                    calcularSomaValoresItens('receitas', 'Pendente', dataInicio, dataFim),
-                    calcularSomaValoresItens('despesas', 'Pago', dataInicio, dataFim),
-                    calcularSomaValoresItens('despesas', 'Pendente', dataInicio, dataFim)
+                const [receitasSnapshot, despesasSnapshot] = await Promise.all([
+                    getItensSnapshot('receitas', dataInicio, dataFim),
+                    getItensSnapshot('despesas', dataInicio, dataFim)
                 ]);
+
+                const [totalReceitasPagas, totalReceitasPendentes] = calcularTotais(receitasSnapshot);
+                const [totalDespesasPagas, totalDespesasPendentes] = calcularTotais(despesasSnapshot);
 
                 const totalReceitas = totalReceitasPagas + totalReceitasPendentes;
                 const totalDespesas = totalDespesasPagas + totalDespesasPendentes;
-
                 const saldo = totalReceitas - totalDespesas;
 
-                // Atualizar os valores nos cards de receitas
                 document.getElementById("totalReceitas").textContent = `R$ ${formatarValorParaExibicao(totalReceitas)}`;
-
-                // Atualizar os valores nos cards de despesas
-                document.getElementById("totalDespesas").innerText = `R$ ${formatarValorParaExibicao(totalDespesas)}`;
-
-                // Atualizar o saldo
+                document.getElementById("totalDespesas").textContent = `R$ ${formatarValorParaExibicao(totalDespesas)}`;
                 document.getElementById("saldo").textContent = `R$ ${formatarValorParaExibicao(saldo)}`;
-
-                // Verificar se o saldo é negativo e aplicar a classe correspondente
                 document.getElementById("saldo").classList.toggle("saldo-negativo", saldo < 0);
 
-                // Atualizar as informações nos cards de receitas
                 document.querySelector('#legendReceitas span:nth-child(2)').textContent = `R$ ${formatarValorParaExibicao(totalReceitasPendentes || totalReceitas)}`;
                 document.querySelector('#legendReceitas span:nth-child(3)').textContent = totalReceitasPendentes ? 'pendente' : 'recebido';
 
-                // Atualizar a porcentagem de despesas pagas em relação ao total de despesas
                 const percentualDespesasPagas = totalDespesas ? ((totalDespesasPagas / totalDespesas) * 100).toFixed(2) : 0;
                 document.querySelector('#legendDespesas span:nth-child(2)').textContent = `${percentualDespesasPagas}%`;
                 document.querySelector('#legendDespesas span:nth-child(3)').textContent = `das despesas já pagas`;
 
-                // Calcular o saldo em relação ao total de receitas pagas
                 const percentualBalanco = totalReceitasPagas ? ((saldo / totalReceitasPagas) * 100).toFixed(2) : 0;
                 document.querySelector('#legendSaldo span:nth-child(2)').textContent = `${percentualBalanco}%`;
                 document.querySelector('#legendSaldo span:nth-child(3)').textContent = `de saldo (R$ ${formatarValorParaExibicao(saldo)})`;
 
-                // Para exibir o esqueleto de carregamento
                 document.querySelectorAll('.skeleton').forEach(element => {
                     element.classList.remove('loading');
                 });
             } catch (error) {
                 console.error("Erro ao calcular valores:", error);
-                // Para exibir o esqueleto de carregamento
                 document.querySelectorAll('.skeleton').forEach(element => {
                     element.classList.remove('loading');
                 });
@@ -1077,6 +1097,42 @@
             return listItem;
         }
 
+
+        function filtrarPorStatus(status) {
+            const listaItens = document.querySelectorAll('.list-group-item');
+
+            listaItens.forEach(item => {
+                const statusButton = item.querySelector('.col-md-3:nth-child(4) button'); // Seleciona o botão de status
+                const itemStatus = statusButton ? statusButton.textContent.trim() : ''; // Obtém o texto do botão de status
+
+                if (itemStatus !== status) {
+                    item.style.display = 'none'; // Esconder itens com status diferente do filtro
+                } else {
+                    item.style.display = ''; // Mostrar itens com status igual ao filtro
+                }
+            });
+
+            // Atualizar os valores dos cards após aplicar o filtro
+            atualizarValoresCards();
+        }
+
+        // Função para atualizar os valores dos cards
+        function atualizarValoresCards() {
+            const dataAtual = new Date();
+            const ano = dataAtual.getFullYear();
+            const mes = dataAtual.getMonth() + 1; // Os meses são baseados em zero, então somamos 1
+            const primeiroDiaMes = new Date(ano, mes - 1, 1); // Definindo o primeiro dia do mês
+            const ultimoDiaMes = new Date(ano, mes, 0); // Definindo o último dia do mês
+
+            const dataInicio = primeiroDiaMes.toISOString(); // Convertendo para o formato de data ISO
+            const dataFim = new Date(ultimoDiaMes.getTime() + 86400000).toISOString(); // Adicionando 1 dia ao último dia do mês e convertendo para o formato de data ISO
+
+            calcularValores(dataInicio, dataFim);
+        }
+
+        // Exemplo de uso: filtrar por itens pagos
+        //filtrarPorStatus('Pago');
+
         // Função para editar receita por ID
         async function editarReceita(id) {
             editarItemPorId(id, 'receitas');
@@ -1174,37 +1230,24 @@
                     const status = document.getElementById(`editStatus${capitalizeFirstLetter(tipo)}`).value;
 
                     await firebase.database().ref(`users/${accessUid}/${tipo}/${id}`).update({ nome, data, valor, categoria, status });
-                    toast.show('Atualizar', 'Item atualizado com sucesso!')
+                    toast.show('Atualizar', 'Item atualizado com sucesso!');
                     $(`#modalEditar${capitalizeFirstLetter(tipo)}`).modal('hide');
-                    //initApp();
 
+                    // Atualizar a exibição do item na lista
+                    atualizarItemNaLista(id, { nome, data, valor, categoria, status }, tipo);
 
-
-
-
+                    // Recalcular os valores e atualizar a exibição
                     try {
-
-
                         const dataAtual = new Date();
                         const ano = dataAtual.getFullYear();
-                        const mes = dataAtual.getMonth() + 1; // Os meses são baseados em zero, então somamos 1
-                        const primeiroDiaMes = new Date(ano, mes - 1, 1); // Definindo o primeiro dia do mês
-                        const ultimoDiaMes = new Date(ano, mes, 0); // Definindo o último dia do mês
+                        const mes = dataAtual.getMonth() + 1;
+                        const primeiroDiaMes = new Date(ano, mes - 1, 1);
+                        const ultimoDiaMes = new Date(ano, mes, 0);
 
-                        const dataInicio = primeiroDiaMes.toISOString(); // Convertendo para o formato de data ISO
-                        const dataFim = new Date(ultimoDiaMes.getTime() + 86400000).toISOString(); // Adicionando 1 dia ao último dia do mês e convertendo para o formato de data ISO
-
-
+                        const dataInicio = primeiroDiaMes.toISOString();
+                        const dataFim = new Date(ultimoDiaMes.getTime() + 86400000).toISOString();
 
                         calcularValores(dataInicio, dataFim);
-
-
-
-
-
-                        calcularValores(dataInicio, dataFim);
-
-
                     } catch (error) {
                         console.error("Erro ao atualizar exibição:", error);
                     }
@@ -1224,19 +1267,42 @@
             salvarEdicaoItem(itemParaEditar, 'despesas');
         }
 
+        // Função para atualizar um item na lista
+        function atualizarItemNaLista(id, item, tipo) {
+            const listItem = document.querySelector(`[data-id='${id}']`);
+            if (listItem) {
+                const statusClass = item.status === 'Pago' ? 'text-success' : 'text-danger';
+                listItem.querySelector('.skeleton').classList.toggle('text-success', item.status === 'Pago');
+                listItem.querySelector('.skeleton').classList.toggle('text-danger', item.status !== 'Pago');
+                listItem.querySelector('.skeleton').textContent = `R$ ${formatarValorParaExibicao(item.valor)}`;
+                listItem.querySelector('button.bg-light').textContent = item.status;
+                listItem.querySelector('button.bg-light').classList.remove('text-success', 'text-danger');
+                listItem.querySelector('button.bg-light').classList.add(statusClass);
+                listItem.querySelector('span').textContent = dateToString(item.data);
+            }
+        }
 
         // Função para formatar o valor para exibição
         function formatarValorParaExibicao(valor) {
-            // Verifica se o valor é um número
             if (typeof valor !== 'number' || isNaN(valor)) {
-                return ''; // Retorna uma string vazia se o valor não for um número válido
+                return '';
             }
-
-            // Converte o valor para uma string com duas casas decimais e separador de milhares
             const valorFormatado = valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-            // Remove o símbolo de moeda (R$) e espaços em branco do valor formatado
             return valorFormatado.replace('R$', '').trim();
+        }
+
+        // Função para converter a data para string
+        function dateToString(date) {
+            const data = new Date(date);
+            const dia = String(data.getDate()).padStart(2, '0');
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            const ano = data.getFullYear();
+            return `${dia}/${mes}/${ano}`;
+        }
+
+        // Função para capitalizar a primeira letra de uma string
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
         }
 
 
@@ -1483,26 +1549,26 @@
 
 
         // Função para copiar o link de compartilhamento e exibir o modal
-async function copyShareLink() {
-    const shareLink = await generateShareLink();
-    const shareLinkInput = document.getElementById("shareLinkModal");
-    shareLinkInput.value = shareLink;
+        async function copyShareLink() {
+            const shareLink = await generateShareLink();
+            const shareLinkInput = document.getElementById("shareLinkModal");
+            shareLinkInput.value = shareLink;
 
-    try {
-        document.execCommand("copy");
-        toast.show('Compartilhar', "Link gerado com sucesso!");
-    } catch (err) {
-        console.error("Erro ao copiar para a área de transferência:", err);
-    }
+            try {
+                document.execCommand("copy");
+                toast.show('Compartilhar', "Link gerado com sucesso!");
+            } catch (err) {
+                console.error("Erro ao copiar para a área de transferência:", err);
+            }
 
-    // Exibe o modal
-    $('#shareModal').modal('show');
+            // Exibe o modal
+            $('#shareModal').modal('show');
 
-    // Seleciona o texto no campo de entrada quando o modal for totalmente exibido
-    $('#shareModal').on('shown.bs.modal', function () {
-        shareLinkInput.select();
-    });
-}
+            // Seleciona o texto no campo de entrada quando o modal for totalmente exibido
+            $('#shareModal').on('shown.bs.modal', function () {
+                shareLinkInput.select();
+            });
+        }
 
 
 

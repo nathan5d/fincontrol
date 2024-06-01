@@ -22,9 +22,10 @@ var toast = {
 
         var btnClose = document.createElement('button');
         btnClose.setAttribute('type', 'button');
-        btnClose.classList.add('btn-close', 'ms-auto');
+        btnClose.setAttribute('id', 'btn-close');
+        btnClose.classList.add('btn-close', 'close-button', 'ms-auto');
         btnClose.setAttribute('aria-label', 'Fechar');
-        btnClose.innerHTML = '<span>&times;</span>';
+        btnClose.innerHTML = '&times;';
 
         toastHeader.appendChild(strong);
         toastHeader.appendChild(btnClose);
@@ -44,7 +45,7 @@ var toast = {
         // Ajusta a posição vertical do próximo toast
         this.nextToastPosition += toast.offsetHeight + 10;
 
-         // Remove o Toast após 3 segundos
+        // Remove o Toast após 3 segundos
         setTimeout(function () {
             toast.classList.remove('show');
             setTimeout(function () {

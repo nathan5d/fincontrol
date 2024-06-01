@@ -57,9 +57,29 @@
   /* Defina a posição inicial */
 }
 
-.btn-close {
+
+/* Estilos para o botão de fechar */
+.close-button {
+  background-color: transparent;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 20px;
+  position: relative;
+}
+
+.close-button span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centraliza o ícone */
+  display: inline-block;
   width: 20px;
   height: 20px;
-  border: none;
-  border-radius: 20px;
+  line-height: 20px;
 }
+
+.close-button:hover {
+  color: #f00;
+}
+
