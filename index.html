@@ -654,7 +654,7 @@
             const nome = document.getElementById("nomeReceitas").value;
             const dataInput = document.getElementById("dataReceitas").value;
             const [dia, mes, ano] = dataInput.split('/');
-            const data = new Date(`${ano}-${mes}-${dia}T00:00:00.000Z`);
+            const data = new Date(`${ano}-${mes}-${dia}T20:00:00.000Z`);
             const valor = parseFloat(document.getElementById("valorReceitas").value.replace('.', '').replace(',', '.'));
             const categoria = document.getElementById("categoriaReceitas").value;
             const statusReceita = document.getElementById("statusReceitas").value;
@@ -697,7 +697,7 @@
             const nome = document.getElementById("nomeDespesas").value;
             const dataInput = document.getElementById("dataDespesas").value;
             const [dia, mes, ano] = dataInput.split('/');
-            const data = new Date(`${ano}-${mes}-${dia}T00:00:00.000Z`);
+            const data = new Date(`${ano}-${mes}-${dia}T20:00:00.000Z`);
             const valor = parseFloat(document.getElementById("valorDespesas").value.replace('.', '').replace(',', '.'));
             const categoria = document.getElementById("categoriaDespesas").value;
             const statusDespesa = document.getElementById("statusDespesas").value;
@@ -786,58 +786,59 @@
             return monthsOfYear[monthNum - 1];
         }
 
-        // Função para popular o select com os meses encontrados
-        async function popularSelectMeses(accessUid) {
-            try {
-                const meses = [];
+       // Função para popular o select com os meses encontrados
+async function popularSelectMeses(accessUid) {
+    try {
+        const meses = [];
 
-                // Usar on() para ouvir mudanças em tempo real nas receitas
-                db.ref(`users/${accessUid}/receitas`).on('value', (snapshot) => {
-                    snapshot.forEach((childSnapshot) => {
-                        const data = childSnapshot.val().data;
-                        const dataObj = new Date(data);
-                        const mesAnoFormatado = `${dataObj.getUTCFullYear()}-${(dataObj.getUTCMonth() + 1).toString().padStart(2, '0')}`;
-                        if (!meses.includes(mesAnoFormatado)) {
-                            meses.push(mesAnoFormatado);
-                        }
-                    });
+        // Usar on() para ouvir mudanças em tempo real nas receitas
+        db.ref(`users/${accessUid}/receitas`).on('value', (snapshot) => {
+            meses.length = 0; // Limpar o array meses
 
-                    // Ordenar os meses encontrados
-                    meses.sort();
+            snapshot.forEach((childSnapshot) => {
+                const data = childSnapshot.val().data;
+                const dataObj = new Date(data);
+                const mesAnoFormatado = `${dataObj.getUTCFullYear()}-${(dataObj.getUTCMonth() + 1).toString().padStart(2, '0')}`;
+                if (!meses.includes(mesAnoFormatado)) {
+                    meses.push(mesAnoFormatado);
+                }
+            });
 
-                    // Adicionar o mês atual à lista de meses, mesmo que não haja dados para ele
-                    const dataAtual = new Date();
-                    const mesAtual = dataAtual.getMonth() + 1; // Os meses são baseados em zero, então somamos 1
-                    const mesAnoAtual = `${dataAtual.getFullYear()}-${mesAtual.toString().padStart(2, '0')}`;
+            // Ordenar os meses encontrados
+            meses.sort();
 
-                    // Atualizar o select com os meses disponíveis
-                    const select = document.getElementById('filtroData');
-                    select.innerHTML = '';
+            // Adicionar o mês atual à lista de meses, mesmo que não haja dados para ele
+            const dataAtual = new Date();
+            const mesAtual = dataAtual.getMonth() + 1; // Os meses são baseados em zero, então somamos 1
+            const mesAnoAtual = `${dataAtual.getFullYear()}-${mesAtual.toString().padStart(2, '0')}`;
 
-                    meses.forEach((mesAno) => {
-                        const [ano, mes] = mesAno.split('-');
-                        const option = document.createElement('option');
-                        option.value = mesAno;
-                        option.textContent = `${monthNumberToName(mes)}/${ano}`;
-                        select.appendChild(option);
-                    });
+            // Atualizar o select com os meses disponíveis
+            const select = document.getElementById('filtroData');
+            select.innerHTML = '';
 
-                    // Definir o mês atual como selecionado, ou o valor armazenado em localStorage se existir
-                    const mesSelecionado = localStorage.getItem('mesSelecionado');
-                    select.value = mesSelecionado ? mesSelecionado : mesAnoAtual;
+            meses.forEach((mesAno) => {
+                const [ano, mes] = mesAno.split('-');
+                const option = document.createElement('option');
+                option.value = mesAno;
+                option.textContent = `${monthNumberToName(mes)}/${ano}`;
+                select.appendChild(option);
+            });
 
+            // Definir o mês atual como selecionado, ou o valor armazenado em localStorage se existir
+            const mesSelecionado = localStorage.getItem('mesSelecionado');
+            select.value = mesSelecionado ? mesSelecionado : mesAnoAtual;
 
-                    // Disparar o evento de mudança para aplicar o filtro inicialmente
-                    filtrarPorMes();
-                });
+            // Disparar o evento de mudança para aplicar o filtro inicialmente
+            filtrarPorMes();
+        });
 
-                // Adicionar evento de mudança ao select para filtrar por mês
-                document.getElementById('filtroData').addEventListener('change', filtrarPorMes);
+        // Adicionar evento de mudança ao select para filtrar por mês
+        document.getElementById('filtroData').addEventListener('change', filtrarPorMes);
 
-            } catch (error) {
-                console.error("Erro ao popular o select de meses:", error);
-            }
-        }
+    } catch (error) {
+        console.error("Erro ao popular o select de meses:", error);
+    }
+}
 
         // Filtrar por mês
         async function filtrarPorMes() {
@@ -1055,14 +1056,14 @@
                     <div class="col-12 col-md">
                         <div class="row">
                             <div class="col-md-3 col-sm-12 h5 font-weight-bold mb-0">
-                                <div>${item.nome}</div>
-                                <div class="skeleton ${tipo === 'Receitas' ? 'text-success' : 'text-danger'}"> R$ ${formatarValorParaExibicao(item.valor)}</div>
+                                <div class="itemName">${item.nome}</div>
+                                <div class="skeleton ${tipo === 'Receitas' ? 'text-success' : 'text-danger'} itemValue"> R$ ${formatarValorParaExibicao(item.valor)}</div>
                             </div>
                             
                             <div class="m-auto col-md-3 mb-0" ${tipo === 'Receitas' ? 'style="display:none"' : ''}>
                                 <div class="text-md-center">
                                     <span class="text-md-center d-md-none">Categoria:</span>
-                                    <button class="btn btn-sm py-0 px-2 btn-secondary" onclick="${tipo === 'Receitas' ? `editarReceita('${id}')` : `editarDespesa('${id}')`}">${item.categoria ? item.categoria : 'Sem categoria'}</button>
+                                    <button class="btn btn-sm py-0 px-2 btn-secondary itemCategory" onclick="${tipo === 'Receitas' ? `editarReceita('${id}')` : `editarDespesa('${id}')`}">${item.categoria ? item.categoria : 'Sem categoria'}</button>
                                 </div>
                             </div>
                             
@@ -1070,13 +1071,13 @@
                             <div class="m-auto col-md-3 mb-0">
                                 <div class="text-md-center">
                                     <span class="text-md-center d-md-none">Data:</span>
-                                    <span>${item.data ? dateToString(item.data) : '<i>Indefinido</i>'}</span>
+                                    <span class="itemDate">${item.data ? dateToString(item.data) : '<i>Indefinido</i>'}</span>
                                 </div>
                             </div>
                             <div class="m-auto col-md-3 mb-0">
                                 <div class="text-md-center">
                                     <span class="text-md-center d-md-none">Status:</span>
-                                    <button class="btn ${statusClass} bg-light" onclick="${tipo === 'Receitas' ? `editarReceita('${id}')` : `editarDespesa('${id}')`}">${item.status}</button>
+                                    <button class="btn ${statusClass} bg-light itemStatus" onclick="${tipo === 'Receitas' ? `editarReceita('${id}')` : `editarDespesa('${id}')`}">${item.status}</button>
                                 </div>
                             </div>
                         </div>
@@ -1219,18 +1220,19 @@
         async function salvarEdicaoItem(id, tipo) {
             if (itemParaEditar && tipoItemParaEditar === tipo) {
                 const accessUid = await getAccessUid();
-
                 try {
                     const nome = document.getElementById(`editNome${capitalizeFirstLetter(tipo)}`).value;
                     const dataInput = document.getElementById(`editData${capitalizeFirstLetter(tipo)}`).value;
                     const [dia, mes, ano] = dataInput.split('/');
-                    const data = new Date(`${ano}-${mes}-${dia}T00:00:00.000Z`);
+                    const data = new Date(`${ano}-${mes}-${dia}T20:00:00.000Z`);
+                    //const data = new Date(Date.parse(`${ano}-${mes}-${dia}`));
+
                     const valor = parseFloat(document.getElementById(`editValor${capitalizeFirstLetter(tipo)}`).value.replace('.', '').replace(',', '.'));
                     const categoria = document.getElementById(`editCategoria${capitalizeFirstLetter(tipo)}`).value;
                     const status = document.getElementById(`editStatus${capitalizeFirstLetter(tipo)}`).value;
 
                     await firebase.database().ref(`users/${accessUid}/${tipo}/${id}`).update({ nome, data, valor, categoria, status });
-                    toast.show('Atualizar', 'Item atualizado com sucesso!');
+                    toast.show('Atualizar', 'Item atualizado com sucesso!')
                     $(`#modalEditar${capitalizeFirstLetter(tipo)}`).modal('hide');
 
                     // Atualizar a exibição do item na lista
@@ -1273,12 +1275,12 @@
             if (listItem) {
                 const statusClass = item.status === 'Pago' ? 'text-success' : 'text-danger';
                 listItem.querySelector('.skeleton').classList.toggle('text-success', item.status === 'Pago');
-                listItem.querySelector('.skeleton').classList.toggle('text-danger', item.status !== 'Pago');
-                listItem.querySelector('.skeleton').textContent = `R$ ${formatarValorParaExibicao(item.valor)}`;
-                listItem.querySelector('button.bg-light').textContent = item.status;
-                listItem.querySelector('button.bg-light').classList.remove('text-success', 'text-danger');
-                listItem.querySelector('button.bg-light').classList.add(statusClass);
-                listItem.querySelector('span').textContent = dateToString(item.data);
+                listItem.querySelector('.itemName').textContent = item.nome;
+                listItem.querySelector('.itemValue').textContent = `R$ ${formatarValorParaExibicao(item.valor)}`;
+                listItem.querySelector('button.itemStatus').textContent = item.status;
+                listItem.querySelector('button.itemStatus').classList.remove('text-success', 'text-danger');
+                listItem.querySelector('button.itemStatus').classList.add(statusClass);
+                listItem.querySelector('span.itemDate').textContent = dateToString(item.data);
             }
         }
 
