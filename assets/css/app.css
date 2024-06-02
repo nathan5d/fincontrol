@@ -216,7 +216,7 @@ a.fab-option {
     border-radius: 0 0 30px 30px;
     font-weight: 700;
     color: var(--primary-color);
-    background-color: #f9f9f9 !important;
+    background-color: #f8f9fa !important;
     box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
 }
 
