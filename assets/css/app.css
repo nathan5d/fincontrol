@@ -5,7 +5,7 @@
 
 body {
     color: var(--primary-color);
-    background-color: #ffffff;
+    background-color: #f1f3f4;
 
 }
 
@@ -119,8 +119,8 @@ body {
 
 .fab-button.active {
     transform: rotate(45deg);
-    box-shadow:  0px 0px 0px 7px rgba(10, 42, 58, .07) !important;
-   
+    box-shadow: 0px 0px 0px 7px rgba(10, 42, 58, .07) !important;
+
     /* Rotação para transformar em "x" */
     /* Rotação para transformar em "x" */
 }
@@ -161,7 +161,7 @@ a.fab-option {
 .fab-option:hover {
     background-color: #f0f0f0;
     transform: translate(-2px, 5px);
-    box-shadow: 0px 1px 0px 2px rgb(0 0 0 / .13)!important;
+    box-shadow: 0px 1px 0px 2px rgb(0 0 0 / .13) !important;
 }
 
 /*
@@ -178,25 +178,27 @@ a.fab-option {
     transform: translateY(0);
 }*/
 
-.form-control{
-    border: none;
+.form-control {
+    /*border: none;*/
     border-color: #e7e7e7;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
     font-weight: 700;
     /*box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075);*/
     /*box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;*/
     box-shadow: none;
     transition: all 0.3s ease-in-out, transform 0.3s ease;
 }
-.form-control:focus{
+
+.form-control:focus {
     border-color: #f8f3f3;
     background-color: #f9f9f9;
     box-shadow: none;
 }
+
 #loadingScreen {
     display: flex;
     top: 0;
-    left: 0; 
+    left: 0;
     position: fixed;
     z-index: 999;
     width: 100%;
@@ -214,7 +216,7 @@ a.fab-option {
     border-radius: 0 0 30px 30px;
     font-weight: 700;
     color: var(--primary-color);
-    background-color:#f9f9f9!important;
+    background-color: #f9f9f9 !important;
     box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
 }
 
@@ -252,9 +254,9 @@ a.fab-option {
 }
 
 .card {
-    border: 1px solid #f8f3f3;
+    border: none;
     border-radius: 10px !important;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
 }
 
 
@@ -263,38 +265,37 @@ a.fab-option {
 .dados.container>span {}
 
 /* Estilo para a linha vertical ao lado de cada div */
-.dados-wraper {
-    background-color: #ffffff;
-    
-}
+.dados-wraper {}
 
-.dados-wraper .title{
-    padding:  .71rem 1.25rem;
+.dados-wraper .title {
+    padding: .71rem 1.25rem;
 }
 
 .list-group-item {
 
     margin-bottom: 4px;
-    
-    border-style: solid;
-    border-width:  0px 0px 2px 0px;
-    border-color: #f8f3f3!important;
-    background-color:#f9f9f9;
-    padding:  1.25rem;
+    border: none;
+    border-radius: 10px;
+    background-color: #ffffff;
+    padding: 1.25rem;
+    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
 
 }
-.dados-wraper .receitas,.dados-wraper .despesas {
+
+.dados-wraper .receitas,
+.dados-wraper .despesas {
     position: relative;
     margin-bottom: 2.25rem;
-    
+
     border-radius: 10px;
 }
-.dados-wraper .receitas{
-    
-}
-.dados-wraper .despesas{}
 
-.dados-wraper .receitas::before,.dados-wraper .despesas::before {
+.dados-wraper .receitas {}
+
+.dados-wraper .despesas {}
+
+.dados-wraper .receitas::before,
+.dados-wraper .despesas::before {
     content: "";
     position: absolute;
     top: 40px;
@@ -308,32 +309,38 @@ a.fab-option {
     transform: translateX(-50%);
     display: none;
 }
-.dados-wraper .receitas::before{
+
+.dados-wraper .receitas::before {
     background-color: #17a2b8;
 }
 
 .dados-wraper .despesas::before {
     background-color: #dc3545;
 }
+
 .dados-wraper li {
     /*border: none;
     /*border-bottom-style: solid;
     border-bottom-width: 4px;*/
 
 }
-.dados-wraper .receitas li:first-child,.dados-wraper .despesas li:first-child {
+
+.dados-wraper .receitas li:first-child,
+.dados-wraper .despesas li:first-child {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    
-   
+
+
 }
-.dados-wraper .receitas li:last-child, .dados-wraper .despesas li:last-child {
+
+.dados-wraper .receitas li:last-child,
+.dados-wraper .despesas li:last-child {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     padding-bottom: 2rem;
-   
+
 }
 
 .dados-wraper .despesas li {
-    border-color:  #dc3545;
+    border-color: #dc3545;
 }
